@@ -1,0 +1,91 @@
+@import url('fontawesome.min.css');
+@import url('solid.min.css');
+@font-face 
+{
+	font-family: 'philosopher';
+	src: url('../webfonts/philosopher-bold-webfont.woff');
+}
+
+*, *::before, *::after {
+	margin: 0;
+	padding: 0;
+}
+
+body
+{
+	position: relative;
+	display: flex;
+	justify-content: center;
+	width: 100vw;
+	background-color: white;
+	overflow: hidden;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+
+.container 
+{
+	width: 100vw;
+  min-height: 100vh;
+	position: relative;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.container .main
+{
+  position: relative;
+  width: 100vw;
+	height: calc(100vh - 60px);
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.btn
+{
+	cursor: pointer;
+	outline: none;
+	border: 0px;
+	padding: 10px;
+}
+
+.input
+{
+	outline: none;
+	text-indent: 15px;
+}
+
+.center
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.center-column
+{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.btn
+{
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.flat
+{
+	border: 0px;
+	outline: none;
+}
+
+.start-start
+{
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}

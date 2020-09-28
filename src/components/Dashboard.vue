@@ -1,0 +1,35 @@
+<template lang="pug">
+  .container
+    Nav
+    main.main.start-start
+        
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import Nav from '@/components/partials/Nav.vue';
+import gql from 'graphql-tag';
+
+@Component({
+  name: 'Dashboard',
+  components: { Nav }
+})
+export default class Dashboard extends Vue {
+
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="sass" scoped>
+$w: #fff
+$b: #f6f2ed
+$info: #91D2FC
+$warning: #FDD194
+$danger: #F291A4
+$success: #83D0CA
+$font: #4F4C5F
+$shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7)
+$light: lightgray
+
+
+</style>

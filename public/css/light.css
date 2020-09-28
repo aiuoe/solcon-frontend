@@ -1,0 +1,38 @@
+:root {
+	--b: #f6f2ed;
+	--p: white;
+	--f: #4F4C5F;
+	--s: 5px 5px 10px 1px rgba(211, 211, 211, .7);
+}
+
+.container {
+	background-color: var(--b);
+}
+.nav {
+	background-color: var(--p);
+	box-shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
+}
+.fa {
+	color: var(--f);
+}
+.header {
+	background-color: var(--p);
+	box-shadow: 15px 5px 10px 1px rgba(211, 211, 211, .7);
+}
+.box {
+	background-color: var(--p);
+	overflow: hidden;
+	box-shadow: var(--s);
+}
+.list::-webkit-scrollbar-track{
+	background-color: var(--b);
+} 
+.banner .title {
+	color: var(--f);
+}
+.calendar .fromto {
+	color: var(--f);
+}
+.font {
+	color: var(--f);
+}
