@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Login from '@/components/Login.vue'
+import SignUp from '@/components/SignUp.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import Customers from '@/components/Customers.vue'
 
@@ -11,6 +12,14 @@ const routes: Array<RouteConfig> = [
     path: '/login',
     name: 'login',
     component: Login,
+    meta: {
+      islogged: true
+    }
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignUp,
     meta: {
       islogged: true
     }

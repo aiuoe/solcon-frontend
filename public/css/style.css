@@ -11,6 +11,20 @@
 	padding: 0;
 }
 
+:root 
+{
+	--white: #fff;
+	--background: #f6f2ed;
+	--info: #91D2FC;
+	--warning: #FDD194;
+	--danger: #F291A4;
+	--success: #83D0CA;
+	--font: #4F4C5F;
+	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .4);
+	--light: lightgray;
+	--dark: darkgray;
+}
+
 body
 {
 	position: relative;
@@ -88,4 +102,11 @@ body
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
+}
+
+.wrapper
+{
+	display: flex;
+	justify-content: space-evenly;
+	align-items: center;
 }

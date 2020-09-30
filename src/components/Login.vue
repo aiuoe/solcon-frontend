@@ -2,9 +2,10 @@
 	.container.center
 		form(@submit.prevent="login" class="form center-column box")
 			input(v-model="email" class="input" type="text" placeholder="Correo: " autocomplete="false" required)
-			input(v-model="password" class="input" type="password" placeholder="Contraseña: " autocomplete="false" required) 
-			input(type="submit" class="btn btn-login" value="Entrar")
-			router-link(to="signup" class="link") Nueva Cuenta
+			input(v-model="password" class="input" type="password" placeholder="Contraseña: " autocomplete="false" required)
+			.wrapper 
+				input(type="submit" class="btn btn-login" value="Entrar")
+				router-link(to="signup" class="link center") Nueva Cuenta
 </template>
 
 <script lang="ts">
@@ -59,6 +60,11 @@ $dark: darkgray
 	.form
 		width: 100%
 		height: 100%
+		box-sizing: border-box
+
+		.wrapper
+			width: 80%
+			height: 40px
 
 		.input
 			width: 80%
@@ -66,30 +72,30 @@ $dark: darkgray
 			margin: 5px 0px
 			outline: none
 			text-indent: 10px
-			border-radius: 3px
 			border: 1px solid lightgray
 			color: $font
 
-		.btn
+		.btn-login
 			width: 30%
 			height: 35px
-			margin: 5px 0px
-			color: white
+			color: var(--font)
 			font-family: sans-serif
 			font-size: 15px
 			border-radius: 3px
+			background-color: $success
 
-			&-login
-				margin-top: 10px
-				background-color: $success
-
-				&:hover
-					background-color: darken($success, 10%)
+			&:hover
+				background-color: darken($success, 10%)
 
 		.link
-			margin-top: 25px
-			color: $font
-			font-size: 13px
+			background-color: var(--warning)
+			width: 40%
+			height: 35px
+			border-radius: 3px
+			outline: none
+			text-decoration: none
+			color: var(--font)
+			font-size: 15px
 
 			&:hover
 				color: darken($info, 50%)
