@@ -1,6 +1,6 @@
 <template lang="pug">
 	.container.center
-		form(@submit.prevent="signup" class="form center-column box")
+		form(@submit.prevent="signup" class="form center-column")
 			.wrapper
 				select(v-model="relationship" class="select" required)
 					option(label="Abg" value="Abg")
@@ -8,12 +8,12 @@
 					option(label="Lic" value="Lic" [selected])
 				input(v-model="name" class="input" type="text" placeholder="Nombre: " required)
 			input(v-model="lastname" class="input" type="text" placeholder="Apellido: " required)
-			input(v-model="email" class="input" type="text" placeholder="Email: " required)
+			input(v-model="email" class="input" type="text" placeholder="Correo: " required)
 			input(v-model="password" autocomplete="false" class="input" type="password" placeholder="Contraseña: " required)
 			input(v-model="password" autocomplete="false" class="input" type="rePassword" placeholder="Repetir Contraseña: " required)
 			.wrapper
-				router-link(to="login" class="link center") Entrar
 				input(type="submit" class="btn btn-signup" value="Enviar")
+				router-link(to="login" class="btn btn-primary center") Entrar
 </template>
 
 <script lang="ts">
@@ -69,6 +69,7 @@ $dark: darkgray
 	position: relative
 	width: 100vw
 	height: 100vh
+	background-color: white
 
 	.form
 		width: 100%
@@ -79,84 +80,69 @@ $dark: darkgray
 			height: 40px
 
 			.select
-				width: 20%
+				width: 25%
 				height: 37px
 				align-self: center
-				border: 0px
-				outline: none
-				border: 1px solid lightgray
 				background-color: $w
 				color: $font
+				outline: none
+				text-indent: 15px
+				border-radius: 50px
+				border-top-right-radius: 0px
+				border-bottom-right-radius: 0px
+				border: var(--border)
+				border-right: 0px
 
 			.input
-				width: 80%
+				width: 75%
 				height: 35px
 				margin: 5px 0px
-				outline: none
-				text-indent: 10px
-				border: 1px solid lightgray
+				border: var(--border)
+				text-indent: 5px
 				color: $font
+				border-top-left-radius: 0px
+				border-bottom-left-radius: 0px
+				border-left: 0px
 
 
 		.input
 			width: 80%
 			height: 35px
 			margin: 5px 0px
-			outline: none
-			text-indent: 10px
-			border: 1px solid lightgray
+			border: var(--border)
 			color: $font
+			border-radius: 50px
 
-		.btn
-			display: flex
-			justify-content: center
-			align-items: center
-			width: 30%
-			outline: none
-			border: 0px
-			height: 35px
-			cursor: pointer
-			color: var(--font)
-			text-decoration: none
-			align-self: center
-			font-family: sans-serif
-			font-size: 15px
-			border-radius: 3px
+		.wrapper
+			width: 80%
+			height: 40px
+			margin-top: 10px
 
-			&-signup
-				background-color: $success
-
-				&:hover
-					background-color: darken($success, 10%)
-
-		.link
-			background-color: var(--warning)
-			width: 30%
-			height: 35px
-			border-radius: 3px
-			outline: none
-			text-decoration: none
-			color: var(--font)
-			font-size: 15px
-
-			&:hover
-				color: darken($info, 50%)
-				text-decoration: none
-
-			&:focus
-				color: $warning
+			.btn-signup
+				width: 40%
+				height: 35px
+				color: var(--font)
+				background-color: white
+				font-family: sans-serif
+				font-size: 15px
+				border-radius: 50px
+				box-shadow: var(--shadow)
 
 
+			.btn-primary
+				width: 40%
+				height: 35px
+				color: var(--white)
+				font-size: 15px
+				border-radius: 50px
+				box-shadow: var(--shadow-primary)
 
-@media screen and (min-width: 500px)
-	.container
-		.form
-			width: 85%
+
 
 @media screen and (min-width: 576px)
 	.container
 		.form
-			width: 50%
+			width: 70%
 
 @media screen and (min-width: 768px)
 	.container

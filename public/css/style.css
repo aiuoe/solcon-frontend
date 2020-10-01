@@ -13,6 +13,7 @@
 
 :root 
 {
+	--primary: #D15B57;
 	--white: #fff;
 	--background: #f6f2ed;
 	--info: #91D2FC;
@@ -20,9 +21,11 @@
 	--danger: #F291A4;
 	--success: #83D0CA;
 	--font: #4F4C5F;
-	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .4);
+	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
 	--light: lightgray;
 	--dark: darkgray;
+	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5);
+	--border: 1px solid lightgray;
 }
 
 body
@@ -61,7 +64,12 @@ body
 	cursor: pointer;
 	outline: none;
 	border: 0px;
-	padding: 10px;
+	text-decoration: none;
+}
+
+.btn-primary
+{
+	background-color: var(--primary);
 }
 
 .input
