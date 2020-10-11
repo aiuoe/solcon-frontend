@@ -28,8 +28,8 @@ export default class Login extends Vue {
 		}
 		return await axios.post('https://amable-plus.herokuapp.com/api/auth/login', this.params)
 			.then(res => {
-				window.localStorage.setItem('token', res['data']['access_token']);
-				this.$router.push({ path: 'dashboard' });
+				window.localStorage.setItem('token', res['data']['access_token'])
+				this.$router.push({ path: 'dashboard' })
 			})
 			.catch(error => {
 				console.error('Error:' + error)

@@ -27,7 +27,7 @@
 					router-link(to="customers" class="link")
 						i(class="fa fa-users center")
 				li(class="center") 
-					a(class="link" @click="theme")
+					a(class="link" @click="setTheme")
 						i(class="fa fa-adjust center")
 </template>
 
@@ -40,22 +40,44 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class Nav extends Vue {
 
 	rol: string = ""
+	light: string = `${process.env.BASE_URL}css/light.css`
+	dark: string = `${process.env.BASE_URL}css/dark.css`
+	ele: any = document.querySelector('#theme')
+	theme: any = ''
 
 	async created()
 	{
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
+		if (window.localStorage.getItem('theme') != null)
+		{
+			this.theme = window.localStorage.getItem('theme')
+			if (this.theme == 'light')
+				this.ele.href = this.light
+			else if (this.theme == 'dark')
+				this.ele.href = this.dark
+		}
+		else
+		{
+			window.localStorage.setItem('theme', 'light')
+			this.theme = 'light'
+		}
+
 	}
 
-	theme()
+	setTheme()
 	{
-		let light = 'http://localhost:8080/css/light.css',
-				dark = 'http://localhost:8080/css/dark.css'
-		let el: any = document.querySelector('#theme')
-
-		if (el.href == light)
-			el.href = dark
-		else
-			el.href = light
+		if (this.theme == 'light')
+		{
+			window.localStorage.setItem('theme', 'dark')
+			this.theme = 'dark'
+			this.ele.href = this.dark
+		}
+		else if (this.theme == 'dark')
+		{
+			window.localStorage.setItem('theme', 'light')
+			this.theme = 'light'
+			this.ele.href = this.light
+		}
 
 	}
 }
