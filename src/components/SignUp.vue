@@ -5,12 +5,12 @@
 				select(v-model="relationship" class="select" required)
 					option(label="Abg" value="3")
 					option(label="Doc" value="2")
-					option(label="Lic" value="1" [selected])
+					option(label="Lic" value="1")
 				input(v-model="name" class="input" type="text" placeholder="Nombre: " required)
 			input(v-model="lastname" class="input" type="text" placeholder="Apellido: " required)
 			input(v-model="email" class="input" type="text" placeholder="Correo: " required)
 			input(v-model="password" autocomplete="false" class="input" type="password" placeholder="Contraseña: " required)
-			input(v-model="password" autocomplete="false" class="input" type="rePassword" placeholder="Repetir Contraseña: " required)
+			input(v-model="rePassword" autocomplete="false" class="input" type="Password" placeholder="Repetir Contraseña: " required)
 			.wrapper
 				input(type="submit" class="btn btn-signup" value="Enviar")
 				router-link(to="login" class="btn btn-primary center") Entrar
