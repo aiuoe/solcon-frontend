@@ -3,9 +3,9 @@
 		form(@submit.prevent="signup" class="form center-column")
 			.wrapper
 				select(v-model="relationship" class="select" required)
-					option(label="Abg" value="Abg")
-					option(label="Doc" value="Doc")
-					option(label="Lic" value="Lic" [selected])
+					option(label="Abg" value="3")
+					option(label="Doc" value="2")
+					option(label="Lic" value="1" [selected])
 				input(v-model="name" class="input" type="text" placeholder="Nombre: " required)
 			input(v-model="lastname" class="input" type="text" placeholder="Apellido: " required)
 			input(v-model="email" class="input" type="text" placeholder="Correo: " required)
@@ -24,7 +24,7 @@ import axios from 'axios'
 	name: 'SignUp'
 })
 export default class SignUp extends Vue {
-	relationship: string = ''
+	relationship: number = 1
 	name: string = ''
 	lastname: string = ''
 	email: string = ''
@@ -37,13 +37,13 @@ export default class SignUp extends Vue {
 	async signup()
 	{
 		this.params = {
-			relp: this.relationship, 
+			relp_id: this.relationship, 
 			name: this.name, 
 			lastname: this.lastname, 
 			email: this.email, 
 			password: this.password, 
 			refd: this.referred, 
-			org: this.origin
+			org_id: this.origin
 		}
 
 		return await axios.post('https://staging-solcon.herokuapp.com/api/auth/signup', this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
