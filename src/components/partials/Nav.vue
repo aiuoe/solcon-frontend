@@ -23,7 +23,7 @@
 				//- li(class="center")
 				//- 	router-link(to="profile" class="link") 
 				//- 		i(class="fa fa-user")
-				li(class="center" v-show="rol === 'admin'") 
+				li(class="center" v-show="rol === 4") 
 					router-link(to="customers" class="link")
 						i(class="fa fa-users center")
 				li(class="center") 
@@ -125,6 +125,6 @@ section
 						order: -1
 
 				.router-link-active 
-					border-top: 2px solid orange
+					border-top: 2px solid var(--primary)
 
 </style>

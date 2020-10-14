@@ -7,7 +7,7 @@
 
 	/*--p: #232D3B;*/
 	/*--b: #1D2632;*/
-	--f: darkgray;
+	--font: darkgray;
 }
 
 .container {
@@ -17,7 +17,7 @@
 	background-color: var(--p);
 }
 .fa {
-	color: var(--f);
+	color: var(--font);
 }
 .header {
 	background-color: var(--p);
@@ -29,21 +29,4 @@
 .list::-webkit-scrollbar-track {
 	background-color: var(--f);
 }
-.data-user span {
-	color: var(--f);
-}
-.calendar{
-	color: white;
-}
-.calendar .fromto{
-	color: white;
-}
-.banner .title {
-	color: var(--f);
-}
-.calendar .fromto {
-	color: var(--f);
-}
-.font {
-	color: var(--f);
-}
+

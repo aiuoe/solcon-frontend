@@ -1,38 +1,27 @@
 :root {
-	--b: #f6f2ed;
-	--p: white;
-	--f: #4F4C5F;
-	--s: 5px 5px 10px 1px rgba(211, 211, 211, .7);
+	--white: white;
+	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
 }
 
 .container {
-	background-color: var(--b);
+	background-color: var(--background);
 }
 .nav {
-	background-color: var(--p);
+	background-color: var(--white);
 	box-shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
 }
 .fa {
-	color: var(--f);
+	color: var(--font);
 }
 .header {
-	background-color: var(--p);
+	background-color: var(--white);
 	box-shadow: 15px 5px 10px 1px rgba(211, 211, 211, .7);
 }
 .box {
-	background-color: var(--p);
+	background-color: var(--white);
 	overflow: hidden;
-	box-shadow: var(--s);
+	box-shadow: var(--shadow);
 }
 .list::-webkit-scrollbar-track{
-	background-color: var(--b);
+	background-color: var(--background);
 } 
-.banner .title {
-	color: var(--f);
-}
-.calendar .fromto {
-	color: var(--f);
-}
-.font {
-	color: var(--f);
-}

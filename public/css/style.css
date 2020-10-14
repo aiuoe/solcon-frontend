@@ -1,10 +1,5 @@
 @import url('fontawesome.min.css');
 @import url('solid.min.css');
-@font-face 
-{
-	font-family: 'philosopher';
-	src: url('../webfonts/philosopher-bold-webfont.woff');
-}
 
 *, *::before, *::after {
 	margin: 0;
@@ -14,18 +9,19 @@
 :root 
 {
 	--primary: #D15B57;
-	--white: #fff;
-	--background: #f6f2ed;
-	--info: #91D2FC;
-	--warning: #FDD194;
-	--danger: #F291A4;
-	--success: #83D0CA;
-	--font: #4F4C5F;
-	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
+	--secondary: #3E4B5C;
+	--info: #4285F4;
+	--warning: #FBBC05;
+	--danger: #EA4335;
+	--success: #34A853;
 	--light: lightgray;
 	--dark: darkgray;
-	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5);
+	--white: #ffffff;
+	--background: #f6f2ed;
+	--font: #2D2D2D;
 	--border: 1px solid lightgray;
+	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
+	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5);
 }
 
 body
@@ -93,6 +89,14 @@ body
 	align-items: center;
 }
 
+.center-column-evenly
+{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
 .btn
 {
 	text-decoration: none;
@@ -117,4 +121,11 @@ body
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
+}
+
+p
+{
+	font-family: 'Times New Roman';
+	color: var(--font);
+	text-align: justify;
 }

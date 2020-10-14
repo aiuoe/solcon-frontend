@@ -7,7 +7,7 @@ export const GET_ALL_CUSTOMERS = gql(`query
    data
    {
      id
-     relp
+     relp_id
      name
      lastname
      email
