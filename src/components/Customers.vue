@@ -79,91 +79,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import gql from 'graphql-tag';
 import Nav from '@/components/partials/Nav.vue';
-import {GET_ALL_CUSTOMERS} from '@/queries/Queries';
+import { GET_ALL_CUSTOMERS } from '@/queries/Queries';
 // import Calendar from '@/components/partials/Calendar.vue';
 // import ChartBar from '@/components/partials/ChartBar'
-
-// const GET_ALL_CUSTOMERS = gql(`query 
-// { 
-//  users(first: 10)
-//  {
-//    data
-//    {
-//      id
-//      relp
-//      name
-//      lastname
-//      email
-//      sex
-//      dni
-//      rif
-//      Ncompanies
-//      Ntickets
-//      companies
-//      {
-//        id
-//        name
-//        rif
-//        fyc
-//      }
-//      address
-//      {
-//        id
-//        label
-//        address
-//        country
-//        state
-//        city
-//        province
-//        zip_code
-//      }
-//      emails
-//      {
-//        id
-//        email_alt
-//      }
-//      phones
-//      {
-//        id
-//        label
-//        phone
-//      }
-//      currencies
-//      {
-//        id
-//      }
-//      languages
-//      {
-//        id
-//      }
-//      products
-//      {
-//        id
-//        name
-//        description
-//        price
-//        created_at
-//      }
-//      tickets
-//      {
-//        id
-//        title
-//        message
-//        channel
-//        priority
-//        status
-//        pinned
-//        private
-//        Ncomments
-//        created_at
-//        updated_at
-//      }
-//    }
-//  }
-// }`);
-
 
 @Component({
 	name: 'Customers',
@@ -197,24 +116,6 @@ export default class Customers extends Vue {
 	// purchasesNav: boolean = false
 	// ticketsNav: boolean = false
 	// days: any = {}
-
-	// constructor()
-	// { 
-	// 	this.colors = ['#91D2FC', '#FDD194', '#F291A4', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
-	// 	this.aux = {}
-	// 	this.firstDate = null
-	// 	this.lastDate = null
-	// 	this.key = 'all'
-	// 	this.showT = true
-	// 	this.title = ''
-	// 	this.message = ''
-	// 	this.priority = false
-	// 	this.fDate = null
-	// 	this.lDate = null
-	// 	this.keyUser = 0
-	// 	this.address = {}
-	// 	super(); 
-	// }
 
 	async created()
 	{

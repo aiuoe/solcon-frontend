@@ -2,9 +2,6 @@
 	.container
 		Nav
 		main.main.start-start
-			h4 Google Design
-			p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium fugiat consectetur distinctio debitis itaque ab iure porro ea a quis. Neque qui rem quisquam praesentium molestiae, velit dolorum commodi tempora, earum itaque libero ullam similique ipsum. Hic aperiam vitae nemo, aliquid iure laboriosam, deserunt porro illum quam, molestiae distinctio! Quidem.
-		span lorem ipsu
 </template>
 
 <script lang="ts">

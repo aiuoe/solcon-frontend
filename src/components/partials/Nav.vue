@@ -20,9 +20,6 @@
 				li(class="center")
 					router-link(to="tickets" class="link") 
 						i(class="fa fa-ticket-alt center")
-				//- li(class="center")
-				//- 	router-link(to="profile" class="link") 
-				//- 		i(class="fa fa-user")
 				li(class="center" v-show="rol === 4") 
 					router-link(to="customers" class="link")
 						i(class="fa fa-users center")
@@ -87,11 +84,8 @@ export default class Nav extends Vue {
 section
 	position: fixed
 	bottom: 0px
-	// top: 0px
 	left: 0px
-	// width: 50px
 	height: 50px
-	// height: 100vh
 	width: 100vw
 	overflow: hidden
 	z-index: 2
@@ -125,6 +119,5 @@ section
 						order: -1
 
 				.router-link-active 
-					border-top: 2px solid var(--primary)
-
+					border-top: 3px solid var(--primary)
 </style>
