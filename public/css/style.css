@@ -5,7 +5,6 @@
 	margin: 0;
 	padding: 0;
 }
-
 :root 
 {
 	--primary: #D15B57;
@@ -23,7 +22,6 @@
 	--shadow: 5px 5px 10px 1px rgba(211, 211, 211, .7);
 	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5);
 }
-
 body
 {
 	position: relative;
@@ -35,7 +33,6 @@ body
 	overflow-y: hidden;
 	overflow-x: hidden;
 }
-
 .container 
 {
 	width: 100vw;
@@ -44,7 +41,6 @@ body
 	box-sizing: border-box;
 	overflow: hidden;
 }
-
 .container .main
 {
   position: relative;
@@ -54,7 +50,6 @@ body
   box-sizing: border-box;
   overflow: hidden;
 }
-
 .btn
 {
 	cursor: pointer;
@@ -62,25 +57,21 @@ body
 	border: 0px;
 	text-decoration: none;
 }
-
 .btn-primary
 {
 	background-color: var(--primary);
 }
-
 .input
 {
 	outline: none;
 	text-indent: 15px;
 }
-
 .center
 {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-
 .center-column
 {
 	display: flex;
@@ -88,7 +79,6 @@ body
 	justify-content: center;
 	align-items: center;
 }
-
 .center-column-evenly
 {
 	display: flex;
@@ -96,36 +86,57 @@ body
 	justify-content: space-evenly;
 	align-items: center;
 }
-
 .btn
 {
 	text-decoration: none;
 	cursor: pointer;
 }
-
 .flat
 {
 	border: 0px;
 	outline: none;
 }
-
 .start-start
 {
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
 }
-
 .wrapper
 {
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
 }
-
 p
 {
 	font-family: 'Times New Roman';
 	color: var(--font);
 	text-align: justify;
+}
+.list
+{
+	list-style: none;
+	display: flex;
+}
+.list-column
+{
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+}
+.link
+{
+	text-decoration: none;
+	cursor: pointer;
+}
+
+@media screen and (min-width: 426px)
+{
+	.container .main
+	{
+	  width: calc(100vw - 60px);
+		height: 100vh;
+		margin-left: 55px;
+	}
 }

@@ -80,7 +80,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
-import { GET_ALL_CUSTOMERS } from '@/queries/Queries';
+import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 // import Calendar from '@/components/partials/Calendar.vue';
 // import ChartBar from '@/components/partials/ChartBar'
 

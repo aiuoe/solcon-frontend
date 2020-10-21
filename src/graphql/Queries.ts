@@ -77,4 +77,4 @@ export const GET_ALL_CUSTOMERS = gql(`query
      }
    }
  }
-}`);
+}`)

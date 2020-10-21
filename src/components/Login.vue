@@ -66,7 +66,7 @@ $dark: darkgray
 			width: 80%
 			height: 35px
 			margin: 5px 0px
-			border-radius: 30px
+			border-radius: 3px
 			color: $font
 			border: var(--border)
 
@@ -83,14 +83,14 @@ $dark: darkgray
 				font-size: 15px
 				border-radius: 3px
 				background-color: $w
-				border-radius: 30px
+				border-radius: 3px
 				box-shadow: var(--shadow)
 
 			.btn-primary
 				width: 40%
 				height: 35px
 				font-size: 15px
-				border-radius: 50px
+				border-radius: 3px
 				font-weight: bold
 				color: white
 				box-shadow: var(--shadow-primary)

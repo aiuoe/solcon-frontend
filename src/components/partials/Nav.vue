@@ -41,6 +41,7 @@ export default class Nav extends Vue {
 	dark: string = `${process.env.BASE_URL}css/dark.css`
 	ele: any = document.querySelector('#theme')
 	theme: any = ''
+	// device: string = ""
 
 	async created()
 	{
@@ -58,7 +59,8 @@ export default class Nav extends Vue {
 			window.localStorage.setItem('theme', 'light')
 			this.theme = 'light'
 		}
-
+		// this.storage_device()
+		// this.device = window.localStorage.getItem('device')!
 	}
 
 	setTheme()
@@ -75,13 +77,39 @@ export default class Nav extends Vue {
 			this.theme = 'light'
 			this.ele.href = this.light
 		}
-
 	}
+
+	// storage_device()
+	// {
+	// 	window.addEventListener('resize', () => {
+	// 		if ( navigator.userAgent.match(/Android/i) 
+	// 			|| navigator.userAgent.match(/webOS/i) 
+	// 			|| navigator.userAgent.match(/iPhone/i) 
+	// 			|| navigator.userAgent.match(/iPad/i) 
+	// 			|| navigator.userAgent.match(/iPod/i) 
+	// 			|| navigator.userAgent.match(/BlackBerry/i) 
+	// 			|| navigator.userAgent.match(/Windows Phone/i) )
+	// 			window.localStorage.setItem('device', 'mobile')
+	// 		else
+	// 			window.localStorage.setItem('device', 'web')
+	// 	})
+
+	// 	if ( navigator.userAgent.match(/Android/i) 
+	// 		|| navigator.userAgent.match(/webOS/i) 
+	// 		|| navigator.userAgent.match(/iPhone/i) 
+	// 		|| navigator.userAgent.match(/iPad/i) 
+	// 		|| navigator.userAgent.match(/iPod/i) 
+	// 		|| navigator.userAgent.match(/BlackBerry/i) 
+	// 		|| navigator.userAgent.match(/Windows Phone/i) )
+	// 		window.localStorage.setItem('device', 'mobile')
+	// 	else
+	// 		window.localStorage.setItem('device', 'web')
+	// }
 }
 </script>
 
 <style lang="sass" scoped>
-section
+.nav
 	position: fixed
 	bottom: 0px
 	left: 0px
@@ -94,30 +122,46 @@ section
 		width: 100%
 		height: 100%
 
-		.list
+.list
+	width: 100%
+	height: 100%
+
+	li
+		width: 100%
+		height: 50px
+
+.link
+	width: 100%
+	height: 100%
+
+	i
+		width: 100%
+		height: 100%
+		font-size: 20px
+
+.router-link-active 
+	border-top: 3px solid var(--primary)
+
+@media screen and (min-width: 426px)
+	.nav
+		top: 0
+		left: 0
+		height: 100vh
+		width: 50px
+
+	.list
+		width: 100%
+		height: 100%
+		flex-direction: column
+
+		li
 			width: 100%
-			height: 100%
-			list-style: none			
+			height: 50px
 
-			li
-				width: 100%
-				height: 50px
-				border-top-left-radius: 10px
-				border-bottom-left-radius: 10px
+	.router-link-active 
+		border-top: 0px
+		border-right: 3px solid var(--primary)
 
-				.link
-					width: 100%
-					height: 100%
-					text-decoration: none
-					color: #3C3F72
-					cursor: pointer
 
-					i
-						width: 100%
-						height: 100%
-						font-size: 20px
-						order: -1
 
-				.router-link-active 
-					border-top: 3px solid var(--primary)
 </style>
