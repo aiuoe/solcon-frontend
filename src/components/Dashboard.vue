@@ -5,20 +5,23 @@
 			section.section
 				ul.list
 					li(class="box item center")
-						router-link(to="business" class="link")
+						router-link(to="business" class="link center")
 							i(class="fa fa-building center")
 					li(class="box item center")
-						router-link(to="products" class="link") 
+						router-link(to="products" class="link center") 
 							i(class="fa fa-dolly center")
 					li(class="box item center")
-						a(class="link") 
+						a(class="link center") 
 							i(class="fa fa-wallet center")
 					li(class="box item center") 
-						router-link(to="purchases" class="link")
+						router-link(to="purchases" class="link center")
 							i(class="fa fa-shopping-cart center")
 					li(class="box item center")
-						router-link(to="tickets" class="link")
+						router-link(to="tickets" class="link center")
 							i(class="fa fa-ticket-alt center")
+					li(class="box item center" v-show="rol === 4") 
+						router-link(to="customers" class="link center")
+							i(class="fa fa-users center")
 </template>
 
 <script lang="ts">
@@ -32,11 +35,11 @@ import gql from 'graphql-tag';
 })
 export default class Dashboard extends Vue {
 
-	device: string = ""
+	rol: string = ""
 
 	async created ()
 	{
-		this.device = window.localStorage.getItem('device')!
+		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
 	}
 
 }
@@ -65,11 +68,14 @@ export default class Dashboard extends Vue {
 	align-items: space-evenly
 
 .item
-	// flex-grow: 1
-	width: 45%
-	height: 30%
+	width: 30%
+	height: 45%
 	cursor: pointer
 	border-radius: 3px
+
+.link
+	width: 100%
+	height: 100%
 
 @media screen and (min-width: 426px)
 	.section

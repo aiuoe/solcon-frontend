@@ -6,22 +6,19 @@
 					router-link(to="dashboard" class="link") 
 						i(class="fa fa-home center")
 				li(class="center")
-					router-link(to="business" class="link") 
+					router-link(to="business" class="link not") 
 						i(class="fa fa-building center")
 				li(class="center")
-					router-link(to="products" class="link") 
+					router-link(to="products" class="link not") 
 						i(class="fa fa-dolly center")
-				li(class="center")
-					a(class="link") 
-						i(class="fa fa-wallet center")
 				li(class="center") 
-					router-link(to="purchases" class="link")
+					router-link(to="purchases" class="link not")
 						i(class="fa fa-shopping-cart center")
 				li(class="center")
-					router-link(to="tickets" class="link") 
+					router-link(to="tickets" class="link not") 
 						i(class="fa fa-ticket-alt center")
 				li(class="center" v-show="rol === 4") 
-					router-link(to="customers" class="link")
+					router-link(to="customers" class="link not")
 						i(class="fa fa-users center")
 				li(class="center") 
 					a(class="link" @click="setTheme")
@@ -142,6 +139,9 @@ export default class Nav extends Vue {
 .router-link-active 
 	border-top: 3px solid var(--primary)
 
+.not
+	display: none
+
 @media screen and (min-width: 426px)
 	.nav
 		top: 0
@@ -161,6 +161,9 @@ export default class Nav extends Vue {
 	.router-link-active 
 		border-top: 0px
 		border-right: 3px solid var(--primary)
+
+	.not
+		display: flex
 
 
 

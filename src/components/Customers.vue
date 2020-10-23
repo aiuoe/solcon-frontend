@@ -1,10 +1,37 @@
 <template lang="pug">
 	.container
 		Nav
-		main.main.center-column-evenly
-			.box.banner
-			.box.filter
-			.box.customers
+		main.main.evenly-center-column
+			section.section.evenly-center-column
+				.box.banner
+				.box.customers.start-center-column
+					.btn-filter
+						a(class="link start-center" @click="customerFilter") Filtrar
+							i(class="fa fa-filter") 
+					.customer-filter
+						span compras
+						span tickets
+					ul.list-column
+						li(class="item start-center" v-for="customer, key in customers" @click="customerShow(key)")
+							a(class="link font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
+			.customer-show.box.start-center-column
+				.back
+					a(class="link" @click="customerHide")
+						i(class="fa fa-angle-left")
+				.photo.center
+					span(class="center font") {{ letter | toUpperCase }}
+				span(class="fullname center font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
+				.menu
+					ul.list
+						li.item
+							a.link
+								i(class="fa fa-shopping-cart center")
+						li.item
+							a.link
+								i(class="fa fa-ticket-alt center")
+						li.item
+							a.link
+								i(class="fa fa-user center")
 
 			//- .users
 			//- 	div(class="box filter")
@@ -27,54 +54,6 @@
 			//- 				.data-user
 			//- 					div.fullname
 			//- 						span {{ user.name | capitalize }} {{ user.lastname | capitalize }}
-
-
-	//- 		//- 	.graphs
-	//- 		//- 		div(class="box banner")
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			.bubble
-	//- 		//- 			span.title Clientes
-	//- 		//- 			img(src="../../assets/muneca.png")
-	//- 		//- 		div(class="box graph")
-	//- 		//- 		div(class="box graph")
-
-
-	//- 		//- div(class="box aside")
-	//- 		//- 	.head
-	//- 		//- 		.profile
-	//- 		//- 			.photo(:style="{backgroundColor: color}")
-	//- 		//- 				span {{ letter | toUpperCase }}
-	//- 		//- 		div(class="details font")
-	//- 		//- 			span {{ user.name | capitalize }} {{ user.lastname | capitalize }}
-	//- 		//- 			span(v-if="address != null") {{ address.country | capitalize }} - {{ address.state | capitalize }}
-	//- 		//- 	.nav
-	//- 		//- 		ul.list
-	//- 		//- 			li.item
-	//- 		//- 				a.link
-	//- 		//- 					i(class="fa fa-user")
-	//- 		//- 			li.item
-	//- 		//- 				a.link
-	//- 		//- 					i(class="fa fa-building")
-	//- 		//- 			li.item
-	//- 		//- 				a.link
-	//- 		//- 					i(class="fa fa-ticket-alt")
-	//- 		//- 			li.item
-	//- 		//- 				a.link
-	//- 		//- 					i(class="fa fa-shopping-cart")
-	//- 		//- 	.data
-	//- 		//- 		.wrapper
-	//- 		//- 			.phones(v-for="phone in user.phones")
-	//- 		//- 				span.phone {{ phone.phone }}
-	//- 		//- 		.wrapper
-	//- 		//- 		.wrapper
-	//- 				.wrapper
-
-
 </template>
 
 <script lang="ts">
@@ -103,89 +82,60 @@ import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 	}
 })
 export default class Customers extends Vue {
-	users: object = {}
-	// user: any = {}
-	// showCompanies: boolean = false
-	// showDetails: boolean = true
-	// showTickets: boolean = false
-	// showPurchases: boolean = false
-	// letter: string = ''
-	// address: object
-	// color: string = ''
-	// detailsNav: boolean = true
-	// purchasesNav: boolean = false
-	// ticketsNav: boolean = false
-	// days: any = {}
+	customers: any = {}
+	customer: any = {}
+	address: object = {}
+	letter: string = ''
 
 	async created()
 	{
-		// 		// this.user = this.users[0]
-		// 		// this.address = this.user.address[0]
-		// 		// this.letter = this.user.name[0]
-		// 		// this.color = this.colors[0]
-		// 		// this.aux = this.users
-		// console.log(this.$apollo)
-		return await this.$apollo.query({query: GET_ALL_CUSTOMERS}).then((res: any) => { this.users = res.data.users.data }).catch((res: any) => console.log(res))
+		return await this.$apollo.query({query: GET_ALL_CUSTOMERS})
+		.then((res: any) => 
+			{ 
+				this.customers = res.data.users.data
+				this.customer = this.customers[0]
+				this.letter = this.customer.name[0]
+			})
+		.catch((res: any) => console.log(res))
 	}	
 
+	async customerShow(key: number)
+	{
+		let box: any = document.querySelector('.customer-show')
+		box.style.display = 'flex'
+		this.customer = this.customers[key]
+		if (this.customer.address[0] != null)
+			this.address = this.customer.address[0]
+		else
+			this.address = {}
+		this.letter = this.customer.name[0]
+	}
 
-	// async created()
-	// {
-	// 	return await this.$apollo
-	// 		.query({
-	// 	 		query: GET_ALL_USERS
-	// 	 	})
-	// 		.then(res => {
-	// 			this.users = res.data.users.data;
-	// 			this.user = this.users[0]
-	// 			this.address = this.user.address[0]
-	// 			this.letter = this.user.name[0]
-	// 			this.color = this.colors[0]
-	// 			this.aux = this.users
-	// 		})
-	// }	
+	async customerHide()
+	{
+		let box: any = document.querySelector('.customer-show')
+		box.style.display = 'none'
+	}
 
-	// async showUser(key)
-	// {
-	// 	this.user = this.users[key]
-	// 	if (this.user.address[0])
-	// 		this.address = this.user.address[0]
-	// 	else
-	// 		this.address = null
-	// 	this.letter = this.user.name[0]
-	// 	this.color = this.colors[key]
-	// }
+	async customerFilter()
+	{
+		let box: any = document.querySelector('.customer-filter')
+		let listCustomers: any = document.querySelector('.list-column')
 
-	// show(key)
-	// {
-	// 	switch(key)
-	// 	{
-	// 		case 'details':
-	// 			this.showDetails = true
-	// 			this.showTickets = false
-	// 			this.showPurchases = false
-	// 			this.detailsNav = true
-	// 			this.purchasesNav = false
-	// 			this.ticketsNav = false
-	// 			break
-	// 		case 'purchases':
-	// 			this.showPurchases = true
-	// 			this.showDetails = false
-	// 			this.showTickets = false
-	// 			this.purchasesNav = true
-	// 			this.detailsNav = false
-	// 			this.ticketsNav = false
-	// 			break
-	// 		case 'tickets':
-	// 			this.showTickets = true
-	// 			this.showPurchases = false
-	// 			this.showDetails = false
-	// 			this.ticketsNav = true
-	// 			this.detailsNav = false
-	// 			this.purchasesNav = false
-	// 	}
+		if (box.style.display !== 'flex')
+		{
+			box.style.display = 'flex'
+			box.style.height = '20%'
+			listCustomers.style.height = '80%'
+		}
+		else
+		{
+			box.style.height = '0%'
+			box.style.display = 'none'
+			listCustomers.style.height = '100%'
+		}
 
-	// }
+	}
 
 	// getDate(date)
 	// {
@@ -241,44 +191,146 @@ export default class Customers extends Vue {
 	// 	}
 	// }
 
-	// async createTicket()
-	// {
-	// 	return await this.$apollo
-	// 		.mutate({
-	// 			mutation: CREATE_TICKET,
-	// 			variables: {
-	// 				userID: this.user.id,
-	// 				title: this.title.toString(),
-	// 				message: this.message.toString(),
-	// 				channel: "Web"
-	// 			}
-	// 		})
-	// 		.then(res => {
-	// 			this.user.tickets = res.data.updateUser.tickets
-	// 			this.showT = !this.showT
-	// 		})
-	// }
-
-
 // console.log(this.tickets.filter(t => {let r = false; k.map((key, i) => {(t[key] !== v[i])? r = true : null}); return !r}))
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="sass" scoped>
-$font: #4F4C5F
-
+.section
+	width: 100%
+	height: 100%
+	overflow: hidden
 
 .banner
 	width: 100%
-	height: 20%
-
-.filter
-	width: 100%
-	height: 20%
+	height: 15%
 
 .customers
 	width: 100%
-	height: 55%
+	height: 80%
+	position: relative
+	padding: 35px 3px
+	box-sizing: border-box
+	overflow: hidden
+
+.btn-filter
+	width: 100%
+	height: 35px
+	position: absolute
+	top: 0px
+
+	.link
+		width: 10%
+		height: 100%
+		padding: 10px
+		box-sizing: border-box
+
+		.fa
+			order: -1
+			margin-right: 5px
+
+.customer-filter
+	display: none
+	width: 100%
+	height: 0%
+	padding: 10px
+	box-sizing: border-box
+
+.customer-show
+	width: calc(100% - 14px)
+	height: 94%
+	display: none
+	position: absolute
+	padding: 10px
+	box-sizing: border-box
+
+	.menu
+		width: 100%
+		height: 35px
+		background-color: var(--background)
+
+		.list
+			width: 100%
+			height: 100%
+			justify-content: space-evenly
+
+			.item
+				width: 200px
+				height: 100%
+				border: 0px
+				padding: 0px
+
+				.link
+					width: 100%
+					height: 100%
+
+					.fa
+						width: 100%
+						height: 100%
+
+.back
+	width: 100%
+	height: 25px
+
+	.link
+
+		.fa
+			font-size: 25px
+
+.photo
+	width: 100%
+	height: 85px
+	margin-bottom: 10px
+
+	span
+		width: 85px
+		height: 85px
+		border-radius: 50%
+		background-color: var(--background)
+		font-size: 50px
+
+.fullname
+	width: 100%
+	margin-bottom: 5px
+
+.list-column
+	width: 100%
+	height: 100%
+	padding: 10px
+	box-sizing: border-box
+	overflow-y: scroll
+
+.item
+	width: 100%
+	height: 30px
+	margin-bottom: 5px
+	padding: 10px
+	box-sizing: border-box
+	cursor: pointer
+	border: 1px solid var(--light)
+	border-radius: 3px
+
+
+
+@media screen and (min-width: 768px)
+	.section
+		align-self: flex-start
+		width: 55%
+		height: 100%
+
+	.customer-show
+		width: 40%
+		height: 100vh
+		display: flex
+		position: absolute
+		right: 0px
+		padding: 10px
+		box-sizing: border-box
+
+	.back
+		display: none
+	
+
 
 </style>

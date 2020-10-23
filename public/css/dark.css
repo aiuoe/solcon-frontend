@@ -31,8 +31,21 @@
 	background-color: var(--p);
 	overflow: hidden;
 }
+.list-column::-webkit-scrollbar-thumb
+{
+	background-color: var(--primary);
+} 
 .list::-webkit-scrollbar-track
 {
-	background-color: var(--font);
+	background-color: var(--background);
+} 
+.list-column::-webkit-scrollbar-track
+{
+	background-color: var(--background);
+} 
+.font
+{
+	color: var(--font);
 }
+
 

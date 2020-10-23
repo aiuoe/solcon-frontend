@@ -3,7 +3,7 @@
 		form(@submit.prevent="login" class="form center-column")
 			input(v-model="email" class="input" type="text" placeholder="Correo: " autocomplete="false" required)
 			input(v-model="password" class="input" type="password" placeholder="Contraseña: " autocomplete="false" required)
-			.wrapper 
+			.wrapper.evenly-center
 				input(type="submit" class="btn btn-login" value="Entrar")
 				router-link(to="signup" class="btn btn-primary center") Nueva
 </template>

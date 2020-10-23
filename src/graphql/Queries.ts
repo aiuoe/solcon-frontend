@@ -71,7 +71,6 @@ export const GET_ALL_CUSTOMERS = gql(`query
        status
        pinned
        private
-       Ncomments
        created_at
        updated_at
      }
