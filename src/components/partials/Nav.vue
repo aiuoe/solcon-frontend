@@ -23,10 +23,14 @@
 				li(class="center") 
 					a(class="link" @click="setTheme")
 						i(class="fa fa-adjust center")
+				li(class="center") 
+					a(class="link" @click="logout")
+						i(class="fa fa-sign-out-alt center")
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import axios from 'axios';
 
 @Component({
 	name: 'Nav',
@@ -74,6 +78,19 @@ export default class Nav extends Vue {
 			this.theme = 'light'
 			this.ele.href = this.light
 		}
+	}
+
+	async logout()
+	{
+		return await axios
+		.post('http://localhost:8000/api/auth/logout', {}, {"headers": {"Authorization": `Bearer ${window.localStorage.getItem('token')}`}})
+			.then(res => 
+			{
+				window.localStorage.removeItem('token')
+				if (window.localStorage.getItem('token') == null) 
+					this.$router.push({ path: 'login' })
+			})
+			.catch(err => console.log(err))
 	}
 
 	// storage_device()

@@ -46,7 +46,7 @@ export default class SignUp extends Vue {
 			org_id: this.origin
 		}
 
-		return await axios.post('https://staging-solcon.herokuapp.com/api/auth/signup', this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
+		return await axios.post('http://localhost:8000/api/auth/signup', this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
 	}
 	
 }
@@ -73,11 +73,15 @@ $dark: darkgray
 
 	.form
 		width: 100%
-		height: 100%
+		height: 70%
+		background-color: white
 
 		.wrapper
 			width: 80%
 			height: 40px
+			display: flex
+			justify-content: space-evenly
+			align-items: center
 
 			.select
 				width: 25%
@@ -87,9 +91,6 @@ $dark: darkgray
 				color: $font
 				outline: none
 				text-indent: 15px
-				border-radius: 50px
-				border-top-right-radius: 0px
-				border-bottom-right-radius: 0px
 				border: var(--border)
 				border-right: 0px
 
@@ -100,8 +101,6 @@ $dark: darkgray
 				border: var(--border)
 				text-indent: 5px
 				color: $font
-				border-top-left-radius: 0px
-				border-bottom-left-radius: 0px
 				border-left: 0px
 
 
@@ -111,7 +110,6 @@ $dark: darkgray
 			margin: 5px 0px
 			border: var(--border)
 			color: $font
-			border-radius: 50px
 
 		.wrapper
 			width: 80%
@@ -121,20 +119,17 @@ $dark: darkgray
 			.btn-signup
 				width: 40%
 				height: 35px
-				color: var(--font)
+				color: $font
 				background-color: white
 				font-family: sans-serif
 				font-size: 15px
-				border-radius: 50px
 				box-shadow: var(--shadow)
-
 
 			.btn-primary
 				width: 40%
 				height: 35px
 				color: var(--white)
 				font-size: 15px
-				border-radius: 50px
 				box-shadow: var(--shadow-primary)
 
 

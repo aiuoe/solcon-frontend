@@ -70,7 +70,7 @@ export const GET_ALL_CUSTOMERS = gql(`query
        priority
        status
        pinned
-       private
+       public
        created_at
        updated_at
      }

@@ -26,7 +26,7 @@ export default class Login extends Vue {
 			email: this.email, 
 			password: this.password
 		}
-		return await axios.post('https://staging-solcon.herokuapp.com/api/auth/login', this.params)
+		return await axios.post('http://localhost:8000/api/auth/login', this.params)
 			.then(res => {
 				window.localStorage.setItem('token', res['data']['access_token'])
 				this.$router.push({ path: 'dashboard' })
@@ -59,8 +59,9 @@ $dark: darkgray
 
 	.form
 		width: 100%
-		height: 100%
+		height: 30%
 		box-sizing: border-box
+		background-color: white
 
 		.input
 			width: 80%
@@ -75,10 +76,13 @@ $dark: darkgray
 			height: 40px
 			margin-top: 10px
 
+		.evenly-center
+			flex-wrap: nowrap
+
 			.btn-login
 				width: 40%
 				height: 35px
-				color: var(--font)
+				color: $font
 				font-family: sans-serif
 				font-size: 15px
 				border-radius: 3px

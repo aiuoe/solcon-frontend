@@ -5,33 +5,22 @@
 			section.section.evenly-center-column
 				.box.banner
 				.box.customers.start-center-column
-					.btn-filter
+					.loader(v-if="loading")
+						Loader
+					.btn-filter(v-if="!loading")
 						a(class="link start-center" @click="customerFilter") Filtrar
 							i(class="fa fa-filter") 
-					.customer-filter
+					.customer-filter(v-if="!loading")
 						span compras
 						span tickets
-					ul.list-column
+					ul.list-column(v-if="!loading")
 						li(class="item start-center" v-for="customer, key in customers" @click="customerShow(key)")
 							a(class="link font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
-			.customer-show.box.start-center-column
-				.back
-					a(class="link" @click="customerHide")
-						i(class="fa fa-angle-left")
-				.photo.center
-					span(class="center font") {{ letter | toUpperCase }}
-				span(class="fullname center font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
-				.menu
-					ul.list
-						li.item
-							a.link
-								i(class="fa fa-shopping-cart center")
-						li.item
-							a.link
-								i(class="fa fa-ticket-alt center")
-						li.item
-							a.link
-								i(class="fa fa-user center")
+			.aside.box
+				.loader(v-if="loading")
+					Loader
+				CustomerShow(:customer="customer" v-if="!loading")
+
 
 			//- .users
 			//- 	div(class="box filter")
@@ -60,12 +49,14 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
+import CustomerShow from '@/components/partials/CustomerShow.vue';
+import Loader from '@/components/partials/Loader.vue';
 // import Calendar from '@/components/partials/Calendar.vue';
 // import ChartBar from '@/components/partials/ChartBar'
 
 @Component({
 	name: 'Customers',
-	components: { Nav },
+	components: { Nav, CustomerShow, Loader },
 	filters: {
 	  capitalize: function (value: any)
 	  {
@@ -84,38 +75,21 @@ import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 export default class Customers extends Vue {
 	customers: any = {}
 	customer: any = {}
-	address: object = {}
-	letter: string = ''
+	id: number = 0
+	loading: boolean = false
 
 	async created()
 	{
+		this.loading = true
 		return await this.$apollo.query({query: GET_ALL_CUSTOMERS})
 		.then((res: any) => 
 			{ 
 				this.customers = res.data.users.data
 				this.customer = this.customers[0]
-				this.letter = this.customer.name[0]
+				this.loading = false
 			})
 		.catch((res: any) => console.log(res))
 	}	
-
-	async customerShow(key: number)
-	{
-		let box: any = document.querySelector('.customer-show')
-		box.style.display = 'flex'
-		this.customer = this.customers[key]
-		if (this.customer.address[0] != null)
-			this.address = this.customer.address[0]
-		else
-			this.address = {}
-		this.letter = this.customer.name[0]
-	}
-
-	async customerHide()
-	{
-		let box: any = document.querySelector('.customer-show')
-		box.style.display = 'none'
-	}
 
 	async customerFilter()
 	{
@@ -134,7 +108,13 @@ export default class Customers extends Vue {
 			box.style.display = 'none'
 			listCustomers.style.height = '100%'
 		}
+	}
 
+	customerShow(id: number)
+	{
+		let box: any = document.querySelector('.aside')
+		box.style.display = 'flex'
+		this.customer = this.customers[id]
 	}
 
 	// getDate(date)
@@ -214,6 +194,14 @@ export default class Customers extends Vue {
 	box-sizing: border-box
 	overflow: hidden
 
+.aside
+	width: calc(100% - 14px)
+	height: 94%
+	display: none
+	position: absolute
+	padding: 10px
+	box-sizing: border-box
+
 .btn-filter
 	width: 100%
 	height: 35px
@@ -237,59 +225,6 @@ export default class Customers extends Vue {
 	padding: 10px
 	box-sizing: border-box
 
-.customer-show
-	width: calc(100% - 14px)
-	height: 94%
-	display: none
-	position: absolute
-	padding: 10px
-	box-sizing: border-box
-
-	.menu
-		width: 100%
-		height: 35px
-		background-color: var(--background)
-
-		.list
-			width: 100%
-			height: 100%
-			justify-content: space-evenly
-
-			.item
-				width: 200px
-				height: 100%
-				border: 0px
-				padding: 0px
-
-				.link
-					width: 100%
-					height: 100%
-
-					.fa
-						width: 100%
-						height: 100%
-
-.back
-	width: 100%
-	height: 25px
-
-	.link
-
-		.fa
-			font-size: 25px
-
-.photo
-	width: 100%
-	height: 85px
-	margin-bottom: 10px
-
-	span
-		width: 85px
-		height: 85px
-		border-radius: 50%
-		background-color: var(--background)
-		font-size: 50px
-
 .fullname
 	width: 100%
 	margin-bottom: 5px
@@ -301,36 +236,41 @@ export default class Customers extends Vue {
 	box-sizing: border-box
 	overflow-y: scroll
 
-.item
+	.item
+		width: 100%
+		height: 30px
+		padding: 10px
+		box-sizing: border-box
+		background-color: var(--background)
+		margin-bottom: 7px
+		cursor: pointer
+
+.loader
 	width: 100%
-	height: 30px
-	margin-bottom: 5px
-	padding: 10px
-	box-sizing: border-box
-	cursor: pointer
-	border: 1px solid var(--light)
-	border-radius: 3px
-
-
+	height: 100%
 
 @media screen and (min-width: 768px)
+	.main
+		padding-right: 30%
+
 	.section
-		align-self: flex-start
-		width: 55%
+		// align-self: flex-start
+		width: 80%
 		height: 100%
 
-	.customer-show
-		width: 40%
+	.aside
+		width: 35%
 		height: 100vh
 		display: flex
 		position: absolute
 		right: 0px
 		padding: 10px
 		box-sizing: border-box
-
-	.back
-		display: none
 	
+@media screen and (min-width: 1024px)
+	
+	.aside
+		width: 30%
 
 
 </style>
