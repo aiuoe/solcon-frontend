@@ -28,8 +28,8 @@
 				p Correo: {{ customer.email }}
 
 			.tickets.evenly-center-column(v-if="tickets")
-				a(class="btn btn-new") Nuevo
-				form(class="form")
+				a(class="btn btn-new" @click="ticketBtnCreateToggle") Nuevo
+				form(class="form" id="ticketFormCreate" v-if="ticketCreateForm")
 					input(type="text" class="input input-flat" placeholder="Titulo: ")
 					textarea(class="textarea textarea-flat" placeholder="Mensaje: ")
 					.group
@@ -46,8 +46,9 @@
 						.form-wrapper
 							label(for="status" class="label") Estado
 							input(class="checkbox" type="checkbox" id="status" v-model="status")
+					input(class="btn btn-create" type="submit" value="Crear")
 
-				ul.list-column
+				ul.list-column#listTicket
 					li(class="item start-center" v-for="ticket in customer.tickets")
 						a.link
 							p Titulo: {{ ticket.title }}
@@ -105,6 +106,7 @@ export default class CustomerShow extends Vue {
 	priority: boolean = false
 	pinned: boolean = false
 	status: boolean = false
+	ticketCreateForm: boolean = false
 
 	async created()
 	{
@@ -161,6 +163,15 @@ export default class CustomerShow extends Vue {
 		// })
 	}
 
+	ticketBtnCreateToggle()
+	{
+		let list: any = document.querySelector('#listTicket')
+		let form: any = document.querySelector('#ticketFormCreate')
+		list.style.height = '50%'
+		form.style.height = '50%'
+		this.ticketCreateForm = true	
+	}
+
 }
 </script>
 
@@ -201,7 +212,6 @@ export default class CustomerShow extends Vue {
 			width: 200px
 			height: 100%
 			border: 0px
-			padding: 0px
 
 			.link
 				width: 100%
@@ -214,22 +224,24 @@ export default class CustomerShow extends Vue {
 .content
 	width: 100%
 	height: calc(100% - 155px)
-	padding: 7px
-	box-sizing: border-box
 
 .tickets
 	width: 100%
 	height: 100%
-	padding: 7px
-	box-sizing: border-box
 
 .btn-new
 	align-self: flex-end
 	padding: 7px
+	margin-bottom: 7px
 	box-sizing: border-box
 	background-color: var(--success) 
 	color: white
-	margin-bottom: 7px
+
+.btn-create
+	background-color: var(--success)
+	color: white
+	font-size: 17px
+
 
 .list-column
 	width: 100%
@@ -247,12 +259,21 @@ export default class CustomerShow extends Vue {
 .form
 	height: 50%
 
+.input
+	background-color: var(--p)
+	color: var(--font)
+
+.textarea
+	background-color: var(--p)
+	color: var(--font)
+
 	&-wrapper
 		display: grid
 		grid-template-columns: repeat(2, 50%)
 		align-items: center
 		// justify-items: center
 		// align-content: center
+
 
 .group
 	width: 70%
