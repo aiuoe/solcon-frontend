@@ -29,9 +29,9 @@
 
 			.tickets.evenly-center-column(v-if="tickets")
 				a(class="btn btn-new" @click="ticketBtnCreateToggle") Nuevo
-				form(class="form" id="ticketFormCreate" v-if="ticketCreateForm")
-					input(type="text" class="input input-flat" placeholder="Titulo: ")
-					textarea(class="textarea textarea-flat" placeholder="Mensaje: ")
+				form(@submit.prevent="ticketCreate" class="form" id="ticketFormCreate" v-if="ticketCreateForm")
+					input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
+					textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
 					.group
 						.form-wrapper
 							label(for="public" class="label") Publico
@@ -77,6 +77,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import gql from 'graphql-tag';
 
 @Component({
 	name: 'CustomerShow',
@@ -102,15 +103,35 @@ export default class CustomerShow extends Vue {
 	companies: boolean = false
 	purchases: boolean = false
 	tickets: boolean = false
+	title: string = ''
+	message: string = ''
 	public: boolean = false
 	priority: boolean = false
 	pinned: boolean = false
 	status: boolean = false
+	channel: string = 'web'
 	ticketCreateForm: boolean = false
 
 	async created()
 	{
 
+	}
+
+	ticketBtnCreateToggle()
+	{
+		let list: any = document.querySelector('#listTicket')
+		let form: any = document.querySelector('#ticketFormCreate')
+		if (this.ticketCreateForm)
+		{
+			this.ticketCreateForm = false	
+			list.style.height = '100%'
+			form.style.height = '0%'
+		}
+		else
+		{
+			this.ticketCreateForm = true
+			list.style.height = '50%'
+		}
 	}
 
 	menuToggle(key: any)
@@ -158,20 +179,64 @@ export default class CustomerShow extends Vue {
 
 	async ticketCreate()
 	{
-		// return await this.$apollo.mutate({
-			
-		// })
-	}
 
-	ticketBtnCreateToggle()
-	{
-		let list: any = document.querySelector('#listTicket')
-		let form: any = document.querySelector('#ticketFormCreate')
-		list.style.height = '50%'
-		form.style.height = '50%'
-		this.ticketCreateForm = true	
+		return await this.$apollo
+			.mutate({	mutation: gql(`	mutation($uID: ID!, $toID: ID!, $title: String, $message: String, $public: Boolean, $status: Boolean, $pinned: Boolean, $priority: Boolean, $channel: String)
+			{
+				updateUser(id: $uID, input: 
+				{
+					tickets:
+					{
+						create:
+						{
+							users: 
+							{
+								connect: [$toID]
+							},
+							title: $title,
+							message: $message,
+							public: $public,
+							status: $status,
+							pinned: $pinned,
+							priority: $priority,
+							channel: $channel
+						}
+					}
+				})
+				{
+					tickets
+					{
+						title
+						message
+						public
+						priority
+						status
+						pinned
+						channel
+					}
+				}
+			}`),
+			variables: 
+			{
+				uID: 1,
+				toID: this.customer.id,
+				title: this.title,
+				message: this.message,
+				public: this.public,
+				priority: this.priority,
+				status: this.status,
+				pinned: this.pinned,
+				channel: this.channel
+			}			
+		})
+		.then(res => {
+			this.customer.tickets = res.data.updateUser.tickets
+			this.ticketCreateForm = false
+			let list: any = document.querySelector('#listTicket')
+			list.style.height = '100%'
+		})
+		.catch(err => console.log(err))
 	}
-
 }
 </script>
 
@@ -242,10 +307,9 @@ export default class CustomerShow extends Vue {
 	color: white
 	font-size: 17px
 
-
 .list-column
 	width: 100%
-	height: 50%
+	height: 100%
 	padding: 7px
 	box-sizing: border-box
 
@@ -255,9 +319,11 @@ export default class CustomerShow extends Vue {
 		box-sizing: border-box
 		background-color: var(--background)
 		cursor: pointer
+		margin-bottom: 7px
 
 .form
-	height: 50%
+	height: 49%
+	margin-bottom: 7px
 
 .input
 	background-color: var(--p)
@@ -273,7 +339,6 @@ export default class CustomerShow extends Vue {
 		align-items: center
 		// justify-items: center
 		// align-content: center
-
 
 .group
 	width: 70%

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const TICKET_CREATE = gql(`
-	mutation()
+	mutation($uID: ID, $title: string, $message: string, $public: boolean, $status: boolean, $pinned: boolean, $priority: boolean, $channel: string)
 	{
 		updateUser(id: $uID, input: 
 		{
@@ -11,7 +11,7 @@ export const TICKET_CREATE = gql(`
 				{
 					title: $title,
 					message: $message,
-					private: $private,
+					public: $public,
 					status: $status,
 					pinned: $pinned,
 					priority: $priority,
@@ -24,7 +24,7 @@ export const TICKET_CREATE = gql(`
 			{
 				title
 				message
-				private
+				public
 				priority
 				status
 				pinned

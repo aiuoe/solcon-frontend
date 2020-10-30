@@ -36,10 +36,27 @@ import gql from 'graphql-tag';
 export default class Dashboard extends Vue {
 
 	rol: string = ""
+	id: any = {}
 
 	async created ()
 	{
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
+		// return await this.$apollo.query({
+		// 	query: gql(`
+		// 		query
+		// 		{
+		// 			me
+		// 			{
+		// 				id
+		// 			}
+		// 		}
+		// 	`)})
+		// .then(res => {
+		// 	window.localStorage.setItem('id', res.data.me.id)
+		// 	this.id = window.localStorage.getItem('id')
+		// 	console.log(this.id)
+		// })
+		// .catch(err => console.log(err))
 	}
 
 }
