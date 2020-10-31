@@ -26,7 +26,7 @@ export default class Login extends Vue {
 			email: this.email, 
 			password: this.password
 		}
-		return await axios.post('http://localhost:8000/api/auth/login', this.params)
+		return await axios.post('https://staging-solcon.herokuapp.com/api/auth/login', this.params)
 			.then(res => {
 				window.localStorage.setItem('token', res['data']['access_token'])
 				this.$router.push({ path: 'dashboard' })

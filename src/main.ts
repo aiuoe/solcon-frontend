@@ -13,7 +13,7 @@ Vue.use(VueApollo)
 
 const apolloProvider = new VueApollo({
   defaultClient: new ApolloClient({
-	  link: setContext(() => ({headers: {authorization: `Bearer ${window.localStorage.getItem('token')}`}})).concat(createHttpLink({uri: 'http://localhost:8000/graphql'})),
+	  link: setContext(() => ({headers: {authorization: `Bearer ${window.localStorage.getItem('token')}`}})).concat(createHttpLink({uri: 'https://staging-solcon.herokuapp.com/graphql'})),
 	  cache: new InMemoryCache(),
 	  connectToDevTools: true
 	})
