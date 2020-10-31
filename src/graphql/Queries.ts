@@ -63,6 +63,12 @@ export const GET_ALL_CUSTOMERS = gql(`query
      }
      tickets
      {
+       user_id
+       {
+        id
+        name
+        lastname
+       }       
        id
        title
        message
