@@ -83,7 +83,7 @@ export default class Nav extends Vue {
 	async logout()
 	{
 		return await axios
-		.post('https://staging-solcon.herokuapp.com/api/auth/logout', {}, {"headers": {"Authorization": `Bearer ${window.localStorage.getItem('token')}`}})
+		.post(`${process.env.VUE_APP_API_URL}/api/auth/logout`, {}, {"headers": {"Authorization": `Bearer ${window.localStorage.getItem('token')}`}})
 			.then(res => 
 			{
 				window.localStorage.removeItem('token')
