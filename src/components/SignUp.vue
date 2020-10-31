@@ -46,7 +46,7 @@ export default class SignUp extends Vue {
 			org_id: this.origin
 		}
 
-		return await axios.post('https://staging-solcon.herokuapp.com/api/auth/signup', this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
+		return await axios.post('http://localhost:8000/api/auth/signup', this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
 	}
 	
 }
