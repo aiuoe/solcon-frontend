@@ -89,26 +89,18 @@
 								input(class="btn btn-create" type="submit" value="Crear")
 
 							ul(class="list-column p-7" id="listTicket")
-								li(:class="['item', {'item-info': !ticket.status, 'item-danger': ticket.status}]" v-for="ticket in customer.tickets")
+								li(class="item" v-for="ticket in customer.tickets")
 									a(class="link start-start-column")
-										span Creado por: {{ ticket.user_id[0].name | capitalize }} {{ ticket.user_id[0].lastname | capitalize }}
+										//- span Creado por: {{ ticket.user_id[0].name | capitalize }} {{ ticket.user_id[0].lastname | capitalize }}
 										span Titulo: {{ ticket.title }}
 										span Mensaje: {{ ticket.message }}
 										span Creado el: {{ ticket.created_at }}
 									.actions
-										a(class="action") 
-											i(v-if="!ticket.status" class="fa fa-lock")
-											i(v-if="ticket.status" class="fa fa-lock-open")
-										a(class="action")
-											i(v-if="!ticket.priority" class="fa fa-lock")
-											i(v-if="ticket.priority" class="fa fa-lock")
-										a(class="action")
-											i(v-if="!ticket.pinned" class="fa fa-star fa-star-danger")
-											i(v-if="ticket.pinned" class="fa fa-star fa-star-warning")
-										a(class="action")
-											i(v-if="!ticket.public" class="fa fa-lock")
-											i(v-if="ticket.public" class="fa fa-lock-open")
-
+										a(:class="['action', {'action-success': ticket.status}]") {{ ticket.status? 'Cerrar' : 'Reabrir' }}
+										a(:class="['action', {'action-success': ticket.public}]") {{ ticket.public? 'Privado' : 'Publico' }}
+										a(:class="['action', {'action-success': ticket.pinned}]") {{ ticket.pinned? 'Desanclar' : 'Anclar' }}
+										a(:class="['action', {'action-success': ticket.priority}]") {{ ticket.priority? 'Normal' : 'Urgente' }}
+										
 									//- .controls
 									//- 	a(class="control")			
 						
@@ -273,47 +265,100 @@ export default class Customers extends Vue {
 
 	async ticketCreate()
 	{
-
+		console.log(typeof this.title)
 		return await this.$apollo
-			.mutate({	mutation: gql(`	mutation($uID: ID!, $toID: ID!, $title: String, $message: String, $public: Boolean, $status: Boolean, $pinned: Boolean, $priority: Boolean, $channel: String)
+			.mutate({	mutation: gql(`mutation($id: ID!, $title: String!, $message: String!, $public: Boolean!, $status: Boolean!, $pinned: Boolean!, $priority: Boolean!, $channel: String!)
 			{
-				updateUser(id: $uID, input: 
+				createTicket(id: $id, input: 
 				{
-					tickets:
-					{
-						create:
-						{
-							users: 
-							{
-								connect: [$toID]
-							},
-							title: $title,
-							message: $message,
-							public: $public,
-							status: $status,
-							pinned: $pinned,
-							priority: $priority,
-							channel: $channel
-						}
-					}
+					title: $title,
+					message: $message,
+					public: $public,
+					status: $status,
+					pinned: $pinned,
+					priority: $priority,
+					channel: $channel
 				})
 				{
+					id
+					relp_id
+					name
+					lastname
+					email
+					sex
+					dni
+					rif
+					Ncompanies
+					Ntickets
+					companies
+					{
+						id
+						name
+						rif
+						fyc
+					}
+					address
+					{
+						id
+						label
+						address
+						country
+						state
+						city
+						province
+						zip_code
+					}
+					emails
+					{
+						id
+						email_alt
+					}
+					phones
+					{
+						id
+						label
+						phone
+					}
+					currencies
+					{
+						id
+					}
+					languages
+					{
+						id
+					}
+					products
+					{
+						id
+						name
+						description
+						price
+						created_at
+					}
 					tickets
 					{
+						user_id
+						{
+							id
+							name
+							lastname
+						}       
+						id
 						title
 						message
-						public
+						channel
 						priority
 						status
 						pinned
-						channel
+						public
+						created_at
+						updated_at
 					}
 				}
 			}`),
 			variables: 
 			{
-				uID: 1,
-				toID: this.customer.id,
+				id: this.customer.id,
 				title: this.title,
 				message: this.message,
 				public: this.public,
@@ -324,7 +369,14 @@ export default class Customers extends Vue {
 			}			
 		})
 		.then(res => {
-			this.customer.tickets = res.data.updateUser.tickets
+			this.customers = res.data.createTicket
+			this.customer = this.customers[this.customer.id - 1]
+			this.title = ''
+			this.message = ''
+			this.public = false
+			this.priority = false
+			this.status = false
+			this.pinned = false
 			this.ticketCreateForm = false
 			let list: any = document.querySelector('#listTicket')
 			list.style.height = '100%'
@@ -448,23 +500,24 @@ export default class Customers extends Vue {
 			width: 100%
 			margin-bottom: 7px
 			display: flex
+			flex-direction: column
 			justify-content: space-between
 
 			.link
-				width: 70%
-				height: 100%
+				width: 100%
+				height: 70%
 				display: flex
 				flex-direction: column
 				padding: 7px
+				margin-bottom: 7px
 				box-sizing: border-box
 				font-size: 17px
 
 			.actions
-				width: 30%
-				height: 100%
+				width: 100%
+				height: 30%
 				display: grid
-				grid-template-columns: repeat(2, 50%)
-				grid-template-rows: repeat(2, 50%)
+				grid-template-columns: repeat(4, 25%)
 
 				.action
 					display: flex
@@ -472,7 +525,6 @@ export default class Customers extends Vue {
 					align-items: center
 					width: 100%
 					height: 100%
-					background-color: var(--background)
 					color: var(--font)
 					text-align: center
 					cursor: pointer

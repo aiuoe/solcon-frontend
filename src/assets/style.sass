@@ -110,12 +110,14 @@ p, span
 .list
 	list-style: none
 	display: flex
+	overflow-x: hidden
 
 .list-column
 	list-style: none
 	display: flex
 	flex-direction: column
 	overflow-y: scroll
+	overflow-x: hidden
 
 .list::-webkit-scrollbar
 	width: 3px
@@ -124,10 +126,14 @@ p, span
 	width: 3px
 
 .item
-	// cursor: pointer
+	cursor: pointer
+	background-color: var(--background)
 
 	&-info
 		background-color: var(--info)
+
+	&-success
+		background-color: var(--success)
 
 	&-warning
 		background-color: var(--warning)
@@ -135,8 +141,6 @@ p, span
 	&-danger
 		background-color: var(--danger)
 
-	&-success
-		background-color: var(--success)
 
 /*BTN*/
 .link
@@ -153,12 +157,42 @@ p, span
 	padding: 7px
 	box-sizing: border-box
 
+	&-primary
+		background-color: var(--primary)
+
+	&-secondary
+		background-color: var(--secondary)
+
+	&-info
+		background-color: var(--info)
+
+	&-success
+		background-color: var(--success)
+
+	&-warning
+		background-color: var(--warning)
+
+	&-danger
+		background-color: var(--danger)
+
 .btn-flat
 	border: 0px
 	outline: none
 
-.btn-primary
-	background-color: var(--primary)
+.action
+	background-color: var(--background)
+	
+	&-info
+		background-color: var(--info)
+	
+	&-success
+		background-color: var(--success)
+	
+	&-warning
+		background-color: var(--warning)
+
+	&-danger
+		background-color: var(--danger)
 
 /*FORM*/
 
