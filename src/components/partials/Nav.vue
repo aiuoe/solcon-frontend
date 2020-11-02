@@ -17,9 +17,12 @@
 				//- li(class="center")
 				//- 	router-link(to="tickets" class="link not") 
 				//- 		i(class="fa fa-ticket-alt center")
-				li(class="center" v-show="rol === 4") 
-					router-link(to="customers" class="link not")
+				li(class="center" v-if="admin") 
+					router-link(to="customers" class="link not" v-if="admin")
 						i(class="fa fa-users center")
+				li(class="center" v-if="admin") 
+					router-link(to="settings" class="link")
+						i(class="fa fa-cog center")
 				li(class="center") 
 					a(class="link" @click="setTheme")
 						i(class="fa fa-adjust center")
@@ -37,16 +40,23 @@ import axios from 'axios';
 })
 export default class Nav extends Vue {
 
-	rol: string = ""
+	rol: number = 0
+	id: number = 0
 	light: string = `${process.env.BASE_URL}css/light.css`
 	dark: string = `${process.env.BASE_URL}css/dark.css`
 	ele: any = document.querySelector('#theme')
 	theme: any = ''
+	admin: boolean = false
 	// device: string = ""
 
 	async created()
 	{
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
+		this.id = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).id
+
+		if (this.rol == 4 || this.id == 1)
+			this.admin = true
+
 		if (window.localStorage.getItem('theme') != null)
 		{
 			this.theme = window.localStorage.getItem('theme')

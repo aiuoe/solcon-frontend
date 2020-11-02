@@ -265,7 +265,6 @@ export default class Customers extends Vue {
 
 	async ticketCreate()
 	{
-		console.log(typeof this.title)
 		return await this.$apollo
 			.mutate({	mutation: gql(`mutation($id: ID!, $title: String!, $message: String!, $public: Boolean!, $status: Boolean!, $pinned: Boolean!, $priority: Boolean!, $channel: String!)
 			{

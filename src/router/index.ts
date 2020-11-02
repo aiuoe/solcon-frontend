@@ -4,6 +4,7 @@ import Login from '@/components/Login.vue'
 import SignUp from '@/components/SignUp.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import Customers from '@/components/Customers.vue'
+import Settings from '@/components/Settings.vue'
 
 Vue.use(VueRouter)
 
@@ -32,10 +33,18 @@ const routes: Array<RouteConfig> = [
       requiresAuth: true
     }
   },
-    {
+  {
     path: '/customers',
     name: 'customers',
     component: Customers,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: Settings,
     meta: {
       requiresAuth: true
     }
