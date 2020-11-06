@@ -17,8 +17,11 @@
 				//- li(class="center")
 				//- 	router-link(to="tickets" class="link not") 
 				//- 		i(class="fa fa-ticket-alt center")
+				li(class="center") 
+					router-link(to="bank" class="link not")
+						i(class="fa fa-landmark center")
 				li(class="center" v-if="admin") 
-					router-link(to="customers" class="link not" v-if="admin")
+					router-link(to="customers" class="link not")
 						i(class="fa fa-users center")
 				li(class="center" v-if="admin") 
 					router-link(to="settings" class="link")
@@ -33,6 +36,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import gql from 'graphql-tag';
 import axios from 'axios';
 
 @Component({
@@ -41,7 +45,7 @@ import axios from 'axios';
 export default class Nav extends Vue {
 
 	rol: number = 0
-	id: number = 0
+	id: any = 0
 	light: string = `${process.env.BASE_URL}css/light.css`
 	dark: string = `${process.env.BASE_URL}css/dark.css`
 	ele: any = document.querySelector('#theme')
@@ -51,8 +55,11 @@ export default class Nav extends Vue {
 
 	async created()
 	{
+		this.$apollo.query({query: gql(`query { me { id } } `)}).then(res => { window.localStorage.setItem('id', res.data.me.id) })
+
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
-		this.id = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).id
+		// this.id = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('id')!.split('.')[1]).split('').join(''))).id
+		this.id = window.localStorage.getItem('id')
 
 		if (this.rol == 4 || this.id == 1)
 			this.admin = true

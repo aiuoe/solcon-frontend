@@ -2,7 +2,7 @@
 	.container.center
 		form(@submit.prevent="signup" class="form center-column")
 			.wrapper
-				select(v-model="relationship" class="select" required)
+				select(v-model="relationship" class="select" "required")
 					option(label="Abg" value="3")
 					option(label="Doc" value="2")
 					option(label="Lic" value="1")
@@ -14,6 +14,8 @@
 			.wrapper
 				input(type="submit" class="btn btn-signup" value="Enviar")
 				router-link(to="login" class="btn btn-primary center") Entrar
+
+			div(class="alert alert-danger" v-if="error") {{ message }}	
 </template>
 
 <script lang="ts">
@@ -33,6 +35,8 @@ export default class SignUp extends Vue {
 	referred: number = 1
 	origin: number = 1
 	params: object = {}
+	error: boolean = false
+	message: string = ''
 
 	async signup()
 	{
@@ -46,7 +50,16 @@ export default class SignUp extends Vue {
 			org_id: this.origin
 		}
 
-		return await axios.post(`${process.env.VUE_APP_API_URL}/api/auth/signup`, this.params).then((response: any) => { if (response['status'] === 200) this.$router.push({ path: 'login' })}).catch((error: any) => {console.log(error)})
+		return await axios
+			.post(`${process.env.VUE_APP_API_URL}/api/auth/signup`, this.params)
+			.then((res: any) => { this.$router.push({ path: 'login' })})
+			.catch((error: any) => {
+				this.error = true
+				this.message = 'Ah ocurrido un error en el registro!'
+				setTimeout(() => {
+					this.error = false
+				}, 2000)
+			})
 	}
 	
 }
@@ -128,7 +141,7 @@ $dark: darkgray
 			.btn-primary
 				width: 40%
 				height: 35px
-				color: var(--white)
+				color: white
 				font-size: 15px
 				box-shadow: var(--shadow-primary)
 

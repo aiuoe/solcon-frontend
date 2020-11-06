@@ -6,6 +6,7 @@
 			.wrapper.evenly-center
 				input(type="submit" class="btn btn-login" value="Entrar")
 				router-link(to="signup" class="btn btn-primary center") Nueva
+			div(class="alert alert-danger" v-if="error") {{ message }}
 </template>
 
 <script lang="ts">
@@ -19,6 +20,8 @@ export default class Login extends Vue {
 	email: string = ''
 	password: string = ''
 	params: any = {}
+	error: boolean = false
+	message: string = ''
 
 	async login()
 	{
@@ -31,8 +34,14 @@ export default class Login extends Vue {
 				window.localStorage.setItem('token', res['data']['access_token'])
 				this.$router.push({ path: 'dashboard' })
 			})
-			.catch(error => {
-				console.error('Error:' + error)
+			.catch(error => { 
+				this.error = true 
+				this.message = 'Usuario o contraseñas invalidas!'
+				setTimeout(() => {
+					this.error = false
+				}, 2000)
+				this.email = ''
+				this.password = ''
 			})
 	}
 }
@@ -98,6 +107,16 @@ $dark: darkgray
 				font-weight: bold
 				color: white
 				box-shadow: var(--shadow-primary)
+
+		.alert
+			width: 80%
+			height: 40px
+			margin-top: 10px
+			display: flex
+			justify-content: center
+			align-items: center
+			color: white
+			font-size: 17px
 
 @media screen and (min-width: 576px)
 	.container

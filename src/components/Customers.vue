@@ -63,7 +63,7 @@
 										label.shape
 											input(class="checkbox" type="checkbox" id="public" v-model="public")
 											span(class="slider")
-										label(for="public" class="label") Publico - Privado
+										label(for="public" class="label") Publico
 
 									.switch.p-7
 										label.shape
@@ -78,13 +78,13 @@
 										label.shape
 											input(class="checkbox" type="checkbox" id="priority" v-model="priority")
 											span(class="slider")
-										label(for="priority" class="label") Urgente - Normal
+										label(for="priority" class="label") Urgente
 
 									.switch.p-7
 										label.shape
 											input(class="checkbox" type="checkbox" id="status" v-model="status")
 											span(class="slider")
-										label(for="status" class="label") Abierto - Cerrado
+										label(for="status" class="label") Abierto
 
 								input(class="btn btn-create" type="submit" value="Crear")
 
@@ -528,9 +528,6 @@ export default class Customers extends Vue {
 					text-align: center
 					cursor: pointer
 
-			.controls
-				.control
-
 
 
 .loader
@@ -631,25 +628,25 @@ export default class Customers extends Vue {
 
 // FORMS
 .form
-	height: 49%
+	height: 70%
 	margin-bottom: 7px
 	background-color: var(--background)
 
 	.input
 		background-color: white
-		color: var(--background)
+		color: var(--font)
 		font-size: 20px
 
 		&::placeholder
-			color: var(--background)
+			color: var(--dark)
 
 	.textarea
 		background-color: white
-		color: var(--background)
+		color: var(--font)
 		font-size: 18px
 
 		&::placeholder
-			color: var(--background)
+			color: var(--dark)
 
 
 

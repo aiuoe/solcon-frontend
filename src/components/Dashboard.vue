@@ -19,9 +19,12 @@
 					//- li(class="box item center")
 					//- 	router-link(to="tickets" class="link center")
 					//- 		i(class="fa fa-ticket-alt center")
-					li(class="box item center" v-show="rol === 4") 
+					li(class="box item center" v-show="admin") 
 						router-link(to="customers" class="link center")
 							i(class="fa fa-users center")
+					li(class="box item center") 
+						router-link(to="bank" class="link center")
+							i(class="fa fa-landmark center")
 </template>
 
 <script lang="ts">
@@ -35,12 +38,17 @@ import gql from 'graphql-tag';
 })
 export default class Dashboard extends Vue {
 
-	rol: string = ""
+	rol: number = 0
 	id: any = {}
+	admin: boolean = false
 
 	async created ()
 	{
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
+		this.id = window.localStorage.getItem('id')
+
+		if (this.rol == 4 || this.id == 1)
+			this.admin = true
 		// return await this.$apollo.query({
 		// 	query: gql(`
 		// 		query

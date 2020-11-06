@@ -83,3 +83,35 @@ export const GET_ALL_CUSTOMERS = gql(`query
    }
  }
 }`)
+
+export const TYPES = gql(`query 
+{ 
+  types 
+  { 
+    data 
+    { 
+      id 
+      name 
+    } 
+  } 
+}`)
+
+export const ACCOUNTS = gql(`query 
+{ 
+  me 
+  { 
+    id
+    accounts
+    {
+      id
+      name
+      description
+      parent_id
+      type_id
+      {
+        id
+        name
+      }
+    }
+  } 
+}`)
