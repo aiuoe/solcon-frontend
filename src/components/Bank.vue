@@ -1,7 +1,8 @@
 <template lang="pug">
 	.container
+		Header
 		Nav
-		main.main.start-center
+		main.main.evenly-center
 			.content.box.p-7
 				h2.title Cuentas
 				ul(class="list-column p-7")
@@ -19,7 +20,7 @@
 									i(class="fa fa-trash")
 
 			div.asd.box.p-7.center-start
-				form(class="form box p-7" v-if="create" @submit.prevent="createAccount" )
+				form(class="form p-7" v-if="create" @submit.prevent="createAccount" )
 					h1.form-title Crear Cuenta
 					span(class="label") Tipo de cuenta
 					select(v-model="type_id" class="select select-info" required)
@@ -48,6 +49,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
+import Header from '@/components/partials/Header.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
 import gql from 'graphql-tag';
@@ -59,7 +61,7 @@ import '@/modules/Array'
 
 @Component({
 	name: 'Bank',
-	components: { Nav, Loader },
+	components: { Header, Nav, Loader },
 	filters: {
 	  capitalize: function (value: any)
 	  {
@@ -146,8 +148,6 @@ export default class Bank extends Vue {
 .asd
 	width: 30%
 	height: 100%
-	position: absolute
-	right: 0px
 
 .form
 	width: 100%

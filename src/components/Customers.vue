@@ -1,7 +1,8 @@
 <template lang="pug">
 	.container
+		Header
 		Nav
-		main.main.evenly-center-column
+		main.main.evenly-center
 			section.section.evenly-center-column
 				.box.banner
 				.box.customers.start-center-column
@@ -122,6 +123,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
+import Header from '@/components/partials/Header.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
 import gql from 'graphql-tag';
@@ -130,7 +132,7 @@ import gql from 'graphql-tag';
 
 @Component({
 	name: 'Customers',
-	components: { Nav, Loader },
+	components: { Header, Nav, Loader },
 	filters: {
 	  capitalize: function (value: any)
 	  {
@@ -450,7 +452,8 @@ export default class Customers extends Vue {
 
 .banner
 	width: 100%
-	height: 15%
+	height: 19%
+	margin-bottom: 1%
 
 .customers
 	width: 100%
@@ -651,20 +654,16 @@ export default class Customers extends Vue {
 
 
 @media screen and (min-width: 768px)
-	.main
-		padding-right: 30%
 
 	.section
-		// align-self: flex-start
-		width: 80%
+		width: 65%
 		height: 100%
 
 	.aside
+		position: relative
 		width: 35%
-		height: 100vh
+		height: 100%
 		display: flex
-		position: absolute
-		right: 0px
 		padding: 10px
 		box-sizing: border-box
 

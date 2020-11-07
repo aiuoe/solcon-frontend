@@ -1,5 +1,6 @@
 <template lang="pug">
 	.container
+		Header
 		Nav
 		main.main.evenly-center-column
 
@@ -8,12 +9,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
+import Header from '@/components/partials/Header.vue';
 import Loader from '@/components/partials/Loader.vue';
 import gql from 'graphql-tag';
 
 @Component({
 	name: 'Settings',
-	components: { Nav, Loader },
+	components: { Header, Nav, Loader },
 	filters: {
 	  capitalize: function (value: any)
 	  {
