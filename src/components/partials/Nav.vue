@@ -84,6 +84,7 @@ export default class Nav extends Vue {
 				document.documentElement.style.setProperty ('--background', '#2D2D2D')
 				document.documentElement.style.setProperty ('--contrast', '#353535')
 				document.documentElement.style.setProperty ('--shadow', 'none')
+				document.documentElement.style.setProperty ('--shadow-primary', 'none')
 				document.documentElement.style.setProperty ('--font', 'antiquewhite')
 			}
 		}
@@ -94,6 +95,8 @@ export default class Nav extends Vue {
 			document.documentElement.style.setProperty ('--background', '#f6f2ed')
 			document.documentElement.style.setProperty ('--contrast', '#ffffff')
 			document.documentElement.style.setProperty ('--font', '#2D2D2D')
+			document.documentElement.style.setProperty ('--shadow', '5px 5px 10px 1px rgba(211, 211, 211, .7)')
+			document.documentElement.style.setProperty ('--shadow-primary', '5px 5px 10px .1px rgba(209, 91, 87, .5)')
 		}
 		// this.storage_device()
 		// this.device = window.localStorage.getItem('device')!
@@ -107,6 +110,7 @@ export default class Nav extends Vue {
 			document.documentElement.style.setProperty ('--background', '#2D2D2D')
 			document.documentElement.style.setProperty ('--contrast', '#353535')
 			document.documentElement.style.setProperty ('--shadow', 'none')
+			document.documentElement.style.setProperty ('--shadow-primary', 'none')
 			document.documentElement.style.setProperty ('--font', 'antiquewhite')
 			window.localStorage.setItem('theme', 'dark')
 			this.theme = 'dark'
@@ -118,6 +122,7 @@ export default class Nav extends Vue {
 			document.documentElement.style.setProperty ('--background', '#f6f2ed')
 			document.documentElement.style.setProperty ('--contrast', '#ffffff')
 			document.documentElement.style.setProperty ('--shadow', '5px 5px 10px 1px rgba(211, 211, 211, .7)')
+			document.documentElement.style.setProperty ('--shadow-primary', '5px 5px 10px .1px rgba(209, 91, 87, .5)')
 			document.documentElement.style.setProperty ('--font', '#2D2D2D')
 		}
 	}
@@ -193,11 +198,10 @@ export default class Nav extends Vue {
 	.nav
 		bottom: 0
 		left: 0
-		height: calc(100vh - 70px)
+		height: 100vh
 		width: 170px
 		display: flex
 		align-items: flex-end
-		box-shadow: var(--shadow)
 
 	.list
 		width: 100%

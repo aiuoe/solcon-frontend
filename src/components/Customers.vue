@@ -53,7 +53,7 @@
 
 							a(class="btn btn-new" @click="ticketBtnCreateToggle") Nuevo
 
-							form(@submit.prevent="ticketCreate" class="form" id="ticketFormCreate" v-if="ticketCreateForm")
+							form(@submit.prevent="ticketCreate" class="form" v-if="ticketCreateForm")
 
 								input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
 								textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
@@ -64,13 +64,13 @@
 										label.shape
 											input(class="checkbox" type="checkbox" id="public" v-model="public")
 											span(class="slider")
-										label(for="public" class="label") Publico
+										label(for="public" class="label") Publico Privado
 
 									.switch.p-7
 										label.shape
 											input(class="checkbox" type="checkbox" id="pinned" v-model="pinned")
 											span(class="slider")
-										label(for="pinned" class="label") Anclado
+										label(for="pinned" class="label") Anclado Desanclado
 
 
 								.form-group
@@ -79,17 +79,17 @@
 										label.shape
 											input(class="checkbox" type="checkbox" id="priority" v-model="priority")
 											span(class="slider")
-										label(for="priority" class="label") Urgente
+										label(for="priority" class="label") Urgente normal
 
 									.switch.p-7
 										label.shape
 											input(class="checkbox" type="checkbox" id="status" v-model="status")
 											span(class="slider")
-										label(for="status" class="label") Abierto
+										label(for="status" class="label") Abierto Cerrado
 
 								input(class="btn btn-create" type="submit" value="Crear")
 
-							ul(class="list-column p-7" id="listTicket")
+							ul(class="list-column p-7" v-if="!ticketCreateForm")
 								li(class="item" v-for="ticket in customer.tickets")
 									a(class="link start-start-column")
 										//- span Creado por: {{ ticket.user_id[0].name | capitalize }} {{ ticket.user_id[0].lastname | capitalize }}
@@ -207,19 +207,10 @@ export default class Customers extends Vue {
 
 	ticketBtnCreateToggle()
 	{
-		let list: any = document.querySelector('#listTicket')
-		let form: any = document.querySelector('#ticketFormCreate')
 		if (this.ticketCreateForm)
-		{
 			this.ticketCreateForm = false	
-			list.style.height = '100%'
-			form.style.height = '0%'
-		}
 		else
-		{
 			this.ticketCreateForm = true
-			list.style.height = '50%'
-		}
 	}
 
 	menuToggle(key: any)
@@ -267,122 +258,32 @@ export default class Customers extends Vue {
 
 	async ticketCreate()
 	{
-		return await this.$apollo
-			.mutate({	mutation: gql(`mutation($id: ID!, $title: String!, $message: String!, $public: Boolean!, $status: Boolean!, $pinned: Boolean!, $priority: Boolean!, $channel: String!)
-			{
-				createTicket(id: $id, input: 
-				{
-					title: $title,
-					message: $message,
-					public: $public,
-					status: $status,
-					pinned: $pinned,
-					priority: $priority,
-					channel: $channel
-				})
-				{
-					id
-					relp_id
-					name
-					lastname
-					email
-					sex
-					dni
-					rif
-					Ncompanies
-					Ntickets
-					companies
-					{
-						id
-						name
-						rif
-						fyc
-					}
-					address
-					{
-						id
-						label
-						address
-						country
-						state
-						city
-						province
-						zip_code
-					}
-					emails
-					{
-						id
-						email_alt
-					}
-					phones
-					{
-						id
-						label
-						phone
-					}
-					currencies
-					{
-						id
-					}
-					languages
-					{
-						id
-					}
-					products
-					{
-						id
-						name
-						description
-						price
-						created_at
-					}
-					tickets
-					{
-						user_id
-						{
-							id
-							name
-							lastname
-						}       
-						id
-						title
-						message
-						channel
-						priority
-						status
-						pinned
-						public
-						created_at
-						updated_at
-					}
-				}
-			}`),
-			variables: 
-			{
-				id: this.customer.id,
-				title: this.title,
-				message: this.message,
-				public: this.public,
-				priority: this.priority,
-				status: this.status,
-				pinned: this.pinned,
-				channel: this.channel
-			}			
-		})
-		.then(res => {
-			this.customers = res.data.createTicket
-			this.customer = this.customers[this.customer.id - 1]
-			this.title = ''
-			this.message = ''
-			this.public = false
-			this.priority = false
-			this.status = false
-			this.pinned = false
-			this.ticketCreateForm = false
-			let list: any = document.querySelector('#listTicket')
-			list.style.height = '100%'
-		})
-		.catch(err => console.log(err))
+		// return await this.$apollo
+		// 	.mutate({	mutation: ,
+		// 	variables: 
+		// 	{
+		// 		id: this.customer.id,
+		// 		title: this.title,
+		// 		message: this.message,
+		// 		public: this.public,
+		// 		priority: this.priority,
+		// 		status: this.status,
+		// 		pinned: this.pinned,
+		// 		channel: this.channel
+		// 	}			
+		// })
+		// .then(res => {
+		// 	this.customers = res.data.createTicket
+		// 	this.customer = this.customers[this.customer.id - 1]
+		// 	this.title = ''
+		// 	this.message = ''
+		// 	this.public = false
+		// 	this.priority = false
+		// 	this.status = false
+		// 	this.pinned = false
+		// 	this.ticketCreateForm = false
+		// })
+		// .catch(err => console.log(err))
 	}
 
 	// getDate(date)
@@ -587,27 +488,22 @@ export default class Customers extends Vue {
 	height: calc(100% - 155px)
 
 
-
-
 // BUTTONS
 .btn-new
 	width: 25%
-	padding: 7px
 	margin-bottom: 7px
-	box-sizing: border-box
 	align-self: flex-end
 	text-align: center
-	font-weight: bold
-	font-size: 20px
+	font-size: 17px
 	color: white
-	background-image: linear-gradient(to right, var(--success), teal) 
+	background-color: var(--info) 
+	font-family: var(--font-family)
 
 .btn-create
-	background-image: linear-gradient(to right, var(--info), darken(slateblue, 10%))
+	background-color: var(--info)
 	width: 25%
 	color: white
-	font-size: 20px
-	font-weight: bold
+	font-size: 17px
 
 .btn-filter
 	width: 100%
@@ -631,26 +527,34 @@ export default class Customers extends Vue {
 
 // FORMS
 .form
-	height: 70%
+	height: 100%
 	margin-bottom: 7px
-	background-color: var(--background)
+	background-color: var(--dark)
+
+	&-group
+		width: 90%
+		margin-bottom: 7px
 
 	.input
+		width: 90%
 		background-color: white
 		color: var(--font)
-		font-size: 20px
+		font-size: 17px
 
 		&::placeholder
 			color: var(--dark)
 
 	.textarea
+		width: 90%
 		background-color: white
 		color: var(--font)
-		font-size: 18px
+		font-size: 17px
 
 		&::placeholder
 			color: var(--dark)
 
+.label
+	color: var(--font)
 
 
 @media screen and (min-width: 768px)

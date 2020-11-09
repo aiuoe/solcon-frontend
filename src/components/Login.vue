@@ -49,36 +49,27 @@ export default class Login extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="sass" scoped>
-$w: #fff
-$b: #f6f2ed
-$info: #91D2FC
-$warning: #FDD194
-$danger: #F291A4
-$success: #83D0CA
-$font: #4F4C5F
-$light: lightgray
-$dark: darkgray
-
 .container
 	position: relative
 	width: 100vw
 	height: 100vh
 	overflow: hidden
-	background-color: white
+	background-color: var(--background)
 
 	.form
 		width: 100%
 		height: 30%
 		box-sizing: border-box
-		background-color: white
+		background-color: var(--contrast)
+		box-shadow: var(--shadow)
 
 		.input
 			width: 80%
 			height: 35px
 			margin: 5px 0px
 			border-radius: 3px
-			color: $font
-			border: var(--border)
+			color: var(--font)
+			border: 1px solid lightgray
 
 		.wrapper
 			width: 80%
@@ -91,11 +82,11 @@ $dark: darkgray
 			.btn-login
 				width: 40%
 				height: 35px
-				color: $font
+				color: #2d2d2d
 				font-family: sans-serif
 				font-size: 15px
 				border-radius: 3px
-				background-color: $w
+				background-color: white
 				border-radius: 3px
 				box-shadow: var(--shadow)
 

@@ -34,6 +34,96 @@ export const TICKET_CREATE = gql(`
 	}
 `)
 
+// gql(`mutation($id: ID!, $title: String!, $message: String!, $public: Boolean!, $status: Boolean!, $pinned: Boolean!, $priority: Boolean!, $channel: String!)
+// 			{
+// 				createTicket(id: $id, input: 
+// 				{
+// 					title: $title,
+// 					message: $message,
+// 					public: $public,
+// 					status: $status,
+// 					pinned: $pinned,
+// 					priority: $priority,
+// 					channel: $channel
+// 				})
+// 				{
+// 					id
+// 					relp_id
+// 					name
+// 					lastname
+// 					email
+// 					sex
+// 					dni
+// 					rif
+// 					Ncompanies
+// 					Ntickets
+// 					companies
+// 					{
+// 						id
+// 						name
+// 						rif
+// 						fyc
+// 					}
+// 					address
+// 					{
+// 						id
+// 						label
+// 						address
+// 						country
+// 						state
+// 						city
+// 						province
+// 						zip_code
+// 					}
+// 					emails
+// 					{
+// 						id
+// 						email_alt
+// 					}
+// 					phones
+// 					{
+// 						id
+// 						label
+// 						phone
+// 					}
+// 					currencies
+// 					{
+// 						id
+// 					}
+// 					languages
+// 					{
+// 						id
+// 					}
+// 					products
+// 					{
+// 						id
+// 						name
+// 						description
+// 						price
+// 						created_at
+// 					}
+// 					tickets
+// 					{
+// 						user_id
+// 						{
+// 							id
+// 							name
+// 							lastname
+// 						}       
+// 						id
+// 						title
+// 						message
+// 						channel
+// 						priority
+// 						status
+// 						pinned
+// 						public
+// 						created_at
+// 						updated_at
+// 					}
+// 				}
+// 			}`)
+
 export const CREATE_ACCOUNT = gql(`mutation ($type_id: ID!, $name: String!, $description: String!, $parent_id: ID!)
 {
   createAccount (input: {
