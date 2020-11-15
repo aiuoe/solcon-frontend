@@ -1,5 +1,29 @@
 import gql from 'graphql-tag';
 
+export const ME = gql(`query 
+{ 
+  me 
+  {  
+    id
+    name
+    lastname
+    email
+    tickets
+    {
+      id
+      title
+      message
+      public
+      pinned
+      priority
+      status
+      channel
+      created_at
+      updated_at
+    }
+  } 
+}`)
+
 export const GET_ALL_CUSTOMERS = gql(`query 
 { 
  users(first: 10)

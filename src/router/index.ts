@@ -4,6 +4,7 @@ import Login from '@/components/Login.vue'
 import SignUp from '@/components/SignUp.vue'
 import Dashboard from '@/components/Dashboard.vue'
 import Customers from '@/components/Customers.vue'
+import Profile from '@/components/Profile.vue'
 import Bank from '@/components/Bank.vue'
 import Settings from '@/components/Settings.vue'
 
@@ -46,6 +47,14 @@ const routes: Array<RouteConfig> = [
     path: '/bank',
     name: 'bank',
     component: Bank,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
     meta: {
       requiresAuth: true
     }

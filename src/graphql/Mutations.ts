@@ -34,6 +34,15 @@ export const TICKET_CREATE = gql(`
 	}
 `)
 
+export const DELETE_TICKET = gql(`
+mutation($id: ID!)
+{
+	deleteTicket(id: $id)
+	{
+		id
+	}
+}`)
+
 // gql(`mutation($id: ID!, $title: String!, $message: String!, $public: Boolean!, $status: Boolean!, $pinned: Boolean!, $priority: Boolean!, $channel: String!)
 // 			{
 // 				createTicket(id: $id, input: 

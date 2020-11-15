@@ -50,60 +50,7 @@
 
 						//- TICKETS
 						.tickets.evenly-center-column(v-if="ticketsMenuShow")
-
-							a(class="btn btn-new" @click="ticketBtnCreateToggle") Nuevo
-
-							form(@submit.prevent="ticketCreate" class="form" v-if="ticketCreateForm")
-
-								input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
-								textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
-
-								.form-group
-
-									.switch.p-7
-										label.shape
-											input(class="checkbox" type="checkbox" id="public" v-model="public")
-											span(class="slider")
-										label(for="public" class="label") Publico Privado
-
-									.switch.p-7
-										label.shape
-											input(class="checkbox" type="checkbox" id="pinned" v-model="pinned")
-											span(class="slider")
-										label(for="pinned" class="label") Anclado Desanclado
-
-
-								.form-group
-
-									.switch.p-7
-										label.shape
-											input(class="checkbox" type="checkbox" id="priority" v-model="priority")
-											span(class="slider")
-										label(for="priority" class="label") Urgente normal
-
-									.switch.p-7
-										label.shape
-											input(class="checkbox" type="checkbox" id="status" v-model="status")
-											span(class="slider")
-										label(for="status" class="label") Abierto Cerrado
-
-								input(class="btn btn-create" type="submit" value="Crear")
-
-							ul(class="list-column p-7" v-if="!ticketCreateForm")
-								li(class="item" v-for="ticket in customer.tickets")
-									a(class="link start-start-column")
-										//- span Creado por: {{ ticket.user_id[0].name | capitalize }} {{ ticket.user_id[0].lastname | capitalize }}
-										span Titulo: {{ ticket.title }}
-										span Mensaje: {{ ticket.message }}
-										span Creado el: {{ ticket.created_at }}
-									.actions
-										a(:class="['action', {'action-success': ticket.status}]") {{ ticket.status? 'Cerrar' : 'Reabrir' }}
-										a(:class="['action', {'action-success': ticket.public}]") {{ ticket.public? 'Privado' : 'Publico' }}
-										a(:class="['action', {'action-success': ticket.pinned}]") {{ ticket.pinned? 'Desanclar' : 'Anclar' }}
-										a(:class="['action', {'action-success': ticket.priority}]") {{ ticket.priority? 'Normal' : 'Urgente' }}
-										
-									//- .controls
-									//- 	a(class="control")			
+							Ticket
 						
 						.companies(v-if="companiesMenuShow")
 							ul.list-column
@@ -124,6 +71,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
 import Header from '@/components/partials/Header.vue';
+import Ticket from '@/components/partials/Ticket.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
 import gql from 'graphql-tag';
@@ -132,7 +80,7 @@ import gql from 'graphql-tag';
 
 @Component({
 	name: 'Customers',
-	components: { Header, Nav, Loader },
+	components: { Header, Nav, Loader, Ticket },
 	filters: {
 	  capitalize: function (value: any)
 	  {
@@ -157,14 +105,6 @@ export default class Customers extends Vue {
 	companiesMenuShow: boolean = false
 	purchasesMenuShow: boolean = false
 	ticketsMenuShow: boolean = false
-	title: string = ''
-	message: string = ''
-	public: boolean = false
-	priority: boolean = false
-	pinned: boolean = false
-	status: boolean = false
-	channel: string = 'web'
-	ticketCreateForm: boolean = false
 
 	async created()
 	{
@@ -175,6 +115,7 @@ export default class Customers extends Vue {
 				this.customers = res.data.users.data
 				this.customer = this.customers[0]
 				this.loading = false
+				console.log(this.$apollo)
 			})
 		.catch((res: any) => console.log(res))
 	}	
@@ -205,13 +146,6 @@ export default class Customers extends Vue {
 		this.customer = this.customers[id]
 	}
 
-	ticketBtnCreateToggle()
-	{
-		if (this.ticketCreateForm)
-			this.ticketCreateForm = false	
-		else
-			this.ticketCreateForm = true
-	}
 
 	menuToggle(key: any)
 	{
@@ -256,35 +190,7 @@ export default class Customers extends Vue {
 		aside.style.display = 'none'
 	}
 
-	async ticketCreate()
-	{
-		// return await this.$apollo
-		// 	.mutate({	mutation: ,
-		// 	variables: 
-		// 	{
-		// 		id: this.customer.id,
-		// 		title: this.title,
-		// 		message: this.message,
-		// 		public: this.public,
-		// 		priority: this.priority,
-		// 		status: this.status,
-		// 		pinned: this.pinned,
-		// 		channel: this.channel
-		// 	}			
-		// })
-		// .then(res => {
-		// 	this.customers = res.data.createTicket
-		// 	this.customer = this.customers[this.customer.id - 1]
-		// 	this.title = ''
-		// 	this.message = ''
-		// 	this.public = false
-		// 	this.priority = false
-		// 	this.status = false
-		// 	this.pinned = false
-		// 	this.ticketCreateForm = false
-		// })
-		// .catch(err => console.log(err))
-	}
+
 
 	// getDate(date)
 	// {
@@ -391,46 +297,7 @@ export default class Customers extends Vue {
 	padding: 10px
 	box-sizing: border-box
 
-.tickets
-	width: 100%
-	height: 100%
 
-	.list-column
-		width: 100%
-		height: 100%
-
-		.item
-			width: 100%
-			margin-bottom: 7px
-			display: flex
-			flex-direction: column
-			justify-content: space-between
-
-			.link
-				width: 100%
-				height: 70%
-				display: flex
-				flex-direction: column
-				padding: 7px
-				margin-bottom: 7px
-				box-sizing: border-box
-				font-size: 17px
-
-			.actions
-				width: 100%
-				height: 30%
-				display: grid
-				grid-template-columns: repeat(4, 25%)
-
-				.action
-					display: flex
-					justify-content: center
-					align-items: center
-					width: 100%
-					height: 100%
-					color: var(--font)
-					text-align: center
-					cursor: pointer
 
 
 
@@ -488,23 +355,6 @@ export default class Customers extends Vue {
 	height: calc(100% - 155px)
 
 
-// BUTTONS
-.btn-new
-	width: 25%
-	margin-bottom: 7px
-	align-self: flex-end
-	text-align: center
-	font-size: 17px
-	color: white
-	background-color: var(--info) 
-	font-family: var(--font-family)
-
-.btn-create
-	background-color: var(--info)
-	width: 25%
-	color: white
-	font-size: 17px
-
 .btn-filter
 	width: 100%
 	height: 35px
@@ -520,41 +370,6 @@ export default class Customers extends Vue {
 		.fa
 			order: -1
 			margin-right: 5px
-
-
-
-
-
-// FORMS
-.form
-	height: 100%
-	margin-bottom: 7px
-	background-color: var(--dark)
-
-	&-group
-		width: 90%
-		margin-bottom: 7px
-
-	.input
-		width: 90%
-		background-color: white
-		color: var(--font)
-		font-size: 17px
-
-		&::placeholder
-			color: var(--dark)
-
-	.textarea
-		width: 90%
-		background-color: white
-		color: var(--font)
-		font-size: 17px
-
-		&::placeholder
-			color: var(--dark)
-
-.label
-	color: var(--font)
 
 
 @media screen and (min-width: 768px)

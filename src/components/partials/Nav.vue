@@ -36,6 +36,11 @@
 						span.start-center Ajustes
 
 				li(class="item center") 
+					router-link(to="profile" class="link")
+						i(class="fa fa-user center")
+						span.start-center Perfil
+
+				li(class="item center") 
 					a(class="link" @click="setTheme")
 						i(class="fa fa-adjust center")
 						span.start-center Tema
@@ -100,6 +105,7 @@ export default class Nav extends Vue {
 		}
 		// this.storage_device()
 		// this.device = window.localStorage.getItem('device')!
+		// console.log(this.$apollo)
 	}
 
 	setTheme()
