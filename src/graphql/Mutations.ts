@@ -1,38 +1,29 @@
 import gql from 'graphql-tag';
 
 export const TICKET_CREATE = gql(`
-	mutation($uID: ID, $title: string, $message: string, $public: boolean, $status: boolean, $pinned: boolean, $priority: boolean, $channel: string)
+mutation($connect: ID, $title: String!, $message: String!, $pinned: Boolean!, $public: Boolean!, $priority: Boolean!, $status: Boolean!, $channel: String!)
+{
+	createTicket(connect: $connect, input: 
 	{
-		updateUser(id: $uID, input: 
-		{
-			tickets:
-			{
-				create:
-				{
-					title: $title,
-					message: $message,
-					public: $public,
-					status: $status,
-					pinned: $pinned,
-					priority: $priority,
-					channel: $channel
-				}
-			}
-		})
-		{
-			tickets
-			{
-				title
-				message
-				public
-				priority
-				status
-				pinned
-				channel
-			}
-		}
+	  title: $title,
+	  message: $message,
+	  pinned: $pinned,
+	  public: $public,
+	  priority: $priority,
+	  status: $status,
+	  channel: $channel
+	})
+	{
+	  id
+		title
+		message
+		channel
+		public
+		priority
+		pinned
+		status
 	}
-`)
+}`)
 
 export const DELETE_TICKET = gql(`
 mutation($id: ID!)

@@ -18,10 +18,26 @@
 	--background: #f6f2ed
 	--font: #2D2D2D
 	--border: 1px solid lightgray
-	--shadow: 5px 5px 10px 5px rgba(211, 211, 211, .2)
-	// --shadow: 3px 3px 15px 1px rgba(62, 75, 92, .1)
+	// --shadow: 5px 5px 10px 1px rgba(211, 211, 211, .2)
+	--shadow: 0px 0px 15px 1px rgba(62, 75, 92, .1)
 	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5)
 	--font-family: sans-serif
+
+
+.active
+	background-color: var(--primary)
+
+	&-info
+		background-color: var(--info)
+
+	&-success
+		background-color: var(--success)
+
+	&-warning
+		background-color: var(--warning)
+	
+	&-danger
+		background-color: var(--danger)
 
 body
 	position: relative
@@ -86,7 +102,7 @@ body
 	justify-content: space-evenly
 	align-items: center
 
-.evenly-center-column
+.center-evenly-column
 	display: flex
 	flex-direction: column
 	justify-content: space-evenly
@@ -102,18 +118,23 @@ body
 	justify-content: flex-start
 	align-items: center
 
-.start-center-column
+.center-start-column
 	display: flex
 	flex-direction: column
 	justify-content: flex-start
 	align-items: center
 
-.center-start-column
+.start-center-column
 	display: flex
 	flex-direction: column
 	justify-content: center
 	align-items: flex-start
 
+.center-between-column
+	display: flex
+	flex-direction: column
+	justify-content: space-between
+	align-items: center
 
 // padding and margin
 
@@ -136,6 +157,7 @@ p, span
 	list-style: none
 	display: flex
 	overflow-x: hidden
+	overflow-y: hidden
 
 .list-column
 	width: 100%
@@ -146,14 +168,8 @@ p, span
 	overflow-y: scroll 
 	overflow-x: hidden
 
-.list::-webkit-scrollbar
-	width: 5px
-
 .list-column::-webkit-scrollbar
 	width: 5px
-
-.list::-webkit-scrollbar-track
-	background-color: var(--background)
 
 .list-column::-webkit-scrollbar-thumb
 	background-color: var(--primary)
@@ -165,7 +181,6 @@ p, span
 	width: 100%
 	margin-bottom: 7px
 	cursor: pointer
-	// background-color: var(--background)
 
 	&-info
 		background-color: var(--info)

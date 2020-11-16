@@ -1,8 +1,9 @@
 <template lang="pug">
-	.tickets.start-center-column
+	.tickets.center-start-column
 		.btn-group
-			a(class="btn btn-new" @click="toggleForm") Nuevo
+			a(class="btn btn-new" @click="toggleForm('store')") Nuevo
 
+		//- form
 		form(@submit.prevent="handleForm" class="form-column p-7" v-if="form")
 			input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
 			textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
@@ -30,17 +31,41 @@
 					label(for="status" class="label") Abierto Cerrado
 			input(class="btn btn-create" type="submit" value="Enviar")
 
+		//- list
+		ul.list-column.p-7(v-if="list")
+			li.item.p-7(v-for="ticket in tickets")
+				.start-center-column.p-7
+					span {{ ticket.title }}
+					span {{ ticket.message }}
+				.controls
+					.control
+						a(class="link evenly-center")
+							i(class="fa fa-thumbs-up")
+							span {{ '100' }}
+					.control
+						a(class="link evenly-center")
+							i(class="fa fa-comment")
+							span {{ '100' }}
+					.control
+						a(class="link evenly-center")
+							i(class="fa fa-edit")
+					.control
+						a(class="link evenly-center" @click="deleteTicket(ticket.id)")
+							i(class="fa fa-trash")
 
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { TICKET_CREATE, DELETE_TICKET } from '@/graphql/Mutations'
+import '@/modules/Array'
 
 @Component({
 	name: 'Ticket',
 })
 export default class Ticket extends Vue {
 	form: boolean = false
+	list: boolean = true
 	title: string = ''
 	message: string = ''
 	channel: string = 'web'
@@ -48,12 +73,66 @@ export default class Ticket extends Vue {
 	pinned: boolean = false
 	priority: boolean = false
 	status: boolean = false
+	method: any = null
+
+	@Prop() tickets: any;
+
+	toggleForm(key: string)
+	{
+		if (key == 'store')
+		{
+			this.form = !this.form
+			this.list = !this.list
+			this.method = 'store'
+		}
+		else if (key == 'update')
+		{
+			this.form = !this.form
+			this.list = !this.list
+			this.method = 'update'
+		}
+	}
+
+	clear()
+	{
+		this.title = ''
+		this.message = ''
+		this.channel = 'web'
+		this.public = false,
+		this.pinned = false,
+		this.priority = false,
+		this.status = false 
+	}
 
 	async handleForm()
 	{
-
-
+		if (this.method == 'store')
+			return await this.$apollo.mutate({
+				mutation: TICKET_CREATE, 
+				variables: {
+					title: this.title,
+					message: this.message,
+					pinned: this.pinned,
+					public: this.public,
+					priority: this.priority,
+					status: this.status,
+					channel: this.channel
+				}}).then(res => {
+						this.tickets.push(res.data.createTicket)
+						this.form = !this.form
+						this.list = !this.list
+						this.clear()
+				})
+		// else if (this.method == 'update')
+			// return await this.$apollo.mutate({mutation: })
 	}
+
+	async deleteTicket(id: number)
+	{
+		return await this.$apollo.mutate({mutation: DELETE_TICKET, variables: {id: id}})
+		.then(res => { this.tickets.delete(id) })
+	}
+
 
 }
 </script>
@@ -61,6 +140,10 @@ export default class Ticket extends Vue {
 <style lang="sass" scoped>
 
 .tickets
+	width: 100%
+	min-height: 100%
+
+.list-column
 	width: 100%
 	height: 100%
 
@@ -83,17 +166,21 @@ export default class Ticket extends Vue {
 
 .input
 	width: 90%
-	color: var(--dark)
+	background-color: var(--contrast)
+	border: 2px solid var(--background)
+	color: var(--font)
 
 	&::placeholder
-		color: var(--dark)
+		color: var(--font)
 
 .textarea
 	width: 90%
-	color: var(--dark)
+	background-color: var(--contrast)
+	border: 2px solid var(--background)
+	color: var(--font)
 
 	&::placeholder
-		color: var(--dark)
+		color: var(--font)
 
 .label
 	color: var(--font)
@@ -101,5 +188,24 @@ export default class Ticket extends Vue {
 .btn-create
 	width: 30%
 	background-color: var(--success)
+
+.item
+	width: 100%
+	border: 1px solid var(--background)
+
+	span
+
+.controls
+	width: 100%
+	height: 30px
+	border-top: 1px solid var(--background)
+	display: grid
+	grid-template-columns: repeat(4, 25%)
+
+	.control
+
+		.link
+			width: 100%
+			height: 100%
 
 </style>

@@ -3,9 +3,12 @@
 		Header
 		Nav
 		main.main.evenly-center
-			section.section.evenly-center-column
-				.box.banner
-				.box.customers.start-center-column
+			.graphs.center-between-column
+				.graph.box
+				.graph.box
+			section.section.center-between-column
+				.banner.box
+				.customers.box.center-start-column
 					.loader(v-if="loading")
 						Loader
 					.btn-filter(v-if="!loading")
@@ -20,7 +23,7 @@
 			.aside.box
 				.loader(v-if="loading")
 					Loader
-				.wrapper(v-if="!loading")
+				.wrapper.center-column(v-if="!loading")
 					.back.start-center
 						a(class="link" @click="back")
 							i(class="fa fa-angle-left")
@@ -30,16 +33,16 @@
 						ul.list
 							li.item
 								a.link(@click="menuToggle('ticketsMenuShow')")
-									i(class="fa fa-ticket-alt center")
+									i(:class="['fa', 'fa-ticket-alt', 'center', {'active' : ticketsMenuShow}]")
 							li.item
 								a.link(@click="menuToggle('purchasesMenuShow')")
-									i(class="fa fa-shopping-cart center")
+									i(:class="['fa', 'fa-shopping-cart', 'center', {'active' : purchasesMenuShow}]")
 							li.item
-								a.link(@click="menuToggle('companiesMenuShow')")
-									i(class="fa fa-building center")
+								a.link(:class="{active : companiesMenuShow}" @click="menuToggle('companiesMenuShow')")
+									i(:class="['fa', 'fa-building', 'center', {'active' : companiesMenuShow}]")
 							li.item
-								a.link(@click="menuToggle('customerMenuShow')")
-									i(class="fa fa-user center")
+								a.link(:class="{active : customerMenuShow}" @click="menuToggle('customerMenuShow')")
+									i(:class="['fa', 'fa-user', 'center', {'active' : customerMenuShow}]")
 
 					.content
 
@@ -49,8 +52,8 @@
 							p Correo: {{ customer.email }}
 
 						//- TICKETS
-						.tickets.evenly-center-column(v-if="ticketsMenuShow")
-							Ticket
+						.tickets(v-if="ticketsMenuShow")
+							Ticket(:tickets.sync="customer.tickets")
 						
 						.companies(v-if="companiesMenuShow")
 							ul.list-column
@@ -115,7 +118,6 @@ export default class Customers extends Vue {
 				this.customers = res.data.users.data
 				this.customer = this.customers[0]
 				this.loading = false
-				console.log(this.$apollo)
 			})
 		.catch((res: any) => console.log(res))
 	}	
@@ -252,6 +254,7 @@ export default class Customers extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="sass" scoped>
+
 .section
 	width: 100%
 	height: 100%
@@ -260,13 +263,12 @@ export default class Customers extends Vue {
 .banner
 	width: 100%
 	height: 19%
-	margin-bottom: 1%
 
 .customers
 	width: 100%
 	height: 80%
 	position: relative
-	padding: 35px 3px
+	padding: 35px 7px 7px 7px
 	box-sizing: border-box
 	overflow: hidden
 
@@ -297,10 +299,6 @@ export default class Customers extends Vue {
 	padding: 10px
 	box-sizing: border-box
 
-
-
-
-
 .loader
 	width: 100%
 	height: 100%
@@ -329,7 +327,8 @@ export default class Customers extends Vue {
 .menu
 	width: 100%
 	height: 35px
-	background-color: var(--background)
+	// background-color: var(--background)
+	border: 2px solid var(--background)
 	margin: 10px 0px
 
 	.list
@@ -350,9 +349,17 @@ export default class Customers extends Vue {
 					width: 100%
 					height: 100%
 
+				// .active
+					// background-color: transparent !important
+					// border-radius: 25px
+
 .content
 	width: 100%
 	height: calc(100% - 155px)
+
+	.tickets
+		width: 100%
+		height: 100%
 
 
 .btn-filter
@@ -373,9 +380,18 @@ export default class Customers extends Vue {
 
 
 @media screen and (min-width: 768px)
+	
+	.graphs
+		width: 30%
+		height: 100%
+
+		.graph
+			width: 100%
+			height: 49.5%
+
 
 	.section
-		width: 65%
+		width: 35%
 		height: 100%
 
 	.aside
