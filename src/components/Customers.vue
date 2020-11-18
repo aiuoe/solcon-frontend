@@ -53,7 +53,7 @@
 
 						//- TICKETS
 						.tickets(v-if="ticketsMenuShow")
-							Ticket(:tickets.sync="customer.tickets")
+							Ticket(v-bind:cid.sync="customer.id" v-bind:tickets.sync="customer.tickets")
 						
 						.companies(v-if="companiesMenuShow")
 							ul.list-column
@@ -118,7 +118,6 @@ export default class Customers extends Vue {
 				this.customers = res.data.users.data
 				this.customer = this.customers[0]
 				this.loading = false
-				console.log(typeof this.customers)
 			})
 		.catch((res: any) => console.log(res))
 	}	

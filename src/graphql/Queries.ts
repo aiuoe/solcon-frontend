@@ -26,7 +26,7 @@ export const ME = gql(`query
 
 export const GET_ALL_CUSTOMERS = gql(`query 
 { 
- users(first: 10)
+ users(first: 50)
  {
    data
    {

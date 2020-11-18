@@ -62,7 +62,7 @@ import axios from 'axios';
 export default class Nav extends Vue {
 
 	rol: number = 0
-	id: any = 0
+	id: any = null
 	light: string = `${process.env.BASE_URL}css/light.css`
 	dark: string = `${process.env.BASE_URL}css/dark.css`
 	ele: any = document.querySelector('#theme')
@@ -72,7 +72,7 @@ export default class Nav extends Vue {
 
 	async created()
 	{
-		this.$apollo.query({query: gql(`query { me { id } } `)}).then(res => { window.localStorage.setItem('id', res.data.me.id) })
+		await this.$apollo.query({query: gql(`query { me { id } } `)}).then(res => { window.localStorage.setItem('id', res.data.me.id) })
 
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
 		// this.id = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('id')!.split('.')[1]).split('').join(''))).id
@@ -140,6 +140,8 @@ export default class Nav extends Vue {
 			.then(res => 
 			{
 				window.localStorage.removeItem('token')
+				window.localStorage.removeItem('id')
+				this.id = null
 				if (window.localStorage.getItem('token') == null) 
 					this.$router.push({ path: 'login' })
 			})

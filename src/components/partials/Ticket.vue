@@ -75,7 +75,8 @@ export default class Ticket extends Vue {
 	status: boolean = false
 	method: any = null
 
-	@Prop() tickets: any;
+	@Prop({required: true}) tickets: any
+	@Prop() cid: any
 
 	toggleForm(key: string)
 	{
@@ -106,10 +107,14 @@ export default class Ticket extends Vue {
 
 	async handleForm()
 	{
+		if (this.cid === undefined)
+			this.cid = null
+
 		if (this.method == 'store')
 			return await this.$apollo.mutate({
 				mutation: TICKET_CREATE, 
 				variables: {
+					connect: this.cid,
 					title: this.title,
 					message: this.message,
 					pinned: this.pinned,
