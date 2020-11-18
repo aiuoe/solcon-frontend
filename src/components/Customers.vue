@@ -118,6 +118,7 @@ export default class Customers extends Vue {
 				this.customers = res.data.users.data
 				this.customer = this.customers[0]
 				this.loading = false
+				console.log(typeof this.customers)
 			})
 		.catch((res: any) => console.log(res))
 	}	

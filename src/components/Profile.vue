@@ -26,56 +26,8 @@
 								i(class="fa fa-user center")
 				.body
 					.details(v-if="details")
-					.tickets(v-if="tickets")
-						form(@submit.prevent="ticketCreate" class="form" v-if="ticketCreateForm")
-							input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
-							textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
-							.form-group
-								.switch.p-7
-									label.shape
-										input(class="checkbox" type="checkbox" id="public" v-model="public")
-										span(class="slider")
-									label(for="public" class="label") Publico Privado
-								.switch.p-7
-									label.shape
-										input(class="checkbox" type="checkbox" id="pinned" v-model="pinned")
-										span(class="slider")
-									label(for="pinned" class="label") Anclado Desanclado
-							.form-group
-								.switch.p-7
-									label.shape
-										input(class="checkbox" type="checkbox" id="priority" v-model="priority")
-										span(class="slider")
-									label(for="priority" class="label") Urgente normal
-								.switch.p-7
-									label.shape
-										input(class="checkbox" type="checkbox" id="status" v-model="status")
-										span(class="slider")
-									label(for="status" class="label") Abierto Cerrado
-							input(class="btn btn-create" type="submit" value="Crear")
-
-						ul.list-column.p-7
-							li.item.center-start-column.p-7(v-for="ticket in me.tickets")
-								span {{ ticket.title }}
-								span {{ ticket.message }}
-								span {{ ticket.public }}
-								span {{ ticket.pinned }}
-								span {{ ticket.public }}
-								.controls.evenly-center
-									.control.start-center
-										a(class="link") 
-											i(class="fa fa-thumbs-up")
-											span {{ '100' }}
-									.control.center
-										a(class="link evenly-center")
-											i(class="fa fa-comment")
-											span {{ '100' }}
-									.control.center
-										a(class="link evenly-center")
-											i(class="fa fa-edit")
-									.control.center
-										a(class="link" @click="deleteTicket(ticket.id)")
-											i(class="fa fa-trash")
+					.tickets.p-7(v-if="tickets")
+						Ticket(:tickets.sync="me.tickets")
 
 </template>
 
@@ -84,13 +36,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
 import Header from '@/components/partials/Header.vue';
 import Loader from '@/components/partials/Loader.vue';
+import Ticket from '@/components/partials/Ticket.vue';
 import { ME } from '@/graphql/Queries';
-import { DELETE_TICKET } from '@/graphql/Mutations';
 import '@/modules/Array'
 
 @Component({
 	name: 'Profile',
-	components: { Header, Nav, Loader },
+	components: { Header, Nav, Loader, Ticket },
 	filters: {
 	  capitalize: function (value: any)
 	  {
@@ -133,12 +85,6 @@ export default class Profile extends Vue {
 		}
 	}
 
-	async deleteTicket(id: number)
-	{
-		return await this.$apollo.mutate({mutation: DELETE_TICKET, variables: {id: id}})
-		.then(res => { this.me.tickets.delete(id) })
-	}
-
 }
 </script>
 
@@ -174,7 +120,6 @@ export default class Profile extends Vue {
 			height: 100%
 			border-radius: 50%
 
-	.profile
 
 .menu
 	width: 100%
@@ -204,16 +149,4 @@ export default class Profile extends Vue {
 	.tickets
 		width: 100%
 		height: 100%
-
-		.item
-			border: 1px solid var(--background)
-
-			.controls
-				width: 100%
-				height: 30px
-
-				.control
-					height: 100%
-
-
 </style>
