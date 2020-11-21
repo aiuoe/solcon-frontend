@@ -1,7 +1,16 @@
 <template lang="pug">
 	.tickets.center-start-column
 		.btn-group
+			a(class="btn btn-filter" @click="toggleForm('filter')")
+				i(class="fa fa-filter")
+				span Filtrar
 			a(class="btn btn-new" @click="toggleForm('store')") Nuevo
+
+		//- filter
+		div.filter(v-if="filter")
+			//- a(v-model="")
+
+
 
 		//- form
 		form(@submit.prevent="handleForm" class="form-column p-7" v-if="form")
@@ -58,6 +67,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { TICKET_CREATE, DELETE_TICKET } from '@/graphql/Mutations'
+import $ from '@/modules/jQuery'
 import '@/modules/Array'
 
 @Component({
@@ -65,6 +75,7 @@ import '@/modules/Array'
 })
 export default class Ticket extends Vue {
 	form: boolean = false
+	filter: boolean = false
 	list: boolean = true
 	title: string = ''
 	message: string = ''
@@ -78,19 +89,48 @@ export default class Ticket extends Vue {
 	@Prop({required: true}) tickets: any
 	@Prop() cid: any
 
+	async created()
+	{
+		console.log($)
+	}
+
+	mutate(name: string, value: any)
+	{
+		name = value
+	}
+
 	toggleForm(key: string)
 	{
 		if (key == 'store')
 		{
-			this.form = !this.form
-			this.list = !this.list
+			if (this.form)
+				this.list = true
+			else
+				this.list = false
+			this.filter = false
 			this.method = 'store'
+			this.form = !this.form
 		}
 		else if (key == 'update')
 		{
-			this.form = !this.form
-			this.list = !this.list
+			if (this.form)
+				this.list = true
+			else
+				this.list = false
+
 			this.method = 'update'
+			this.filter = false
+			this.form = !this.form
+		}
+		else if (key == 'filter')
+		{
+			if (this.filter)
+				this.list = true
+			else
+				this.list = false
+			this.form = false
+			this.filter = !this.filter
+
 		}
 	}
 
@@ -108,7 +148,7 @@ export default class Ticket extends Vue {
 	async handleForm()
 	{
 		if (this.cid === undefined)
-			this.cid = null
+			this.mutate(this.cid, null)
 
 		if (this.method == 'store')
 			return await this.$apollo.mutate({
@@ -156,12 +196,21 @@ export default class Ticket extends Vue {
 	width: 100%
 	margin-bottom: 7px
 	display: flex
-	justify-content: flex-end
+	justify-content: space-between
 	align-items: center
+
+	.btn-filter
+		span
+			margin-left: 7px
 
 	.btn-new
 		align-self: flex-end
 		background-color: var(--info)
+
+.filter
+	width: 100%
+	height: 100%
+	background-color: red
 
 .form-column
 	border: 3px solid var(--background)
