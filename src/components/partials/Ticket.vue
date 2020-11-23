@@ -1,16 +1,15 @@
 <template lang="pug">
 	.tickets.center-start-column
 		.btn-group
-			a(class="btn btn-filter" @click="toggleForm('filter')")
+			a(class="btn btn-filter" @click="ticketToggle('filter')")
 				i(class="fa fa-filter")
 				span Filtrar
-			a(class="btn btn-new" @click="toggleForm('store')") Nuevo
+			a(class="btn btn-new" @click="ticketToggle('store')") Nuevo
 
 		//- filter
 		div.filter(v-if="filter")
-			//- a(v-model="")
-
-
+			a(@click="orderBy('pinned')") Anclado
+			//- a(@click="orderBy('status')") Abierto
 
 		//- form
 		form(@submit.prevent="handleForm" class="form-column p-7" v-if="form")
@@ -41,11 +40,16 @@
 			input(class="btn btn-create" type="submit" value="Enviar")
 
 		//- list
-		ul.list-column.p-7(v-if="list")
+		ul.list-column.p-7(ref="listFilter" v-if="list")
 			li.item.p-7(v-for="ticket in tickets")
 				.start-center-column.p-7
 					span {{ ticket.title }}
 					span {{ ticket.message }}
+					span Publico: {{ ticket.public }}
+					span Urgente: {{ ticket.public }}
+					span Anclado: {{ ticket.public }}
+					span Abierto: {{ ticket.public }}
+					span Creado: {{ ticket.created_at }}
 				.controls
 					.control
 						a(class="link evenly-center")
@@ -67,7 +71,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { TICKET_CREATE, DELETE_TICKET } from '@/graphql/Mutations'
-import $ from '@/modules/jQuery'
 import '@/modules/Array'
 
 @Component({
@@ -85,13 +88,30 @@ export default class Ticket extends Vue {
 	priority: boolean = false
 	status: boolean = false
 	method: any = null
+	params: any = {}
+	order: boolean = false
 
 	@Prop({required: true}) tickets: any
 	@Prop() cid: any
 
-	async created()
+	orderBy(key: any)
 	{
-		console.log($)
+		switch(key)
+		{
+			case 'pinned': 
+				this.pinned = !this.pinned
+				this.params[key] = (this.pinned)? {order: 'desc'} : {order: 'asc'}
+				break
+			case 'status':
+				this.status = !this.status
+				this.params[key] = (this.status)? {order: 'desc'} : {order: 'asc'}
+				break
+		}
+		console.log(this.params)
+		this.tickets.orderBy(this.params)
+		this.tickets.map((t: any) => {
+			console.log(t.pinned)
+		})
 	}
 
 	mutate(name: string, value: any)
@@ -99,38 +119,30 @@ export default class Ticket extends Vue {
 		name = value
 	}
 
-	toggleForm(key: string)
+	ticketToggle(key: string)
 	{
 		if (key == 'store')
 		{
-			if (this.form)
-				this.list = true
-			else
-				this.list = false
-			this.filter = false
+			if (this.filter) this.filter = false
 			this.method = 'store'
+			this.list = !this.list
 			this.form = !this.form
 		}
 		else if (key == 'update')
 		{
-			if (this.form)
-				this.list = true
-			else
-				this.list = false
-
+			if (this.filter) this.filter = false
 			this.method = 'update'
-			this.filter = false
+			this.list = !this.list
 			this.form = !this.form
 		}
 		else if (key == 'filter')
 		{
-			if (this.filter)
-				this.list = true
-			else
-				this.list = false
-			this.form = false
+			if (this.form)
+			{
+				this.form = !this.form
+				this.list = !this.list
+			}
 			this.filter = !this.filter
-
 		}
 	}
 
@@ -183,10 +195,10 @@ export default class Ticket extends Vue {
 </script>
 
 <style lang="sass" scoped>
-
 .tickets
 	width: 100%
 	min-height: 100%
+
 
 .list-column
 	width: 100%
@@ -209,11 +221,12 @@ export default class Ticket extends Vue {
 
 .filter
 	width: 100%
-	height: 100%
-	background-color: red
+	height: calc(30% - 7px)
+	border: 1px solid var(--background)
+	margin-bottom: 7px
 
 .form-column
-	border: 3px solid var(--background)
+	border: 1px solid var(--background)
 
 .form-group
 	width: 90%
@@ -221,7 +234,7 @@ export default class Ticket extends Vue {
 .input
 	width: 90%
 	background-color: var(--contrast)
-	border: 2px solid var(--background)
+	border: 1px solid var(--background)
 	color: var(--font)
 
 	&::placeholder
@@ -230,7 +243,7 @@ export default class Ticket extends Vue {
 .textarea
 	width: 90%
 	background-color: var(--contrast)
-	border: 2px solid var(--background)
+	border: 1px solid var(--background)
 	color: var(--font)
 
 	&::placeholder

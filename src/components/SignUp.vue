@@ -67,27 +67,16 @@ export default class SignUp extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="sass" scoped>
-$w: #fff
-$b: #f6f2ed
-$info: #91D2FC
-$warning: #FDD194
-$danger: #F291A4
-$success: #83D0CA
-$font: #4F4C5F
-$shadow: 5px 5px 10px 1px rgba(211, 211, 211, .4)
-$light: lightgray
-$dark: darkgray
-
 .container
 	position: relative
 	width: 100vw
 	height: 100vh
-	background-color: white
+	background-color: var(--background)
 
 	.form
 		width: 100%
 		height: 70%
-		background-color: white
+		background-color: var(--contrast)
 
 		.wrapper
 			width: 80%
@@ -100,8 +89,8 @@ $dark: darkgray
 				width: 25%
 				height: 37px
 				align-self: center
-				background-color: $w
-				color: $font
+				background-color: var(--background)
+				color: var(--font)
 				outline: none
 				text-indent: 15px
 				border: var(--border)
@@ -113,7 +102,7 @@ $dark: darkgray
 				margin: 5px 0px
 				border: var(--border)
 				text-indent: 5px
-				color: $font
+				color: var(--font)
 				border-left: 0px
 
 
@@ -122,7 +111,7 @@ $dark: darkgray
 			height: 35px
 			margin: 5px 0px
 			border: var(--border)
-			color: $font
+			color: var(--font)
 
 		.wrapper
 			width: 80%
@@ -132,7 +121,7 @@ $dark: darkgray
 			.btn-signup
 				width: 40%
 				height: 35px
-				color: $font
+				color: var(--font)
 				background-color: white
 				font-family: sans-serif
 				font-size: 15px

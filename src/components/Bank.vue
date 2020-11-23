@@ -19,17 +19,18 @@
 								a(class="btn btn-danger center" @click="deleteAccount(account.id)")
 									i(class="fa fa-trash")
 
-			div.asd.box.p-7.center-start
-				form(class="form p-7" v-if="create" @submit.prevent="createAccount" )
-					h1.form-title Crear Cuenta
-					span(class="label") Tipo de cuenta
-					select(v-model="type_id" class="select select-info" required)
-						option(v-for="type in types" class="option" :label="type.name | capitalize" :value="type.id")
+			div.asd.box.p-7
+				form(class="form-column p-7" v-if="create" @submit.prevent="createAccount" )
+					h1.form-title.m-b-7 Crear
+					.form-group-start-center-column.m-b-7
+						span(class="label") Tipo
+						select(v-model="type_id" class="select select-info" required)
+							option(v-for="type in types" class="option" :label="type.name | capitalize" :value="type.id")
 					input(v-model="name" class="input input-flat" type="text" placeholder="Nombre de la cuenta:")
 					input(v-model="description" class="input input-flat" type="text" placeholder="Descripcion de la cuenta:")
 					input(class="btn btn-info" type="submit" value="Crear")
 
-				form(class="form box p-7" v-if="update")
+				form(class="form-column box p-7" v-if="update")
 					h1.form-title Actualizar Cuentas
 					span(class="label") Tipo de cuenta
 					select(class="select select-info")
@@ -157,13 +158,14 @@ export default class Bank extends Vue {
 		font-size: 20px
 		align-self: flex-start
 		color: var(--font)
-		border-bottom: 2px solid white
 
 .select 
 	width: 100%
 
 .input
 	width: 100%
+	border: 1px solid var(--background)
+	background-color: var(--contrast)
 
 
 .btn

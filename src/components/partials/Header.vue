@@ -1,5 +1,6 @@
 <template lang="pug">
-	header.header
+	header.header.start-center
+		a(class="btn btn-warning") Nueva acción
 
 </template>
 

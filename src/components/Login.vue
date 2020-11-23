@@ -1,5 +1,10 @@
 <template lang="pug">
 	.container.center
+		.decorate
+			.circle
+			.circle
+			.circle
+
 		form(@submit.prevent="login" class="form center-column")
 			input(v-model="email" class="input" type="text" placeholder="Correo: " autocomplete="false" required)
 			input(v-model="password" class="input" type="password" placeholder="Contraseña: " autocomplete="false" required)
@@ -56,6 +61,27 @@ export default class Login extends Vue {
 	overflow: hidden
 	background-color: var(--background)
 
+	.circle
+		height: 100vh
+		position: absolute
+		top: 0px
+		border-radius: 100%
+
+		&:nth-child(1)
+			width: 55vw
+			background-color: #206934
+			right: -25vw
+		
+		&:nth-child(2)
+			width: 50vw
+			background-color: #2C8F47
+			right: -25vw
+
+		&:nth-child(3)
+			width: 45vw
+			background-color: var(--success)
+			right: -25vw
+
 	.form
 		width: 100%
 		height: 30%
@@ -69,7 +95,6 @@ export default class Login extends Vue {
 			margin: 5px 0px
 			border-radius: 3px
 			color: var(--font)
-			border: 1px solid lightgray
 
 		.wrapper
 			width: 80%
