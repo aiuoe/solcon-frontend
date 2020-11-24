@@ -7,8 +7,8 @@
 				.graph.box
 				.graph.box
 			section.section.center-between-column
-				.banner.box
-				.customers.box.center-start-column
+				.banner
+				.customers.center-start-column
 					.loader(v-if="loading")
 						Loader
 					.btn-filter(v-if="!loading")
@@ -263,6 +263,8 @@ export default class Customers extends Vue {
 .banner
 	width: 100%
 	height: 19%
+	box-shadow: var(--shadow)
+	background-color: var(--contrast)
 
 .customers
 	width: 100%
@@ -271,6 +273,8 @@ export default class Customers extends Vue {
 	padding: 35px 7px 7px 7px
 	box-sizing: border-box
 	overflow: hidden
+	box-shadow: var(--shadow)
+	background-color: var(--contrast)
 
 	.customer-filter
 		display: none
@@ -286,8 +290,9 @@ export default class Customers extends Vue {
 		.item
 			width: 100%
 			height: 30px
-			background-color: var(--background)
 			margin-bottom: 7px
+			border: 1px solid var(--background)
+			border-radius: 3px
 
 
 // ASIDE
@@ -328,7 +333,7 @@ export default class Customers extends Vue {
 	width: 100%
 	height: 35px
 	// background-color: var(--background)
-	border: 2px solid var(--background)
+	border: 1px solid var(--background)
 	margin: 10px 0px
 
 	.list

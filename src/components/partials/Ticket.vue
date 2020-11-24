@@ -214,6 +214,8 @@ export default class Ticket extends Vue {
 	.btn-filter
 		span
 			margin-left: 7px
+		.fa
+			color: var(--font)
 
 	.btn-new
 		align-self: flex-end

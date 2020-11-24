@@ -1,6 +1,10 @@
 <template lang="pug">
 	.container.center
-		form(@submit.prevent="signup" class="form center-column")
+		.decorate
+			.circle
+			.circle
+			.circle
+		form(@submit.prevent="signup" class="form box center-column")
 			.wrapper
 				select(v-model="relationship" class="select" "required")
 					option(label="Abg" value="3")
@@ -73,6 +77,31 @@ export default class SignUp extends Vue {
 	height: 100vh
 	background-color: var(--background)
 
+	.circle
+		position: absolute
+		top: 0px
+		border-radius: 100%
+
+		&:nth-child(1)
+			width: 55vw
+			height: 115vh
+			top: -40px
+			background-color: #206934
+			right: -25vw
+		
+		&:nth-child(2)
+			width: 50vw
+			height: 110vh
+			top: -30px
+			background-color: #2C8F47
+			right: -25vw
+
+		&:nth-child(3)
+			width: 45vw
+			height: 100vh
+			background-color: var(--success)
+			right: -25vw
+
 	.form
 		width: 100%
 		height: 70%
@@ -121,7 +150,7 @@ export default class SignUp extends Vue {
 			.btn-signup
 				width: 40%
 				height: 35px
-				color: var(--font)
+				color: #2d2d2d
 				background-color: white
 				font-family: sans-serif
 				font-size: 15px

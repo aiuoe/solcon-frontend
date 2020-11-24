@@ -1,7 +1,13 @@
 interface Array<T>
 {
+	search(id: number): any[]
 	delete(id: number): void
 	orderBy(params: any): void
+}
+
+Array.prototype.search = function (id: number): any[]
+{
+	return this[this.indexOf(this.find((i: any) => i.id == id))]
 }
 
 Array.prototype.delete = function (id: number): void

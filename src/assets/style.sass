@@ -19,7 +19,8 @@
 	--font: #2D2D2D
 	--border: 1px solid lightgray
 	// --shadow: 5px 5px 10px 1px rgba(211, 211, 211, .2)
-	--shadow: 0px 0px 15px 1px rgba(62, 75, 92, .1)
+	// box-shadow: -10px -10px 20px #fAf7ef, 10px 10px 20px #DEDEDD
+	--shadow: 5px 5px 15px 1px #EBEBEB
 	--shadow-primary: 5px 5px 10px .1px rgba(209, 91, 87, .5)
 	--font-family: sans-serif
 
@@ -38,6 +39,21 @@
 	
 	&-danger
 		background-color: var(--danger)
+
+.fa
+	color: var(--font)
+
+	&-color-info
+		color: var(--info)
+	
+	&-color-success
+		color: var(--success)
+	
+	&-color-warning
+		color: var(--warning)
+	
+	&-color-danger
+		color: var(--danger)
 
 body
 	position: relative
@@ -102,6 +118,11 @@ body
 	justify-content: space-evenly
 	align-items: center
 
+.between-center
+	display: flex
+	justify-content: space-between
+	align-items: center
+
 .center-evenly-column
 	display: flex
 	flex-direction: column
@@ -136,6 +157,8 @@ body
 	justify-content: space-between
 	align-items: center
 
+.asfend
+	align-self: flex-end
 // padding and margin
 
 .p-7
@@ -170,6 +193,9 @@ p, span
 	flex-direction: column
 	overflow-y: scroll 
 	overflow-x: hidden
+
+	&-no-scrool
+		overflow-y: hidden
 
 .list-column::-webkit-scrollbar
 	width: 5px
@@ -228,6 +254,9 @@ p, span
 	padding: 7px
 	box-sizing: border-box
 
+	&-circle
+		border-radius: 10px
+
 	&-primary
 		background-color: var(--primary)
 
@@ -246,9 +275,8 @@ p, span
 	&-danger
 		background-color: var(--danger)
 
-.btn-flat
-	border: 0px
-	outline: none
+	&-flat
+		outline: none
 
 .action
 	background-color: var(--background)
@@ -312,20 +340,39 @@ p, span
 	align-self: flex-start
 
 .input
-	width: 70%
+	width: 100%
 	height: 30px
 	text-indent: 7px
 	color: var(--font)
 	margin-bottom: 7px
-	border: 1px solid var(--background)
 	background-color: var(--contrast)
+	border: 1px solid var(--background)
+	border-radius: 10px
+	outline: none
+
+	&::placeholder
+		color: var(--font)
 
 	&-flat
 		border: 0px
 		outline: none
 
-	&::placeholder
-		color: var(--font)
+	&-search
+		background-color: var(--contrast)
+		width: 100%
+		height: 30px
+		margin-bottom: 0px
+		font-size: 17px
+		text-indent: 14px
+		border-top-right-radius: 0px 
+		border-bottom-right-radius: 0px
+		border-right: 0px
+
+		&::placeholder
+			color: var(--font)
+
+		&:focus
+			background-color: var(--background)
 
 .textarea
 	width: 70%
@@ -361,6 +408,7 @@ p, span
 	height: 30px
 	outline: none
 	border: 0px
+	border-radius: 10px
 	color: white
 	font-size: 20px
 
@@ -383,6 +431,7 @@ p, span
 		padding: 7px
 		box-sizing: border-box
 		border: 0px
+		user-select: none
 
 
 // SWITCH

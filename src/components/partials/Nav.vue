@@ -1,8 +1,8 @@
 <template lang="pug">
 	section(class="nav")
 		nav(class="center")
-			ul(class="list center")
-				li(class="item center")
+			ul(class="list-column-no-scroll")
+				li(class="item p-7 center")
 					router-link(to="dashboard" class="link")
 						i(class="fa fa-home center")
 						span.start-center Inicio
@@ -18,11 +18,18 @@
 				//- li(class="center")
 				//- 	router-link(to="tickets" class="link not") 
 				//- 		i(class="fa fa-ticket-alt center")
-				li(class="item center") 
+				li(class="item center-column") 
 					router-link(to="bank" class="link not")
 						i(class="fa fa-landmark center")
 						span.start-center Banco
 						i(class="fa fa-chevron-right center")
+					ul.sub-menu(v-if="bank")
+						li.sub-item
+							i(class="fa fa-wallet center")
+							a(@click="app") Cuentas
+						li.sub-item
+							i(class="fa fa-file-invoice center")
+							a() Trasacciones
 
 				li(class="item center" v-if="admin") 
 					router-link(to="customers" class="link not")
@@ -49,6 +56,7 @@
 					a(class="link" @click="logout")
 						i(class="fa fa-sign-out-alt center")
 						span.start-center Salir
+
 </template>
 
 <script lang="ts">
@@ -61,18 +69,21 @@ import axios from 'axios';
 })
 export default class Nav extends Vue {
 
+	@Prop() bank: any
 	rol: number = 0
 	id: any = null
-	light: string = `${process.env.BASE_URL}css/light.css`
-	dark: string = `${process.env.BASE_URL}css/dark.css`
-	ele: any = document.querySelector('#theme')
 	theme: any = ''
 	admin: boolean = false
 	// device: string = ""
 
 	async created()
 	{
-		await this.$apollo.query({query: gql(`query { me { id } } `)}).then(res => { window.localStorage.setItem('id', res.data.me.id) })
+		await this.$apollo.query({query: gql(`query { me { id } } `)})
+		.then(res => { window.localStorage.setItem('id', res.data.me.id) })
+		.catch(err => {
+			window.localStorage.removeItem('token')
+			this.$router.push({ path: 'signup' })
+		})
 
 		this.rol = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('token')!.split('.')[1]).split('').join(''))).rol
 		// this.id = JSON.parse(decodeURIComponent(atob(window.localStorage.getItem('id')!.split('.')[1]).split('').join(''))).id
@@ -106,6 +117,11 @@ export default class Nav extends Vue {
 		// this.storage_device()
 		// this.device = window.localStorage.getItem('device')!
 		// console.log(this.$apollo)
+	}
+
+	app()
+	{
+		alert('wh')
 	}
 
 	setTheme()
@@ -184,17 +200,17 @@ export default class Nav extends Vue {
 	left: 0px
 	height: 50px
 	width: 100vw
-	overflow: hidden
+	display: flex
+	align-items: flex-end
 
 	nav
 		width: 100%
 		height: 100%
+		overflow: hidden
 
 .list
 	width: 100%
 	height: 100%
-
-
 
 .router-link-active 
 	border-top: 3px solid var(--primary)
@@ -202,30 +218,31 @@ export default class Nav extends Vue {
 .not
 	display: none
 
-@media screen and (min-width: 426px)
+@media screen and (min-width: 1024px)
 	.nav
 		bottom: 0
 		left: 0
 		height: 100vh
 		width: 170px
-		display: flex
-		align-items: flex-end
 
-	.list
+		nav
+			width: 100%
+			height: 70%
+
+	.list-column-no-scroll
 		width: 100%
 		height: 100%
-		flex-direction: column
 
 		.item
 			width: 100%
-			height: 50px
+			min-height: 50px
 			margin-bottom: 0px
-			background-color: var(--contrast)
-			border-bottom: 2px solid var(--background)
+			box-sizing: border-box
+			border-bottom: 1px solid var(--background)
 
 			.link
-				width: 100%
-				height: 100%
+				width: calc(100% - 3px)
+				height: 50px
 				display: grid
 				grid-template-columns: 25% 50% 25%
 				justify-content: space-between
@@ -237,6 +254,19 @@ export default class Nav extends Vue {
 				.fa
 					height: 100%
 					font-size: 20px
+
+			.sub-menu
+				list-style: none
+				width: 100%
+				overflow: hidden
+				background-color: var(--background)
+
+				.sub-item
+					display: grid
+					grid-template-columns: 25% 75%
+					grid-template-rows: auto
+					padding: 7px 0px
+					color: var(--font)
 
 	.router-link-active 
 		border-top: 0px
