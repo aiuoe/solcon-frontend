@@ -67,11 +67,7 @@ import '@/modules/Array'
 
 @Component({
 	name: 'Account',
-<<<<<<< HEAD
-	components: { Loader, InputText, Select },
-=======
-	components: { Loader},
->>>>>>> feature
+	components: { Loader },
 	filters: {capitalize: capitalize, upperCase: upperCase}
 })
 export default class Account extends Vue {
