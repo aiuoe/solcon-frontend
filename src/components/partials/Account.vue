@@ -60,8 +60,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Loader from '@/components/partials/Loader.vue';
-import InputText from '@/components/partials/Input.vue';
-import Select from '@/components/partials/Select.vue';
 import { ACCOUNT_CREATE, ACCOUNT_UPDATE, ACCOUNT_DELETE } from '@/graphql/Mutations'
 import { TYPES, ACCOUNTS } from '@/graphql/Queries'
 import { capitalize, upperCase } from '@/modules/Filter'
@@ -69,7 +67,11 @@ import '@/modules/Array'
 
 @Component({
 	name: 'Account',
+<<<<<<< HEAD
 	components: { Loader, InputText, Select },
+=======
+	components: { Loader},
+>>>>>>> feature
 	filters: {capitalize: capitalize, upperCase: upperCase}
 })
 export default class Account extends Vue {
