@@ -6,18 +6,17 @@
 					router-link(to="dashboard" class="link")
 						i(class="fa fa-home center")
 						span.start-center Inicio
-				//- li(class="center")
-				//- 	router-link(to="business" class="link not") 
-				//- 		i(class="fa fa-building center")
-				//- li(class="center")
-				//- 	router-link(to="products" class="link not") 
-				//- 		i(class="fa fa-dolly center")
-				//- li(class="center") 
-				//- 	router-link(to="purchases" class="link not")
-				//- 		i(class="fa fa-shopping-cart center")
-				//- li(class="center")
-				//- 	router-link(to="tickets" class="link not") 
-				//- 		i(class="fa fa-ticket-alt center")
+
+				li(class="item center") 
+					router-link(to="dashboard" class="link")
+						i(class="fa fa-store center")
+						span.start-center Ventas
+
+				li(class="item center") 
+					router-link(to="dashboard" class="link")
+						i(class="fa fa-shopping-cart center")
+						span.start-center Compras
+
 				li(class="item center-column") 
 					router-link(to="bank" class="link not")
 						i(class="fa fa-landmark center")
@@ -43,6 +42,11 @@
 						span.start-center Ajustes
 
 				li(class="item center") 
+					router-link(to="dashboard" class="link")
+						i(class="fa fa-chart-pie center")
+						span.start-center Reportes
+
+				li(class="item center") 
 					router-link(to="profile" class="link")
 						i(class="fa fa-user center")
 						span.start-center Perfil
@@ -56,6 +60,20 @@
 					a(class="link" @click="logout")
 						i(class="fa fa-sign-out-alt center")
 						span.start-center Salir
+
+
+			//- li(class="center")
+			//- 	router-link(to="business" class="link not") 
+			//- 		i(class="fa fa-building center")
+			//- li(class="center")
+			//- 	router-link(to="products" class="link not") 
+			//- 		i(class="fa fa-dolly center")
+			//- li(class="center") 
+			//- 	router-link(to="purchases" class="link not")
+			//- 		i(class="fa fa-shopping-cart center")
+			//- li(class="center")
+			//- 	router-link(to="tickets" class="link not") 
+			//- 		i(class="fa fa-ticket-alt center")
 
 </template>
 
@@ -111,7 +129,7 @@ export default class Nav extends Vue {
 			document.documentElement.style.setProperty ('--background', '#f6f2ed')
 			document.documentElement.style.setProperty ('--contrast', '#ffffff')
 			document.documentElement.style.setProperty ('--font', '#2D2D2D')
-			document.documentElement.style.setProperty ('--shadow', '5px 5px 10px 1px rgba(211, 211, 211, .7)')
+			document.documentElement.style.setProperty ('--shadow', '0 0 1px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.1)')
 			document.documentElement.style.setProperty ('--shadow-primary', '5px 5px 10px .1px rgba(209, 91, 87, .5)')
 		}
 		// this.storage_device()
@@ -143,7 +161,7 @@ export default class Nav extends Vue {
 			this.theme = 'light'
 			document.documentElement.style.setProperty ('--background', '#f6f2ed')
 			document.documentElement.style.setProperty ('--contrast', '#ffffff')
-			document.documentElement.style.setProperty ('--shadow', '5px 5px 10px 1px rgba(211, 211, 211, .7)')
+			document.documentElement.style.setProperty ('--shadow', '0 0 1px rgba(0,0,0,.2), 0 2px 4px rgba(0,0,0,.1)')
 			document.documentElement.style.setProperty ('--shadow-primary', '5px 5px 10px .1px rgba(209, 91, 87, .5)')
 			document.documentElement.style.setProperty ('--font', '#2D2D2D')
 		}
@@ -201,7 +219,7 @@ export default class Nav extends Vue {
 	height: 50px
 	width: 100vw
 	display: flex
-	align-items: flex-end
+	align-items: center
 
 	nav
 		width: 100%
@@ -227,7 +245,7 @@ export default class Nav extends Vue {
 
 		nav
 			width: 100%
-			height: 70%
+			height: 80%
 
 	.list-column-no-scroll
 		width: 100%

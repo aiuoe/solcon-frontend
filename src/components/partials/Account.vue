@@ -1,5 +1,5 @@
 <template lang="pug">
-	.component-container
+	.component-container.center-column
 		.head.between-center.p-7
 			a(class="link")
 				i(class="fa fa-filter fa-color-info")
@@ -12,13 +12,12 @@
 		.cwrapper(v-if="cwrapper")
 
 			//- form create
-			form(class="form-column p-7" v-if="createAccount" @submit.prevent="create")
+			form(class="form-column p-7" v-if="accountCreate" @submit.prevent="create")
 				.form-group-start-center-column.m-b-7
 					span(class="label") Tipo
-
 					select(v-model="type_id" class="select select-info" required)
 						option(v-for="type in types" class="option" :value="type.id") {{ type.name | capitalize }}
-
+				
 				input(v-model="name" class="input" type="text" placeholder="Nombre de la cuenta")
 				input(v-model="description" class="input" type="text" placeholder="Descripcion de la cuenta")
 				.form-group.evenly-center
@@ -26,7 +25,7 @@
 					a(class="btn btn-danger btn-circle center" @click="cancel") Cancelar
 
 			//- form update
-			form(class="form-column p-7" v-if="updateAccount" @submit.prevent="update")
+			form(class="form-column p-7" v-if="accountUpdate" @submit.prevent="update")
 				
 				span(class="label") Tipo de cuenta
 				select(v-model="type_id" class="select select-info m-b-7")
@@ -34,7 +33,6 @@
 
 				span(class="label") Cuenta padre
 				select(v-model="parent_id" class="select select-info m-b-7")
-					option
 					option(v-for="account in accounts" class="option" v-bind:value="account.id") {{ account.name | capitalize }}
 
 				input(v-model="name" class="input" type="text" placeholder="Nombre de la cuenta")
@@ -45,8 +43,8 @@
 
 		.data
 			ul(id="listAccount" class="list-column p-7")
-				li(class="item p-7" v-for="account in accounts")
-					span(class="start-center") {{ account.name }}
+				li(class="item" v-for="account in accounts")
+					span(class="start-center p-7") {{ account.name }}
 					.actions
 						.action
 							a(class="btn btn-info center" @click="toggleCreate(account.id)")
@@ -62,13 +60,16 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Loader from '@/components/partials/Loader.vue';
-import { CREATE_ACCOUNT, DELETE_ACCOUNT } from '@/graphql/Mutations'
+import InputText from '@/components/partials/Input.vue';
+import Select from '@/components/partials/Select.vue';
+import { ACCOUNT_CREATE, ACCOUNT_UPDATE, ACCOUNT_DELETE } from '@/graphql/Mutations'
 import { TYPES, ACCOUNTS } from '@/graphql/Queries'
 import { capitalize, upperCase } from '@/modules/Filter'
 import '@/modules/Array'
 
 @Component({
 	name: 'Account',
+	components: { Loader, InputText, Select },
 	filters: {capitalize: capitalize, upperCase: upperCase}
 })
 export default class Account extends Vue {
@@ -76,9 +77,10 @@ export default class Account extends Vue {
 	account: any = {}
 	types: any = {}
 	cwrapper: boolean = false
-	createAccount: boolean = false
-	updateAccount: boolean = false
+	accountCreate: boolean = false
+	accountUpdate: boolean = false
 
+	id: number = 0
 	name: string = ''
 	description: string = ''
 	type_id: any = null
@@ -95,7 +97,7 @@ export default class Account extends Vue {
 		if (!this.accounts.length)
 		{
 			this.cwrapper = !this.cwrapper
-			this.createAccount = !this.createAccount
+			this.accountCreate = !this.accountCreate
 		}
 	}
 
@@ -110,23 +112,25 @@ export default class Account extends Vue {
 		this.name = ''
 		this.description = ''
 		this.cwrapper = true
+		this.type_id = null
 		this.parent_id = id
 		document.querySelector<HTMLElement>('.data')!.style.height = '50%'
-		this.createAccount = true
-		this.updateAccount = false
+		this.accountCreate = true
+		this.accountUpdate = false
 	}
 
 	toggleUpdate(id: any = null)
 	{
 		this.cwrapper = true
 		document.querySelector<HTMLElement>('.data')!.style.height = '50%'
-		this.updateAccount = true
-		this.createAccount = false
+		this.accountUpdate = true
+		this.accountCreate = false
 
 		if (id)
 		{
+			this.id = id
+			this.type_id = this.accounts.search(id).type_id.id
 			this.parent_id = this.accounts.search(id).parent_id
-			this.type_id = this.accounts.search(id).type_id
 			this.name = this.accounts.search(id).name
 			this.description = this.accounts.search(id).description
 		}
@@ -134,20 +138,20 @@ export default class Account extends Vue {
 
 	async create()
 	{
-		await this.$apollo.mutate({mutation: CREATE_ACCOUNT, variables: {
+		await this.$apollo.mutate({mutation: ACCOUNT_CREATE, variables: {
 			name: this.name,
 			description: this.description,
 			type_id: this.type_id,
 			parent_id: this.parent_id
 		}})
 		.then(res => {
-			this.accounts.push(res.data.createAccount)
+			this.accounts.push(res.data.accountCreate)
 			this.name = ''
 			this.description = ''
 			this.type_id = null
 			this.parent_id = null
 			this.cwrapper = !this.cwrapper
-			this.createAccount = !this.createAccount
+			this.accountCreate = !this.accountCreate
 			document.querySelector<HTMLElement>('.data')!.style.height = '90%'
 		})
 		.catch(err => {console.log(err)})
@@ -155,13 +159,25 @@ export default class Account extends Vue {
 
 	async update()
 	{
-
+		await this.$apollo.mutate({mutation: ACCOUNT_UPDATE, variables: {
+			id: this.id,
+			name: this.name,
+			description: this.description,
+			type_id: this.type_id,
+			parent_id: this.parent_id
+		}})
+		.then(res => {
+			this.accounts.update(this.id, res.data.accountUpdate)
+			this.cwrapper = !this.cwrapper
+			this.accountUpdate = !this.accountUpdate
+			document.querySelector<HTMLElement>('.data')!.style.height = '90%'
+		})
 	}
 
 	async destroy(id: number)
 	{
 		await this.$apollo
-		.mutate({mutation: DELETE_ACCOUNT, variables: { id: id }})
+		.mutate({mutation: ACCOUNT_DELETE, variables: { id: id }})
 		.then(res => {this.accounts.delete(id)})
 		.catch(err => {console.log(err)})
 	}
@@ -214,7 +230,7 @@ export default class Account extends Vue {
 				cursor: pointer
 
 	.cwrapper
-		width: 100%
+		width: 70%
 		height: 40%
 
 		.form-column
@@ -225,6 +241,9 @@ export default class Account extends Vue {
 				font-size: 20px
 				align-self: flex-start
 				color: var(--font)
+
+			.input
+				text-indent: 14px
 
 			.btn
 				width: 45%
@@ -242,7 +261,7 @@ export default class Account extends Vue {
 .item
 	width: 100%
 	display: grid
-	grid-template-columns: 70% 30%
+	grid-template-columns: 80% 20%
 	box-sizing: border-box
 	border: 1px solid var(--background)
 
