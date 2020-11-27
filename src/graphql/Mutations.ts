@@ -34,9 +34,10 @@ mutation($id: ID!)
 	}
 }`)
 
-export const CREATE_ACCOUNT = gql(`mutation ($type_id: ID!, $name: String!, $description: String!, $parent_id: ID)
+export const ACCOUNT_CREATE = gql(`
+mutation ($type_id: ID!, $name: String!, $description: String!, $parent_id: ID)
 {
-  createAccount (input: {
+  accountCreate (input: {
     parent_id: $parent_id,
     type_id: $type_id,
     name: $name,
@@ -55,8 +56,32 @@ export const CREATE_ACCOUNT = gql(`mutation ($type_id: ID!, $name: String!, $des
   }
 }`)
 
-export const DELETE_ACCOUNT = gql(` mutation($id: ID!)
-{ deleteAccount(id: $id)
+export const ACCOUNT_UPDATE = gql(`
+mutation($id: ID!, $name: String!, $description: String! $type_id: ID!, $parent_id: ID)
+{
+  accountUpdate(input: {
+    id: $id,
+    name: $name,
+    description: $description,
+    type_id: $type_id,    
+    parent_id: $parent_id
+  })
+  {
+    id
+    name
+    description
+    type_id
+    {
+    	id
+    	name
+    }
+    parent_id
+  }
+}`)
+
+export const ACCOUNT_DELETE = gql(`
+mutation($id: ID!)
+{ accountDelete(id: $id)
 	{ 
 		id 
 		name 

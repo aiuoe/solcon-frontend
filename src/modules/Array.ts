@@ -1,6 +1,7 @@
 interface Array<T>
 {
 	search(id: number): any[]
+	update(id: number, value: any): void
 	delete(id: number): void
 	orderBy(params: any): void
 }
@@ -8,6 +9,11 @@ interface Array<T>
 Array.prototype.search = function (id: number): any[]
 {
 	return this[this.indexOf(this.find((i: any) => i.id == id))]
+}
+
+Array.prototype.update = function (id: number, value: any): void
+{
+	this[this.indexOf(this.find((i: any) => i.id == id))] = value
 }
 
 Array.prototype.delete = function (id: number): void
