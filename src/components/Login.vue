@@ -16,10 +16,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { mapActions } from 'vuex'
+import { decodeJWT } from '@/modules/Jwt'
 import axios from 'axios';
 
 @Component({
-	name: 'Login'
+	name: 'Login',
+	methods:
+	{
+		...mapActions(['roleSet', 'companyIDSet'])
+	}
 })
 export default class Login extends Vue {
 	email: string = ''
@@ -27,6 +33,9 @@ export default class Login extends Vue {
 	params: any = {}
 	error: boolean = false
 	message: string = ''
+	admin: boolean = false
+	roleSet!: (value: boolean) => any
+	companyIDSet!: (value: number | null) => any
 
 	async login()
 	{
@@ -34,10 +43,17 @@ export default class Login extends Vue {
 			email: this.email, 
 			password: this.password
 		}
-		return await axios.post(`${process.env.VUE_APP_API_URL}/api/auth/login`, this.params)
-			.then(res => {
+		await axios.post(`${process.env.VUE_APP_API_URL}/api/auth/login`, this.params)
+			.then(res => { 
 				window.localStorage.setItem('token', res['data']['access_token'])
-				this.$router.push({ path: 'dashboard' })
+				if (decodeJWT('company_id'))
+				{
+					this.companyIDSet(decodeJWT('company_id'))
+					this.$router.push({ path: 'inicio' })
+				}
+				else
+					this.$router.push({ path: 'empresa' })
+
 			})
 			.catch(error => { 
 				this.error = true 
@@ -48,7 +64,10 @@ export default class Login extends Vue {
 				this.email = ''
 				this.password = ''
 			})
+		
+		// end method
 	}
+	// end class
 }
 </script>
 

@@ -7,31 +7,17 @@ export const ME = gql(`query
     id
     name
     lastname
-    email
-    tickets
-    {
-      id
-      title
-      message
-      public
-      pinned
-      priority
-      status
-      channel
-      created_at
-      updated_at
-    }
   } 
 }`)
 
 export const GET_ALL_CUSTOMERS = gql(`query 
+paginator($page: Int!)
 { 
- users(first: 50)
+ users(first: 20, page: $page)
  {
    data
    {
      id
-     relp_id
      name
      lastname
      email
@@ -40,102 +26,43 @@ export const GET_ALL_CUSTOMERS = gql(`query
      rif
      Ncompanies
      Ntickets
-     companies
-     {
-       id
-       name
-       rif
-       fyc
-     }
-     address
-     {
-       id
-       label
-       address
-       country
-       state
-       city
-       province
-       zip_code
-     }
-     emails
-     {
-       id
-       email_alt
-     }
-     phones
-     {
-       id
-       label
-       phone
-     }
-     currencies
-     {
-       id
-     }
-     languages
-     {
-       id
-     }
-     products
-     {
-       id
-       name
-       description
-       price
-       created_at
-     }
-     tickets
-     {
-       user_id
-       {
-        id
-        name
-        lastname
-       }       
-       id
-       title
-       message
-       channel
-       priority
-       status
-       pinned
-       public
-       created_at
-       updated_at
-     }
+     created_at
    }
+  paginatorInfo
+  {
+    total
+    hasMorePages
+  }
  }
 }`)
 
-export const TYPES = gql(`query 
-{ 
-  types 
-  { 
-    data 
-    { 
-      id 
-      name 
-    } 
-  } 
-}`)
-
 export const ACCOUNTS = gql(`query 
-{ 
-  me 
+company_find($id: ID!)
+{
+  company(id: $id)
   { 
     id
-    accounts
+    accounts(first: 10)
     {
-      id
-      name
-      description
-      parent_id
-      type_id
+      data
       {
         id
         name
+        description
       }
     }
-  } 
+  }
+}`)
+
+export const CURRENCIES = gql(`query
+{ 
+  currencies
+  {
+    data
+    {
+      id
+      name
+      abbreviation
+    }
+  }
 }`)

@@ -15,9 +15,13 @@
 			form(class="form-column p-7" v-if="accountCreate" @submit.prevent="create")
 				.form-group-start-center-column.m-b-7
 					span(class="label") Tipo
-					select(v-model="type_id" class="select select-info" required)
-						option(v-for="type in types" class="option" :value="type.id") {{ type.name | capitalize }}
-				
+					select(v-model="type" class="select select-info m-b-7")
+						option(v-for="(value, key) in types" class="option" v-bind:value="key") {{ value | capitalize}}
+
+					span(class="label") Moneda
+					select(v-model="currency" class="select select-info m-b-7")
+						option(v-for="currency in currencies" class="option" v-bind:value="currency.id") {{ currency.name | capitalize}}
+
 				input(v-model="name" class="input" type="text" placeholder="Nombre de la cuenta")
 				input(v-model="description" class="input" type="text" placeholder="Descripcion de la cuenta")
 				.form-group.evenly-center
@@ -25,21 +29,21 @@
 					a(class="btn btn-danger btn-circle center" @click="cancel") Cancelar
 
 			//- form update
-			form(class="form-column p-7" v-if="accountUpdate" @submit.prevent="update")
+			//- form(class="form-column p-7" v-if="accountUpdate" @submit.prevent="update")
 				
-				span(class="label") Tipo de cuenta
-				select(v-model="type_id" class="select select-info m-b-7")
-					option(v-for="type in types" class="option" v-bind:value="type.id") {{ type.name | capitalize }}
+			//- 	span(class="label") Tipo de cuenta
+			//- 	select(v-model="type_id" class="select select-info m-b-7")
+			//- 		option(v-for="(value, key) in types" class="option" v-bind:value="key") {{ value | capitalize }}
 
-				span(class="label") Cuenta padre
-				select(v-model="parent_id" class="select select-info m-b-7")
-					option(v-for="account in accounts" class="option" v-bind:value="account.id") {{ account.name | capitalize }}
+			//- 	span(class="label") Cuenta padre
+			//- 	select(v-model="parent_id" class="select select-info m-b-7")
+			//- 		option(v-for="account in accounts" class="option" v-bind:value="account.id") {{ account.name | capitalize }}
 
-				input(v-model="name" class="input" type="text" placeholder="Nombre de la cuenta")
-				input(v-model="description" class="input" type="text" placeholder="Descripcion de la cuenta")
-				.form-group.evenly-center
-					input(class="btn btn-info btn-circle" type="submit" value="Actualizar")
-					a(class="btn btn-danger btn-circle center" @click="cancel") Cancelar
+			//- 	input(v-model="name" class="input" type="text" placeholder="Nombre de la cuenta")
+			//- 	input(v-model="description" class="input" type="text" placeholder="Descripcion de la cuenta")
+			//- 	.form-group.evenly-center
+			//- 		input(class="btn btn-info btn-circle" type="submit" value="Actualizar")
+			//- 		a(class="btn btn-danger btn-circle center" @click="cancel") Cancelar
 
 		.data
 			ul(id="listAccount" class="list-column p-7")
@@ -61,36 +65,39 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Loader from '@/components/partials/Loader.vue';
 import { ACCOUNT_CREATE, ACCOUNT_UPDATE, ACCOUNT_DELETE } from '@/graphql/Mutations'
-import { TYPES, ACCOUNTS } from '@/graphql/Queries'
+import { ACCOUNTS, CURRENCIES } from '@/graphql/Queries'
 import { capitalize, upperCase } from '@/modules/Filter'
+import { TYPE_ACCOUNT } from '@/types/type'
 import '@/modules/Array'
 
 @Component({
 	name: 'Account',
 	components: { Loader },
-	filters: {capitalize: capitalize, upperCase: upperCase}
+	filters: {capitalize: capitalize, upperCase: upperCase},
 })
 export default class Account extends Vue {
 	accounts: any = {}
+	currencies: any = {}
 	account: any = {}
-	types: any = {}
 	cwrapper: boolean = false
 	accountCreate: boolean = false
 	accountUpdate: boolean = false
+	types: TYPE_ACCOUNT = {income: "Ingreso", expense: "Gasto"}
 
 	id: number = 0
 	name: string = ''
+	type: TYPE_ACCOUNT | null = null
+	currency: any = {}
 	description: string = ''
-	type_id: any = null
 	parent_id: any = null
 
 	async created()
 	{
-		await this.$apollo.query({query: TYPES})
-			.then(res => {this.types = res.data.types.data})
+		await this.$apollo.query({query: ACCOUNTS, variables: {id: 1}})
+			.then(res => { this.accounts = res.data.company.accounts.data })
 
-		await this.$apollo.query({query: ACCOUNTS})
-			.then(res => {this.accounts = res.data.me.accounts})
+		await this.$apollo.query({query: CURRENCIES})
+			.then(res => { this.currencies = res.data.currencies.data })
 
 		if (!this.accounts.length)
 		{
@@ -109,8 +116,8 @@ export default class Account extends Vue {
 	{
 		this.name = ''
 		this.description = ''
+		this.currency = ''
 		this.cwrapper = true
-		this.type_id = null
 		this.parent_id = id
 		document.querySelector<HTMLElement>('.data')!.style.height = '50%'
 		this.accountCreate = true
@@ -127,7 +134,6 @@ export default class Account extends Vue {
 		if (id)
 		{
 			this.id = id
-			this.type_id = this.accounts.search(id).type_id.id
 			this.parent_id = this.accounts.search(id).parent_id
 			this.name = this.accounts.search(id).name
 			this.description = this.accounts.search(id).description
@@ -136,17 +142,20 @@ export default class Account extends Vue {
 
 	async create()
 	{
+		console.log(this.type)
 		await this.$apollo.mutate({mutation: ACCOUNT_CREATE, variables: {
+			company_id: this.$store.state.company_id,
+			currency_id: this.currency,
+			parent_id: this.parent_id,
 			name: this.name,
 			description: this.description,
-			type_id: this.type_id,
-			parent_id: this.parent_id
+			type: this.type
 		}})
 		.then(res => {
 			this.accounts.push(res.data.accountCreate)
 			this.name = ''
 			this.description = ''
-			this.type_id = null
+			this.currency = ''
 			this.parent_id = null
 			this.cwrapper = !this.cwrapper
 			this.accountCreate = !this.accountCreate
@@ -161,7 +170,6 @@ export default class Account extends Vue {
 			id: this.id,
 			name: this.name,
 			description: this.description,
-			type_id: this.type_id,
 			parent_id: this.parent_id
 		}})
 		.then(res => {

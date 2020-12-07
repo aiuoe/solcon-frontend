@@ -2,27 +2,27 @@
 	.container
 		Header
 		Nav
-			
+		main.main.evenly-center
+
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
 import Header from '@/components/partials/Header.vue';
-import gql from 'graphql-tag'
-import { decodeJWT } from '@/modules/Jwt'
+import Loader from '@/components/partials/Loader.vue';
+import { capitalize, upperCase } from '@/modules/Filter'
+import '@/modules/Array'
 
 @Component({
-	name: 'Dashboard',
-	components: { Header, Nav }
-})
-export default class Dashboard extends Vue {
-
-	async created ()
-	{
-		console.log(decodeJWT('company_id'))
-		console.log(this.$apollo)
+	name: 'Sale',
+	components: { Header, Nav, Loader },
+	filters: {
+	  capitalize: capitalize,
+	  toUpperCase: upperCase
 	}
+})
+export default class Sale extends Vue {
 
 }
 </script>

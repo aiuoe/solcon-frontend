@@ -35,11 +35,13 @@ mutation($id: ID!)
 }`)
 
 export const ACCOUNT_CREATE = gql(`
-mutation ($type_id: ID!, $name: String!, $description: String!, $parent_id: ID)
+mutation ($type: TYPE_ACCOUNT!, $name: String!, $description: String!, $parent_id: ID, $currency_id: ID!, $company_id: ID!)
 {
   accountCreate (input: {
+    company_id: $company_id,
     parent_id: $parent_id,
-    type_id: $type_id,
+    currency_id: $currency_id,
+    type: $type,
     name: $name,
     description: $description
   })
@@ -47,11 +49,7 @@ mutation ($type_id: ID!, $name: String!, $description: String!, $parent_id: ID)
     id
     name
     description
-    type_id
-    {
-    	id
-    	name
-    }
+    type
     parent_id
   }
 }`)
@@ -84,13 +82,5 @@ mutation($id: ID!)
 { accountDelete(id: $id)
 	{ 
 		id 
-		name 
-		description 
-		parent_id 
-		type_id 
-		{ 
-			id 
-			name 
-		} 
 	} 
 }`)

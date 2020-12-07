@@ -4,6 +4,27 @@ interface Array<T>
 	update(id: number, value: any): void
 	delete(id: number): void
 	orderBy(params: any): void
+	first(): any
+}
+
+interface String
+{
+	isString(): boolean
+}
+
+interface Date
+{
+	valid(): boolean
+}
+
+Date.prototype.valid = function (): boolean
+{
+	return !isNaN(this.getTime())
+}
+
+Array.prototype.first = function (): any
+{
+	return this[0]
 }
 
 Array.prototype.search = function (id: number): any[]
@@ -30,9 +51,16 @@ Array.prototype.orderBy = function (params: any): void
 			if (k == 'order')
 			{
 				if (v == 'desc')
-					this.sort((a, b) => (b[key] < a[key])? 1 : -1 )
+					this.sort((a, b): any => {
+						if (typeof b[key] === 'string' && !new Date(a[key]).valid())
+							return (b[key][0].toLowerCase() < a[key][0].toLowerCase())? 1 : -1;
+						else
+							(b[key] < a[key])? 1 : -1;
+					})
 				else if (v == 'asc')
-					this.sort((a, b) => (b[key] > a[key])? 1 : -1 )
+					this.sort((a, b):any => {
+						(b[key] > a[key])? 1 : -1 
+					})
 			}
 		})
 	})

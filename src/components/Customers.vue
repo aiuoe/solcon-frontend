@@ -15,11 +15,10 @@
 						a(class="link start-center" @click="customerFilter") Filtrar
 							i(class="fa fa-filter") 
 					.customer-filter(v-if="!loading")
-						span compras
-						span tickets
-					ul.list-column.p-7(v-if="!loading")
+						a(style="cursor: pointer;" @click="filter('name')") nombre
+					ul.list-column.p-7(id="customers" v-if="!loading" @scroll="customersGet")
 						li(class="item p-7 start-center" v-for="customer, key in customers" @click="customerShow(key)")
-							a(class="link font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
+							a(class="link font") {{ customer.name | capitalize }} - {{ customer.lastname | capitalize }} {{ customer.created_at }}
 			.aside.box
 				.loader(v-if="loading")
 					Loader
@@ -56,18 +55,9 @@
 							Ticket(v-bind:cid.sync="customer.id" v-bind:tickets.sync="customer.tickets")
 						
 						.companies(v-if="companiesMenuShow")
-							ul.list-column
-								li.item(v-for="company in customer.companies")
-									a.link
-										p Nombre: {{ company.name }}
-										p Rif: {{ company.rif }}
-										p Cierre Fiscal: {{ company.fyc }}
+
 
 						.purchases(v-if="purchasesMenuShow")
-							ul.list-column
-								li.item(v-for="purchase in customer.purchases")
-									a.link
-										p {{ purchase }}
 </template>
 
 <script lang="ts">
@@ -77,31 +67,24 @@ import Header from '@/components/partials/Header.vue';
 import Ticket from '@/components/partials/Ticket.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
-import gql from 'graphql-tag';
+import { capitalize, upperCase } from '@/modules/Filter';
 // import Calendar from '@/components/partials/Calendar.vue';
-// import ChartBar from '@/components/partials/ChartBar'
+import '@/modules/Array'
 
 @Component({
 	name: 'Customers',
 	components: { Header, Nav, Loader, Ticket },
 	filters: {
-	  capitalize: function (value: any)
-	  {
-	    if (!value) return ''
-	    value = value.toString()
-	    return value.charAt(0).toUpperCase() + value.slice(1)
-	  },
-	  toUpperCase: function(value: any)
-	  {
-	  	if (!value) return ''
-	    value = value.toString()
-		  return value.toUpperCase()
-	  }
+	  capitalize: capitalize,
+	  toUpperCase: upperCase
 	}
 })
 export default class Customers extends Vue {
 	customers: any = {}
 	customer: any = {}
+	page: number = 1
+	total: number = 1
+	hasMorePages: boolean = true
 	id: number = 0
 	loading: boolean = false
 	customerMenuShow: boolean = true
@@ -112,20 +95,51 @@ export default class Customers extends Vue {
 	async created()
 	{
 		this.loading = true
-		return await this.$apollo.query({query: GET_ALL_CUSTOMERS})
+		return await this.$apollo.query({ query: GET_ALL_CUSTOMERS, variables: { page: 1 }})
 		.then((res: any) => 
 			{ 
 				this.customers = res.data.users.data
+				this.total = res.data.users.paginatorInfo.total
+				if (this.customers.length == this.total)
+					this.hasMorePages = false
 				this.customer = this.customers[0]
 				this.loading = false
+				console.log(this.$apollo)
 			})
 		.catch((res: any) => console.log(res))
-	}	
+	}
+
+	async customersGet()
+	{
+		const { 
+			scrollTop, 
+			offsetHeight, 
+			scrollHeight } = document.querySelector<HTMLElement>('#customers')!
+		if ( (scrollTop + offsetHeight) == scrollHeight)
+			if ( this.hasMorePages )
+			{
+				this.page++
+				await this.$apollo.query({ query: GET_ALL_CUSTOMERS, variables: { page: this.page }})
+				.then((res: any) => {	
+					this.customers = this.customers.concat(res.data.users.data)
+					this.hasMorePages = res.data.users.paginatorInfo.hasMorePages
+				})
+			}
+	}
+
+	async filter(key: any)
+	{
+		let params = {
+			"lastname": {order: 'desc'},
+			"name": {order: 'desc'}
+		}
+		this.customers.orderBy(params)
+	}
 
 	async customerFilter()
 	{
-		let box: any = document.querySelector('.customer-filter')
-		let listCustomers: any = document.querySelector('.list-column')
+		let box: any = document.querySelector('.customer-filter'),
+				listCustomers: any = document.querySelector('.list-column')
 
 		if (box.style.display !== 'flex')
 		{
@@ -215,38 +229,6 @@ export default class Customers extends Vue {
 	// 	}
 	// }
 
-	// filter(key)
-	// {
-	// 	this.key = key
-	// 	switch(this.key)
-	// 	{
-	// 		case 'all':
-	// 			this.fDate = null
-	// 			this.lDate = null
-	// 			this.users = this.aux
-	// 			break
-	// 		case 'purchases':
-	// 			this.fDate = null
-	// 			this.lDate = null
-	// 			this.users = this.aux
-	// 			this.users = this.users.filter(u => u.products.length > 0)
-	// 			break
-	// 		case 'tickets':
-	// 			this.users = this.aux
-	// 			this.users = this.users.filter(u => u.Ntickets > 0)				
-	// 			if(this.firstDate != null)
-	// 			{
-	// 				this.users = this.aux
-	// 				this.users = this.users.filter(u => (u.tickets.filter( t => {t.created_at = t.created_at.split('-').map(n => Math.abs(n)).join('-'); let a = new Date(t.created_at), b = new Date(this.firstDate); return a >= b }).length)? true : false)
-	// 			}
-	// 			if(this.firstDate != null && this.lastDate != null)
-	// 			{
-	// 				this.users = this.aux
-	// 				this.users = this.users.filter(u => (u.tickets.filter(t =>{t.created_at = t.created_at.split('-').map(n => Math.abs(n)).join('-');let a = new Date(t.created_at),b = new Date(this.firstDate),c = new Date(this.lastDate);return a >= b && a <= c}).length)? true : false)
-	// 			}
-	// 			break
-	// 	}
-	// }
 
 // console.log(this.tickets.filter(t => {let r = false; k.map((key, i) => {(t[key] !== v[i])? r = true : null}); return !r}))
 }

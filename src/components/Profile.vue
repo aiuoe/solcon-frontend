@@ -66,8 +66,8 @@ export default class Profile extends Vue {
 
 	async created()
 	{
-		await this.$apollo.query({query: ME})
-			.then(res => { this.me = res.data.me })
+		// await this.$apollo.query({query: ME})
+		// 	.then(res => { this.me = res.data.me })
 	}
 
 	menuToggle(key: string)

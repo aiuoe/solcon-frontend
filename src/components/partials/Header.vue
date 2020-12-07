@@ -20,6 +20,5 @@ export default class Header extends Vue {
 	width: calc(100vw - 170px)
 	height: 70px
 	background-color: var(--contrast)
-	box-shadow: var(--shadow)
-
+	position: fixed
 </style>

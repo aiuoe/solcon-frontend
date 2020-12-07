@@ -73,7 +73,6 @@ body
 	min-height: 100vh
 	position: relative
 	box-sizing: border-box
-	overflow: hidden
 	background-color: var(--background)
 	display: flex
 	flex-direction: column
@@ -97,7 +96,6 @@ body
 	height: calc(100vh - 40px)
 	padding: 7px
 	box-sizing: border-box
-	overflow: hidden
 
 .nav
 	background-color: var(--contrast)
@@ -251,9 +249,14 @@ p, span
 	outline: none
 	border: 0px
 	text-decoration: none
-	color: white
+	color: var(--font)
 	padding: 7px
 	box-sizing: border-box
+	border-radius: 3px
+	background-color: white
+	box-shadow: var(--shadow)
+	font-size: 17px
+	width: 100px
 
 	&-circle
 		border-radius: 10px
@@ -342,13 +345,13 @@ p, span
 
 .input
 	width: 100%
-	height: 30px
-	text-indent: 7px
+	height: 40px
+	text-indent: 14px
 	color: var(--font)
 	margin-bottom: 7px
 	background-color: var(--contrast)
-	border: 1px solid var(--background)
-	border-radius: 10px
+	border: 2px solid var(--background)
+	border-radius: 7px
 	outline: none
 
 	&::placeholder
@@ -356,7 +359,6 @@ p, span
 
 	&-flat
 		border: 0px
-		outline: none
 
 	&-search
 		background-color: var(--contrast)
@@ -490,3 +492,12 @@ p, span
 	.container .main
 		width: calc(100vw - 170px)
 		height: calc(100vh - 70px)
+		position: absolute
+		bottom: 0px
+		overflow-y: scroll
+
+		&::-webkit-scrollbar
+			width: 5px
+
+		&::-webkit-scrollbar-thumb
+			background-color: var(--primary)
