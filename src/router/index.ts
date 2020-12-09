@@ -11,7 +11,6 @@ import Sale from '@/components/Sale.vue'
 import Purchase from '@/components/Purchase.vue'
 import Report from '@/components/Report.vue'
 import Settings from '@/components/Settings.vue'
-import Preload from '@/components/Preload.vue'
 
 Vue.use(VueRouter)
 
@@ -100,14 +99,6 @@ const routes: Array<RouteConfig> = [
     path: '/settings',
     name: 'settings',
     component: Settings,
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/cargando',
-    name: 'cargando',
-    component: Preload,
     meta: {
       requiresAuth: true
     }

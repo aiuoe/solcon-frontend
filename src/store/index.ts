@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
   	admin: null,
-    company_id: null,
+    company: null,
     customer_id: null,
   },
   mutations: {
@@ -14,9 +14,9 @@ export default new Vuex.Store({
   	{
   		state.admin = value
   	},
-    companyIDSet(state, value)
+    companySet(state, value)
     {
-      state.company_id = value
+      state.company = value
     },
     customerIDSet(state, value)
     {
@@ -28,9 +28,9 @@ export default new Vuex.Store({
   	{
 			commit('roleSet', value)  		
   	},
-    async companyIDSet({commit}, value)
+    async companySet({commit}, value)
     {
-      commit('companyIDSet', value)
+      commit('companySet', value)
     },
     async customerIDSet({commit}, value)
     {

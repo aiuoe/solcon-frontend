@@ -104,7 +104,6 @@ export default class Customers extends Vue {
 					this.hasMorePages = false
 				this.customer = this.customers[0]
 				this.loading = false
-				console.log(this.$apollo)
 			})
 		.catch((res: any) => console.log(res))
 	}

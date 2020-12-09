@@ -43,6 +43,7 @@ form(class="form-column" v-if="add" @submit.prevent="create")
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { DB } from '@/modules/DB'
 import { mapState, mapActions } from 'vuex'
 import Loader from '@/components/partials/Loader.vue';
 import { COMPANY_CREATE } from '@/graphql/mutations/company'
@@ -56,18 +57,14 @@ import '@/modules/Dom'
 	name: 'CompanyUpsert',
 	components: { Loader },
 	filters: {capitalize: capitalize, upperCase: upperCase},
-	computed:
-	{
-		...mapState(['company_id'])
-	},
 	methods:
 	{
-		...mapActions(['companyIDSet'])
+		...mapActions(['companySet'])
 	}
 })
 export default class CompanyUpsert extends Vue {
 
-	companyIDSet!: (value: boolean) => any
+	companySet!: (value: boolean) => any
 	vone: boolean = false
 	vtwo: boolean = false
 	vthree: boolean = false
@@ -75,15 +72,16 @@ export default class CompanyUpsert extends Vue {
 	two: boolean = false
 	three: boolean = false
 	add: boolean = true
+	db: any
 	company: COMPANY_TYPE = {
+		id: 0,
 		name: '',
 		rif: '',
 		fyc: ''
 	}
-
 	async created()
 	{
-
+		this.db = DB
 	}
 
 	next()
@@ -172,12 +170,13 @@ export default class CompanyUpsert extends Vue {
 		}})
 		.then(res => 
 		{
-			this.companyIDSet(res.data.companyCreate.id)
+			this.db.companies.add(res.data.companyCreate)
+			this.companySet(res.data.companyCreate)
 			this.$router.push({path: 'inicio'})
 		})
 		.catch(err => 
 		{
-			window.localStorage.remove('token')
+			window.localStorage.clear()
 			this.$router.push({path: 'login'})
 		})
 	}

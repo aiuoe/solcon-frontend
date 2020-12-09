@@ -10,7 +10,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Nav from '@/components/partials/Nav.vue';
 import Header from '@/components/partials/Header.vue';
 import gql from 'graphql-tag'
-import { decodeJWT } from '@/modules/Jwt'
 
 @Component({
 	name: 'Dashboard',
@@ -20,8 +19,7 @@ export default class Dashboard extends Vue {
 
 	async created ()
 	{
-		console.log(decodeJWT('company_id'))
-		console.log(this.$apollo)
+
 	}
 
 }

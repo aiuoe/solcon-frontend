@@ -1,15 +1,15 @@
 import gql from 'graphql-tag';
 
-export const HAS_COMPANY = gql(` query
+export const COMPANIES = gql(` query
 {
 	me
 	{
-		companies(first: 1)
+		companies
 		{
-			data
-			{
-				id
-			}
+			id
+			name
+			rif
+			fyc
 		}
 	}
 }`)

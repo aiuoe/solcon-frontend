@@ -1,5 +1,8 @@
 <template lang="pug">
 	section(class="nav")
+		.profile.p-7.center
+			.photo.center
+				span {{ company.name[0] }}
 		nav(class="center")
 			ul(class="list-column-no-scroll")
 				li(class="item center")
@@ -7,28 +10,28 @@
 						i(class="fa fa-home center")
 						span.start-center Inicio
 
-				li(class="item center") 
-					router-link(to="ventas" class="link")
-						i(class="fa fa-store center")
-						span.start-center Ventas
+				//- li(class="item center") 
+				//- 	router-link(to="ventas" class="link")
+				//- 		i(class="fa fa-store center")
+				//- 		span.start-center Ventas
 
-				li(class="item center") 
-					router-link(to="compras" class="link")
-						i(class="fa fa-shopping-cart center")
-						span.start-center Compras
+				//- li(class="item center") 
+				//- 	router-link(to="compras" class="link")
+				//- 		i(class="fa fa-shopping-cart center")
+				//- 		span.start-center Compras
 
-				li(class="item center-column") 
-					router-link(to="banco" class="link not")
-						i(class="fa fa-landmark center")
-						span.start-center Banco
-						i(class="fa fa-chevron-right center")
-					ul.sub-menu(v-if="bank")
-						li.sub-item
-							i(class="fa fa-wallet center")
-							a() Cuentas
-						li.sub-item
-							i(class="fa fa-file-invoice center")
-							a() Trasacciones
+				//- li(class="item center-column") 
+				//- 	router-link(to="banco" class="link not")
+				//- 		i(class="fa fa-landmark center")
+				//- 		span.start-center Banco
+				//- 		i(class="fa fa-chevron-right center")
+				//- 	ul.sub-menu(v-if="bank")
+				//- 		li.sub-item
+				//- 			i(class="fa fa-wallet center")
+				//- 			a() Cuentas
+				//- 		li.sub-item
+				//- 			i(class="fa fa-file-invoice center")
+				//- 			a() Trasacciones
 				
 				//- li(class="item center")
 				//- 	router-link(to="empresa" class="link")
@@ -41,20 +44,20 @@
 						span.start-center Clientes
 						i(class="fa fa-chevron-right center")
 
-				li(class="item center" v-if="admin") 
-					router-link(to="settings" class="link")
-						i(class="fa fa-cog center")
-						span.start-center Ajustes
+				//- li(class="item center" v-if="admin") 
+				//- 	router-link(to="settings" class="link")
+				//- 		i(class="fa fa-cog center")
+				//- 		span.start-center Ajustes
 
-				li(class="item center") 
-					router-link(to="reportes" class="link")
-						i(class="fa fa-chart-pie center")
-						span.start-center Reportes
+				//- li(class="item center") 
+				//- 	router-link(to="reportes" class="link")
+				//- 		i(class="fa fa-chart-pie center")
+				//- 		span.start-center Reportes
 
-				li(class="item center") 
-					router-link(to="perfil" class="link")
-						i(class="fa fa-user center")
-						span.start-center Perfil
+				//- li(class="item center") 
+				//- 	router-link(to="perfil" class="link")
+				//- 		i(class="fa fa-user center")
+				//- 		span.start-center Perfil
 
 				li(class="item center") 
 					a(class="link" @click="setTheme")
@@ -70,7 +73,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { mapState, mapActions } from 'vuex'
-import { HAS_COMPANY } from '@/graphql/queries/company'
+import { DB } from '@/modules/DB'
 import { decodeJWT } from '@/modules/Jwt'
 import gql from 'graphql-tag';
 import axios from 'axios';
@@ -80,27 +83,41 @@ import '@/modules/Array'
 	name: 'Nav',
 	computed:
 	{
-		...mapState(['admin', 'company_id'])
+		...mapState(['admin', 'company'])
 	},
 	methods:
 	{
-		...mapActions(['roleSet', 'companyIDSet'])
+		...mapActions(['roleSet', 'companySet'])
 	}
 })
 export default class Nav extends Vue {
 
 	@Prop() bank: any
 	theme: any = null
-	roleSet!: (value: boolean) => any
-	companyIDSet!: (value: boolean) => any
+	roleSet!: (value: null | boolean) => any
+	companySet!: (value: object | undefined) => any
+	db: any
+
+	constructor()
+	{
+		super()
+		this.db = DB
+	}
 
 	async created()
 	{
+
 		if (this.$store.state.admin == null)
 			this.roleSet((decodeJWT('role') == 'admin')? true : false)
 
-		if (this.$store.state.company_id == null)
-			this.companyIDSet(decodeJWT('company_id'))
+		if (this.$store.state.company == null)
+		{
+			this.db.companies.get({lid: 1})
+			.then((res: any) => this.companySet(res))
+			.catch((err: any) => console.log(err))
+		}
+
+
 
 		this.theme = window.localStorage.getItem('theme')
 		if (this.theme == null)
@@ -151,7 +168,9 @@ export default class Nav extends Vue {
 		.post(`${process.env.VUE_APP_API_URL}/api/auth/logout`, {}, {"headers": {"Authorization": `Bearer ${window.localStorage.getItem('token')}`}})
 		.then(res => 
 		{
-			window.localStorage.removeItem('token')
+			window.localStorage.clear()
+			this.roleSet(null)			
+			this.companySet(undefined)			
 			this.$router.push({ path: 'login' })
 		})
 		.catch(err => console.log(err))
@@ -167,6 +186,7 @@ export default class Nav extends Vue {
 	height: 50px
 	width: 100vw
 	display: flex
+	flex-direction: column
 	align-items: center
 
 	nav
@@ -191,9 +211,24 @@ export default class Nav extends Vue {
 		height: 100vh
 		width: 170px
 
+		.profile
+			width: 100%
+			height: 25%
+
+			.photo
+				width: 70px
+				height: 70px
+				border-radius: 50%
+				border: 3px solid var(--background)
+
+				span
+					color: var(--font)
+					font-size: 25px
+					font-weight: bold
+
 		nav
 			width: 100%
-			height: 80%
+			height: 75%
 
 	.list-column-no-scroll
 		width: 100%
