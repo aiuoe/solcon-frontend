@@ -1,15 +1,5 @@
 import gql from 'graphql-tag';
 
-export const ME = gql(`query 
-{ 
-  me 
-  {  
-    id
-    name
-    lastname
-  } 
-}`)
-
 export const GET_ALL_CUSTOMERS = gql(`query 
 paginator($page: Int!)
 { 

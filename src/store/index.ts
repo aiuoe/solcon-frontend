@@ -6,35 +6,44 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
   	admin: null,
+    me: null,
     company: null,
-    customer_id: null,
+    customer: null
   },
   mutations: {
-  	roleSet(state, value)
+  	adminSet(state, value)
   	{
   		state.admin = value
   	},
+    meSet(state, value)
+    {
+      state.me = value
+    },
     companySet(state, value)
     {
       state.company = value
     },
-    customerIDSet(state, value)
+    customerSet(state, value)
     {
-      state.customer_id = value
+      state.customer = value
     }
   },
   actions: {
-  	async roleSet ({commit}, value)
+  	async adminSet ({commit}, value)
   	{
-			commit('roleSet', value)  		
+			commit('adminSet', value)  		
   	},
+    async meSet({commit}, value)
+    {
+      commit('meSet', value)
+    },
     async companySet({commit}, value)
     {
       commit('companySet', value)
     },
-    async customerIDSet({commit}, value)
+    async customerSet({commit}, value)
     {
-      commit('customerIDSet', value)
+      commit('customerSet', value)
     }
   },
   modules: {

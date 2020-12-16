@@ -35,7 +35,7 @@ import { DB } from '@/modules/DB'
 	name: 'Login',
 	methods:
 	{
-		...mapActions(['roleSet', 'companySet'])
+		...mapActions(['companySet'])
 	}
 })
 export default class Login extends Vue {

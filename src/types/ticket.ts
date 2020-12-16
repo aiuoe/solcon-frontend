@@ -7,4 +7,5 @@ export interface TICKET_TYPE
 	priority: boolean
 	pubic: boolean
 	status: boolean
+	due_date?: Date
 }

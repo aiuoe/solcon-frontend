@@ -1,18 +1,18 @@
 <template lang="pug">
 	.tickets.center-start-column
 		.btn-group
-			a(class="btn btn-filter" @click="ticketToggle('filter')")
+			a(class="ticket-filter p-7 evenly-center" @click="ticketToggle('filter')")
 				i(class="fa fa-filter")
-				span Filtrar
-			a(class="btn btn-new" @click="ticketToggle('store')") Nuevo
+				span Filtrar / Ordenar
+			a(class="btn btn-info center" @click="ticketToggle('store')") Nuevo
 
 		//- filter
 		div.filter(v-if="filter")
 			a(@click="orderBy('pinned')") Anclado
-			//- a(@click="orderBy('status')") Abierto
+		input(class="input input-search" v-if="list" type="text" placeholder="Buscar")
 
 		//- form
-		form(@submit.prevent="handleForm" class="form-column p-7" v-if="form")
+		form(@submit.prevent="upsert" class="form-column p-7" v-if="form")
 			input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
 			textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
 			.form-group
@@ -46,9 +46,9 @@
 					span {{ ticket.title }}
 					span {{ ticket.message }}
 					span Publico: {{ ticket.public }}
-					span Urgente: {{ ticket.public }}
-					span Anclado: {{ ticket.public }}
-					span Abierto: {{ ticket.public }}
+					span Urgente: {{ ticket.priority }}
+					span Anclado: {{ ticket.pinned }}
+					span Abierto: {{ ticket.status }}
 					span Creado: {{ ticket.created_at }}
 				.controls
 					.control
@@ -69,8 +69,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { TICKET_CREATE, DELETE_TICKET } from '@/graphql/Mutations'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { TICKET_UPSERT, TICKET_DELETE } from '@/graphql/mutations/ticket'
+import { USER_TICKETS } from '@/graphql/queries/user'
 import '@/modules/Array'
 
 @Component({
@@ -82,7 +83,6 @@ export default class Ticket extends Vue {
 	list: boolean = true
 	title: string = ''
 	message: string = ''
-	channel: string = 'web'
 	public: boolean = false
 	pinned: boolean = false
 	priority: boolean = false
@@ -90,9 +90,26 @@ export default class Ticket extends Vue {
 	method: any = null
 	params: any = {}
 	order: boolean = false
+	tickets: any = {}
+	customer: any = this.$store.state.customer
 
-	@Prop({required: true}) tickets: any
 	@Prop() cid: any
+
+	@Watch('cid', {immediate: true}) 
+	onCustomerChanged()
+	{
+		this.$apollo.query({query: USER_TICKETS, variables: { id: this.cid, page: 1 }})
+		.then(res => {
+			this.tickets = res.data.user.tickets.data
+		})
+		.catch(err => console.log(err))
+		console.log(this)
+	}
+
+	async created()
+	{
+
+	}
 
 	orderBy(key: any)
 	{
@@ -107,16 +124,10 @@ export default class Ticket extends Vue {
 				this.params[key] = (this.status)? {order: 'desc'} : {order: 'asc'}
 				break
 		}
-		console.log(this.params)
 		this.tickets.orderBy(this.params)
 		this.tickets.map((t: any) => {
 			console.log(t.pinned)
 		})
-	}
-
-	mutate(name: string, value: any)
-	{
-		name = value
 	}
 
 	ticketToggle(key: string)
@@ -150,43 +161,41 @@ export default class Ticket extends Vue {
 	{
 		this.title = ''
 		this.message = ''
-		this.channel = 'web'
 		this.public = false,
 		this.pinned = false,
 		this.priority = false,
 		this.status = false 
 	}
 
-	async handleForm()
+	async upsert()
 	{
-		if (this.cid === undefined)
-			this.mutate(this.cid, null)
-
 		if (this.method == 'store')
+		{
 			return await this.$apollo.mutate({
-				mutation: TICKET_CREATE, 
+				mutation: TICKET_UPSERT, 
 				variables: {
-					connect: this.cid,
+					users: [this.$store.state.me.id, this.cid],
 					title: this.title,
 					message: this.message,
 					pinned: this.pinned,
 					public: this.public,
 					priority: this.priority,
 					status: this.status,
-					channel: this.channel
-				}}).then(res => {
-						this.tickets.push(res.data.createTicket)
-						this.form = !this.form
-						this.list = !this.list
-						this.clear()
+					due_date: "2020-12-16"
+				}})
+				.then(res => {
+					this.tickets.push(res.data.ticketUpsert)
+					this.form = !this.form
+					this.list = !this.list
+					this.clear()
 				})
-		// else if (this.method == 'update')
-			// return await this.$apollo.mutate({mutation: })
+				.catch(err => console.log(err))
+		}
 	}
 
 	async deleteTicket(id: number)
 	{
-		return await this.$apollo.mutate({mutation: DELETE_TICKET, variables: {id: id}})
+		return await this.$apollo.mutate({mutation: TICKET_DELETE, variables: {id: id}})
 		.then(res => { this.tickets.delete(id) })
 	}
 
@@ -199,27 +208,29 @@ export default class Ticket extends Vue {
 	width: 100%
 	min-height: 100%
 
-
 .list-column
 	width: 100%
 	height: 100%
 
 .btn-group
 	width: 100%
-	margin-bottom: 7px
+	margin-bottom: 14px
 	display: flex
 	justify-content: space-between
 	align-items: center
 
-	.btn-filter
-		span
-			margin-left: 7px
-		.fa
-			color: var(--font)
+	.ticket-filter
+		width: 50%
+		cursor: pointer
 
-	.btn-new
-		align-self: flex-end
-		background-color: var(--info)
+	.btn-info
+		width: 25%
+		color: white
+
+.input-search
+	border-radius: 25px
+	height: 40px
+	font-size: 17px
 
 .filter
 	width: 100%
@@ -228,7 +239,7 @@ export default class Ticket extends Vue {
 	margin-bottom: 7px
 
 .form-column
-	border: 1px solid var(--background)
+	// border: 1px solid var(--background)
 
 .form-group
 	width: 90%
@@ -236,7 +247,7 @@ export default class Ticket extends Vue {
 .input
 	width: 90%
 	background-color: var(--contrast)
-	border: 1px solid var(--background)
+	border: 2px solid var(--background)
 	color: var(--font)
 
 	&::placeholder
@@ -245,7 +256,7 @@ export default class Ticket extends Vue {
 .textarea
 	width: 90%
 	background-color: var(--contrast)
-	border: 1px solid var(--background)
+	border: 2px solid var(--background)
 	color: var(--font)
 
 	&::placeholder

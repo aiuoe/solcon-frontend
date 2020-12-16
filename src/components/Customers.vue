@@ -18,7 +18,7 @@
 						a(style="cursor: pointer;" @click="filter('name')") nombre
 					ul.list-column.p-7(id="customers" v-if="!loading" @scroll="customersGet")
 						li(class="item p-7 start-center" v-for="customer, key in customers" @click="customerShow(key)")
-							a(class="link font") {{ customer.name | capitalize }} - {{ customer.lastname | capitalize }} {{ customer.created_at }}
+							a(class="link font") {{ customer.name | capitalize }} - {{ customer.lastname | capitalize }}
 			.aside.box
 				.loader(v-if="loading")
 					Loader
@@ -68,6 +68,7 @@ import Ticket from '@/components/partials/Ticket.vue';
 import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
 import { capitalize, upperCase } from '@/modules/Filter';
+import { mapState, mapActions } from 'vuex'
 // import Calendar from '@/components/partials/Calendar.vue';
 import '@/modules/Array'
 
@@ -77,6 +78,10 @@ import '@/modules/Array'
 	filters: {
 	  capitalize: capitalize,
 	  toUpperCase: upperCase
+	},
+	methods:
+	{
+		...mapActions(['customerSet'])
 	}
 })
 export default class Customers extends Vue {
@@ -91,6 +96,7 @@ export default class Customers extends Vue {
 	companiesMenuShow: boolean = false
 	purchasesMenuShow: boolean = false
 	ticketsMenuShow: boolean = false
+	customerSet!: (value: object | undefined) => any
 
 	async created()
 	{
@@ -159,6 +165,7 @@ export default class Customers extends Vue {
 		let box: any = document.querySelector('.aside')
 		box.style.display = 'flex'
 		this.customer = this.customers[id]
+		this.customerSet(this.customers[id])
 	}
 
 

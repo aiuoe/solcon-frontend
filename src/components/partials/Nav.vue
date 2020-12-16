@@ -2,7 +2,7 @@
 	section(class="nav")
 		.profile.p-7.center
 			.photo.center
-				span {{ company.name[0] }}
+				span {{ letter }}
 		nav(class="center")
 			ul(class="list-column-no-scroll")
 				li(class="item center")
@@ -71,9 +71,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { mapState, mapActions } from 'vuex'
 import { DB } from '@/modules/DB'
+import { COMPANIES } from '@/graphql/queries/company'
+import { ME } from '@/graphql/queries/me'
 import { decodeJWT } from '@/modules/Jwt'
 import gql from 'graphql-tag';
 import axios from 'axios';
@@ -87,15 +89,16 @@ import '@/modules/Array'
 	},
 	methods:
 	{
-		...mapActions(['roleSet', 'companySet'])
+		...mapActions(['adminSet', 'companySet', 'meSet'])
 	}
 })
 export default class Nav extends Vue {
 
 	@Prop() bank: any
 	theme: any = null
-	roleSet!: (value: null | boolean) => any
+	adminSet!: (value: boolean | null) => any
 	companySet!: (value: object | undefined) => any
+	meSet!: (value: object | undefined) => any
 	db: any
 
 	constructor()
@@ -106,18 +109,32 @@ export default class Nav extends Vue {
 
 	async created()
 	{
-
 		if (this.$store.state.admin == null)
-			this.roleSet((decodeJWT('role') == 'admin')? true : false)
+			this.adminSet((decodeJWT('role') == 'admin')? true : false)
 
-		if (this.$store.state.company == null)
+		if (this.$store.state.me == null)
 		{
-			this.db.companies.get({lid: 1})
-			.then((res: any) => this.companySet(res))
+			await this.db.me.get({lid: 1})
+			.then((res: any) => {
+				if (res)
+					this.meSet(res)
+				else
+					this.meGet()
+			})
 			.catch((err: any) => console.log(err))
 		}
 
-
+		if (this.$store.state.company == null)
+		{
+			await this.db.companies.get({lid: 1})
+			.then((res: any) => {
+				if (res)
+					this.companySet(res)
+				else
+					this.companyGet()
+			})	
+			.catch((err: any) => console.log(err))
+		}
 
 		this.theme = window.localStorage.getItem('theme')
 		if (this.theme == null)
@@ -133,6 +150,41 @@ export default class Nav extends Vue {
 			document.documentElement.style.setProperty ('--shadow-primary', 'none')
 			document.documentElement.style.setProperty ('--font', 'antiquewhite')
 		}
+	}
+
+	get letter ()
+	{
+		if (this.$store.state.company != null)
+			return this.$store.state.company.name[0]			
+	}
+
+	companyGet()
+	{
+		this.db.companies.clear()
+		this.$apollo.query({query: COMPANIES})
+		.then(res => {
+			if (res.data.me.companies.length)
+			{
+				this.db.companies.bulkAdd(res.data.me.companies)
+				this.db.companies.get({lid: 1})
+				.then((res: any) => this.companySet(res))
+				.catch((err: any) => console.log(err))
+			}
+			else
+				this.$router.push({path: 'empresa'})
+		})
+		.catch((err: any) => { console.log(err) })		
+	}
+
+	meGet()
+	{
+		this.db.me.clear()
+		this.$apollo.query({query: ME})
+		.then((res: any) => {
+				this.db.me.add(res.data.me)
+				this.meSet(res.data.me)
+		})
+		.catch((err: any) => { console.log(err) })		
 	}
 
 	setTheme()
@@ -169,7 +221,7 @@ export default class Nav extends Vue {
 		.then(res => 
 		{
 			window.localStorage.clear()
-			this.roleSet(null)			
+			this.adminSet(null)			
 			this.companySet(undefined)			
 			this.$router.push({ path: 'login' })
 		})

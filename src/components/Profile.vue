@@ -37,7 +37,7 @@ import Nav from '@/components/partials/Nav.vue';
 import Header from '@/components/partials/Header.vue';
 import Loader from '@/components/partials/Loader.vue';
 import Ticket from '@/components/partials/Ticket.vue';
-import { ME } from '@/graphql/Queries';
+// import { ME } from '@/graphql/Queries';
 import '@/modules/Array'
 
 @Component({
