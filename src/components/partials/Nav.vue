@@ -97,7 +97,7 @@ export default class Nav extends Vue {
 	@Prop() bank: any
 	theme: any = null
 	adminSet!: (value: boolean | null) => any
-	companySet!: (value: object | undefined) => any
+	companySet!: (value: object | null) => any
 	meSet!: (value: object | undefined) => any
 	db: any
 
@@ -113,28 +113,10 @@ export default class Nav extends Vue {
 			this.adminSet((decodeJWT('role') == 'admin')? true : false)
 
 		if (this.$store.state.me == null)
-		{
-			await this.db.me.get({lid: 1})
-			.then((res: any) => {
-				if (res)
-					this.meSet(res)
-				else
-					this.meGet()
-			})
-			.catch((err: any) => console.log(err))
-		}
+			this.meGet()
 
 		if (this.$store.state.company == null)
-		{
-			await this.db.companies.get({lid: 1})
-			.then((res: any) => {
-				if (res)
-					this.companySet(res)
-				else
-					this.companyGet()
-			})	
-			.catch((err: any) => console.log(err))
-		}
+			this.companyGet()
 
 		this.theme = window.localStorage.getItem('theme')
 		if (this.theme == null)
@@ -160,16 +142,10 @@ export default class Nav extends Vue {
 
 	companyGet()
 	{
-		this.db.companies.clear()
 		this.$apollo.query({query: COMPANIES})
-		.then(res => {
+		.then((res: any) => {
 			if (res.data.me.companies.length)
-			{
-				this.db.companies.bulkAdd(res.data.me.companies)
-				this.db.companies.get({lid: 1})
-				.then((res: any) => this.companySet(res))
-				.catch((err: any) => console.log(err))
-			}
+				this.companySet(res.data.me.companies.first())
 			else
 				this.$router.push({path: 'empresa'})
 		})
@@ -178,11 +154,9 @@ export default class Nav extends Vue {
 
 	meGet()
 	{
-		this.db.me.clear()
 		this.$apollo.query({query: ME})
 		.then((res: any) => {
-				this.db.me.add(res.data.me)
-				this.meSet(res.data.me)
+			this.meSet(res.data.me)
 		})
 		.catch((err: any) => { console.log(err) })		
 	}
@@ -222,7 +196,7 @@ export default class Nav extends Vue {
 		{
 			window.localStorage.clear()
 			this.adminSet(null)			
-			this.companySet(undefined)			
+			this.companySet(null)			
 			this.$router.push({ path: 'login' })
 		})
 		.catch(err => console.log(err))

@@ -1,47 +1,48 @@
 <template lang="pug">
 	.tickets.center-start-column
 		.btn-group
-			a(class="ticket-filter p-7 evenly-center" @click="ticketToggle('filter')")
+			a(class="ticket-filter p-7 evenly-center" @click="toggle(3)")
 				i(class="fa fa-filter")
 				span Filtrar / Ordenar
-			a(class="btn btn-info center" @click="ticketToggle('store')") Nuevo
+			a(class="btn btn-info center" @click="toggle(1)") Nuevo
 
 		//- filter
 		div.filter(v-if="filter")
 			a(@click="orderBy('pinned')") Anclado
-		input(class="input input-search" v-if="list" type="text" placeholder="Buscar")
+
+		input(class="input input-search" v-if="!form" type="text" placeholder="Buscar")
 
 		//- form
 		form(@submit.prevent="upsert" class="form-column p-7" v-if="form")
-			input(v-model="title" type="text" class="input input-flat" placeholder="Titulo: ")
-			textarea(v-model="message" class="textarea textarea-flat" placeholder="Mensaje: ")
+			input(v-model="ticket.title" type="text" class="input input-flat" placeholder="Titulo: ")
+			textarea(v-model="ticket.message" class="textarea textarea-flat" placeholder="Mensaje: ")
 			.form-group
 				.switch.p-7
 					label.shape
-						input(class="checkbox" type="checkbox" id="public" v-model="public")
+						input(class="checkbox" type="checkbox" id="public" v-model="ticket.public")
 						span(class="slider")
 					label(for="public" class="label") Publico Privado
 				.switch.p-7
 					label.shape
-						input(class="checkbox" type="checkbox" id="pinned" v-model="pinned")
+						input(class="checkbox" type="checkbox" id="pinned" v-model="ticket.pinned")
 						span(class="slider")
 					label(for="pinned" class="label") Anclado Desanclado
 			.form-group
 				.switch.p-7
 					label.shape
-						input(class="checkbox" type="checkbox" id="priority" v-model="priority")
+						input(class="checkbox" type="checkbox" id="priority" v-model="ticket.priority")
 						span(class="slider")
 					label(for="priority" class="label") Urgente normal
 				.switch.p-7
 					label.shape
-						input(class="checkbox" type="checkbox" id="status" v-model="status")
+						input(class="checkbox" type="checkbox" id="status" v-model="ticket.status")
 						span(class="slider")
 					label(for="status" class="label") Abierto Cerrado
 			input(class="btn btn-create" type="submit" value="Enviar")
 
-		//- list
-		ul.list-column.p-7(ref="listFilter" v-if="list")
-			li.item.p-7(v-for="ticket in tickets")
+
+		ul.list-column.p-7(ref="listFilter" v-if="!form")
+			li.item.p-7(v-for="(ticket, key) in tickets")
 				.start-center-column.p-7
 					span {{ ticket.title }}
 					span {{ ticket.message }}
@@ -60,7 +61,7 @@
 							i(class="fa fa-comment")
 							span {{ '100' }}
 					.control
-						a(class="link evenly-center")
+						a(class="link evenly-center" @click="toggle(2, ticket.id)")
 							i(class="fa fa-edit")
 					.control
 						a(class="link evenly-center" @click="deleteTicket(ticket.id)")
@@ -81,17 +82,20 @@ export default class Ticket extends Vue {
 	form: boolean = false
 	filter: boolean = false
 	list: boolean = true
-	title: string = ''
-	message: string = ''
-	public: boolean = false
-	pinned: boolean = false
-	priority: boolean = false
-	status: boolean = false
-	method: any = null
+	store: boolean = false
 	params: any = {}
 	order: boolean = false
+	ticket = {
+		id: '',
+		title: '',
+		message: '',
+		pinned: false,
+		priority: false,
+		public: false,
+		status: false,
+		channel: 'web'
+	}
 	tickets: any = {}
-	customer: any = this.$store.state.customer
 
 	@Prop() cid: any
 
@@ -103,91 +107,75 @@ export default class Ticket extends Vue {
 			this.tickets = res.data.user.tickets.data
 		})
 		.catch(err => console.log(err))
-		console.log(this)
 	}
 
-	async created()
+	toggle(key: number, id: number | null = null)
 	{
-
-	}
-
-	orderBy(key: any)
-	{
-		switch(key)
+		if (key == 1)
 		{
-			case 'pinned': 
-				this.pinned = !this.pinned
-				this.params[key] = (this.pinned)? {order: 'desc'} : {order: 'asc'}
-				break
-			case 'status':
-				this.status = !this.status
-				this.params[key] = (this.status)? {order: 'desc'} : {order: 'asc'}
-				break
+			this.store = true
+			this.list = false
+			this.form = true
+			this.filter = false
 		}
-		this.tickets.orderBy(this.params)
-		this.tickets.map((t: any) => {
-			console.log(t.pinned)
-		})
-	}
-
-	ticketToggle(key: string)
-	{
-		if (key == 'store')
+		else if (key == 2)
 		{
-			if (this.filter) this.filter = false
-			this.method = 'store'
-			this.list = !this.list
-			this.form = !this.form
+			this.store = false
+			this.list = false
+			this.form = true
+			this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+			this.filter = false
 		}
-		else if (key == 'update')
+		else if (key == 3)
 		{
-			if (this.filter) this.filter = false
-			this.method = 'update'
-			this.list = !this.list
-			this.form = !this.form
+			this.form = false
+			this.list = true
+			this.filter = true
 		}
-		else if (key == 'filter')
-		{
-			if (this.form)
-			{
-				this.form = !this.form
-				this.list = !this.list
-			}
-			this.filter = !this.filter
-		}
-	}
-
-	clear()
-	{
-		this.title = ''
-		this.message = ''
-		this.public = false,
-		this.pinned = false,
-		this.priority = false,
-		this.status = false 
 	}
 
 	async upsert()
 	{
-		if (this.method == 'store')
+		if (this.store)
 		{
 			return await this.$apollo.mutate({
 				mutation: TICKET_UPSERT, 
 				variables: {
 					users: [this.$store.state.me.id, this.cid],
-					title: this.title,
-					message: this.message,
-					pinned: this.pinned,
-					public: this.public,
-					priority: this.priority,
-					status: this.status,
+					title: this.ticket.title,
+					message: this.ticket.message,
+					pinned: this.ticket.pinned,
+					public: this.ticket.public,
+					priority: this.ticket.priority,
+					status: this.ticket.status,
 					due_date: "2020-12-16"
 				}})
 				.then(res => {
 					this.tickets.push(res.data.ticketUpsert)
-					this.form = !this.form
-					this.list = !this.list
-					this.clear()
+					this.form = false
+					this.list = true
+				})
+				.catch(err => console.log(err))
+		}
+		else
+		{
+			return await this.$apollo.mutate({
+				mutation: TICKET_UPSERT, 
+				variables: {
+					id: this.ticket.id,
+					users: [this.$store.state.me.id, this.cid],
+					title: this.ticket.title,
+					message: this.ticket.message,
+					pinned: this.ticket.pinned,
+					public: this.ticket.public,
+					priority: this.ticket.priority,
+					status: this.ticket.status,
+					due_date: "2020-12-16"
+				}})
+				.then(res => {
+					this.tickets.update(this.ticket.id, res.data.ticketUpsert)
+					this.form = false
+					this.list = true
 				})
 				.catch(err => console.log(err))
 		}
@@ -198,8 +186,6 @@ export default class Ticket extends Vue {
 		return await this.$apollo.mutate({mutation: TICKET_DELETE, variables: {id: id}})
 		.then(res => { this.tickets.delete(id) })
 	}
-
-
 }
 </script>
 

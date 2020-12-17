@@ -21,6 +21,11 @@ params($id: ID!, $page: Int!)
 				created_at
 				updated_at
 			}
+		  paginatorInfo
+		  {
+		    total
+		    hasMorePages
+		  }
 		}
 	}
 }`)

@@ -1,11 +1,13 @@
 export interface TICKET_TYPE
 {
+	id?: number
 	title: string
 	message: string
 	channel: string
 	pinned: boolean
 	priority: boolean
-	pubic: boolean
+	public: boolean
 	status: boolean
-	due_date?: Date
+	created_at?: Date
+	updated_at?: Date
 }

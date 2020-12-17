@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 
 export const TICKET_UPSERT = gql(`
-mutation ($users: [ID!], $title: String!, $message: String!, $pinned: Boolean!, $public: Boolean!, $priority: Boolean!, $status: Boolean!, $due_date: Date)
+mutation ($id: ID, $users: [ID!], $title: String!, $message: String!, $pinned: Boolean!, $public: Boolean!, $priority: Boolean!, $status: Boolean!, $due_date: Date)
 {
-  ticketUpsert(input: {
+  ticketUpsert(id: $id, input: {
     users: {
       sync: $users
     },

@@ -4,6 +4,7 @@ export const COMPANIES = gql(` query
 {
 	me
 	{
+		id
 		companies
 		{
 			id
