@@ -17,6 +17,7 @@
 	--contrast: #ffffff
 	--background: #f6f2ed
 	--font: #2D2D2D
+	--font-size: 20px
 	--border: 1px solid lightgray
 	// --shadow: 5px 5px 10px 1px rgba(211, 211, 211, .2)
 	// box-shadow: -10px -10px 20px #fAf7ef, 10px 10px 20px #DEDEDD
@@ -27,7 +28,9 @@
 
 
 .active
+	border-radius: 20px
 	background-color: var(--primary)
+	color: white
 
 	&-info
 		background-color: var(--info)
@@ -54,6 +57,15 @@
 		color: var(--warning)
 	
 	&-color-danger
+		color: var(--danger)
+
+	&-thumbs-up
+		transform: rotateY(180deg)
+
+	&-edit
+		color: var(--warning)
+
+	&-trash
 		color: var(--danger)
 
 body
@@ -138,6 +150,11 @@ body
 	justify-content: flex-start
 	align-items: center
 
+.end-center
+	display: flex
+	justify-content: flex-end
+	align-items: center
+
 .center-start-column
 	display: flex
 	flex-direction: column
@@ -167,6 +184,15 @@ body
 .m-b-7
 	margin-bottom: 7px
 
+.ml-7
+	margin-left: 7px
+
+.mb-7
+	margin-bottom: 7px
+
+.mr-7
+	margin-right: 7px
+
 // TEXT
 p, span
 	// font-family: 'Times New Roman'
@@ -192,18 +218,20 @@ p, span
 	flex-direction: column
 	overflow-y: scroll 
 	overflow-x: hidden
+	scrollbar-color: var(--primary) var(--contrast) !important
+	scrollbar-width: thin !important
 
 	&-no-scrool
 		overflow-y: hidden
 
 .list-column::-webkit-scrollbar
-	width: 5px
+	width: 3px
 
 .list-column::-webkit-scrollbar-thumb
 	background-color: var(--primary)
  
 .list-column::-webkit-scrollbar-track
-	background-color: var(--background)
+	background-color: var(--contrast)
 
 .item
 	width: 100%
@@ -486,6 +514,9 @@ p, span
 	.label
 		width: 50%
 		text-align: center
+
+.fontS
+	font-size: var(--font-size)
 
 @media screen and (min-width: 426px)
 

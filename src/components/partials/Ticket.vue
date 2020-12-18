@@ -1,9 +1,9 @@
 <template lang="pug">
 	.tickets.center-start-column
 		.btn-group
-			a(class="ticket-filter p-7 evenly-center" @click="toggle(3)")
-				i(class="fa fa-filter")
-				span Filtrar / Ordenar
+			a(class="ticket-filter p-7 start-center" @click="toggle(3)")
+				i(class="fa fa-filter mr-7")
+				span Filtrar
 			a(class="btn btn-info center" @click="toggle(1)") Nuevo
 
 		//- filter
@@ -21,36 +21,48 @@
 					label.shape
 						input(class="checkbox" type="checkbox" id="public" v-model="ticket.public")
 						span(class="slider")
-					label(for="public" class="label") Publico Privado
+					label(for="public" class="label fontS")
+						i(class="fa fa-user-lock")
 				.switch.p-7
 					label.shape
 						input(class="checkbox" type="checkbox" id="pinned" v-model="ticket.pinned")
 						span(class="slider")
-					label(for="pinned" class="label") Anclado Desanclado
+					label(for="pinned" class="label fontS")
+						i(class="fa fa-star")
 			.form-group
 				.switch.p-7
 					label.shape
 						input(class="checkbox" type="checkbox" id="priority" v-model="ticket.priority")
 						span(class="slider")
-					label(for="priority" class="label") Urgente normal
+					label(for="priority" class="label fontS")
+						i(class="fa fa-bell")
 				.switch.p-7
 					label.shape
 						input(class="checkbox" type="checkbox" id="status" v-model="ticket.status")
 						span(class="slider")
-					label(for="status" class="label") Abierto Cerrado
+					label(for="status" class="label fontS")
+						i(class="fa fa-lock")
 			input(class="btn btn-create" type="submit" value="Enviar")
 
 
 		ul.list-column.p-7(ref="listFilter" v-if="!form")
-			li.item.p-7(v-for="(ticket, key) in tickets")
+			li.item.p-7(v-for="item in tickets")
+				.options.end-center
+					a(@click="pinned(item.id, $event)" title="Anclar")
+						i(:class="['mr-7', 'fa', 'fa-star', {'pinned': item.pinned}]")
+					a(@click="priority(item.id, $event)" title="Normal / Urgente")
+						i(:class="['mr-7', 'fa', 'fa-bell', {'priority': item.priority}]")
+					a(@click="public(item.id, $event)" title="Publico / Privado")
+						i(:class="['mr-7', 'fa', 'fa-user-lock', {'public': item.public}]")
+					a(@click="status(item.id, $event)" title="Abierto / Cerrado")
+						i(:class="['mr-7', 'fa', 'fa-lock', {'status': item.status}]")
+
 				.start-center-column.p-7
-					span {{ ticket.title }}
-					span {{ ticket.message }}
-					span Publico: {{ ticket.public }}
-					span Urgente: {{ ticket.priority }}
-					span Anclado: {{ ticket.pinned }}
-					span Abierto: {{ ticket.status }}
-					span Creado: {{ ticket.created_at }}
+					span {{ item.title }}
+					span {{ item.message }}
+					.date
+						i(class="fa fa-calendar-alt mr-7")
+						span {{ item.created_at }}
 				.controls
 					.control
 						a(class="link evenly-center")
@@ -61,10 +73,10 @@
 							i(class="fa fa-comment")
 							span {{ '100' }}
 					.control
-						a(class="link evenly-center" @click="toggle(2, ticket.id)")
+						a(class="link evenly-center" @click="toggle(2, item.id)" title="Editar")
 							i(class="fa fa-edit")
 					.control
-						a(class="link evenly-center" @click="deleteTicket(ticket.id)")
+						a(class="link evenly-center" @click="deleteTicket(item.id)" title="Borrar")
 							i(class="fa fa-trash")
 
 </template>
@@ -73,6 +85,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { TICKET_UPSERT, TICKET_DELETE } from '@/graphql/mutations/ticket'
 import { USER_TICKETS } from '@/graphql/queries/user'
+import { $ } from '@/modules/Selector'
 import '@/modules/Array'
 
 @Component({
@@ -109,14 +122,69 @@ export default class Ticket extends Vue {
 		.catch(err => console.log(err))
 	}
 
+	priority(id: number, $event: any)
+	{
+		this.store = false
+		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket.priority = !this.ticket.priority
+		this.upsert()
+		$event.target.classList.toggle('priority')
+	}
+
+	pinned(id: number, $event: any)
+	{
+		this.store = false
+		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket.pinned = !this.ticket.pinned
+		this.upsert()
+		$event.target.classList.toggle('pinned')
+	}
+
+	status(id: number, $event: any)
+	{
+		this.store = false
+		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket.status = !this.ticket.status
+		this.upsert()
+		$event.target.classList.toggle('status')
+	}
+
+	public(id: number, $event: any)
+	{
+		this.store = false
+		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket.public = !this.ticket.public
+		this.upsert()
+		$event.target.classList.toggle('public')
+	}
+
+	clear()
+	{
+		this.ticket.title = ''
+		this.ticket.message = ''
+		this.ticket.pinned = false
+		this.ticket.priority = false
+		this.ticket.status = false
+		this.ticket.public = false
+	}
+
 	toggle(key: number, id: number | null = null)
 	{
 		if (key == 1)
 		{
-			this.store = true
-			this.list = false
-			this.form = true
-			this.filter = false
+			if (this.form)
+			{
+				this.store = false
+				this.list = true
+				this.form = false
+			}
+			else
+			{
+				this.store = true
+				this.list = false
+				this.form = true
+				this.filter = false
+			}
 		}
 		else if (key == 2)
 		{
@@ -128,9 +196,16 @@ export default class Ticket extends Vue {
 		}
 		else if (key == 3)
 		{
-			this.form = false
-			this.list = true
-			this.filter = true
+			if (this.filter)
+			{
+				this.filter = false
+			}
+			else
+			{
+				this.form = false
+				this.list = true
+				this.filter = true
+			}
 		}
 	}
 
@@ -154,6 +229,7 @@ export default class Ticket extends Vue {
 					this.tickets.push(res.data.ticketUpsert)
 					this.form = false
 					this.list = true
+					this.clear()
 				})
 				.catch(err => console.log(err))
 		}
@@ -174,8 +250,11 @@ export default class Ticket extends Vue {
 				}})
 				.then(res => {
 					this.tickets.update(this.ticket.id, res.data.ticketUpsert)
+					// this.$set(this.tickets, this.tickets[this.tickets.findIndex((t: any) => t.id == this.ticket.id)], res.data.ticketUpsert)
 					this.form = false
 					this.list = true
+					this.store = false
+					this.clear()
 				})
 				.catch(err => console.log(err))
 		}
@@ -212,11 +291,14 @@ export default class Ticket extends Vue {
 	.btn-info
 		width: 25%
 		color: white
+		font-weight: bold
 
 .input-search
+	width: 100%
 	border-radius: 25px
-	height: 40px
-	font-size: 17px
+	height: 35px
+	font-size: 15px
+	margin-bottom: 10px
 
 .filter
 	width: 100%
@@ -225,7 +307,7 @@ export default class Ticket extends Vue {
 	margin-bottom: 7px
 
 .form-column
-	// border: 1px solid var(--background)
+	height: 350px
 
 .form-group
 	width: 90%
@@ -241,6 +323,7 @@ export default class Ticket extends Vue {
 
 .textarea
 	width: 90%
+	height: 150px
 	background-color: var(--contrast)
 	border: 2px solid var(--background)
 	color: var(--font)
@@ -258,8 +341,23 @@ export default class Ticket extends Vue {
 .item
 	width: 100%
 	border: 1px solid var(--background)
+	padding-bottom: 0px
 
-	span
+.options
+	.fa
+		font-size: 20px
+
+.pinned
+	color: var(--warning)
+
+.priority
+	color: var(--success)
+
+.status
+	color: var(--danger)
+
+.public
+	color: var(--info)	
 
 .controls
 	width: 100%
@@ -267,6 +365,7 @@ export default class Ticket extends Vue {
 	border-top: 1px solid var(--background)
 	display: grid
 	grid-template-columns: repeat(4, 25%)
+	// background-color: blue 
 
 	.control
 

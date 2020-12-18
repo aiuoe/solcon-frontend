@@ -22,11 +22,11 @@
 			.aside.box
 				.loader(v-if="loading")
 					Loader
-				.wrapper.center-column(v-if="!loading")
+				.wrapper.start-column(v-if="!loading")
 					.back.start-center
 						a(class="link" @click="back")
 							i(class="fa fa-angle-left")
-					.photo.center
+					.photo.start-center
 						span(class="letter center font" v-if="customer.name") {{ customer.name[0] | toUpperCase }}
 					.menu
 						ul.list
@@ -37,10 +37,10 @@
 								a.link(@click="menuToggle('purchasesMenuShow')")
 									i(:class="['fa', 'fa-shopping-cart', 'center', {'active' : purchasesMenuShow}]")
 							li.item
-								a.link(:class="{active : companiesMenuShow}" @click="menuToggle('companiesMenuShow')")
+								a.link(@click="menuToggle('companiesMenuShow')")
 									i(:class="['fa', 'fa-building', 'center', {'active' : companiesMenuShow}]")
 							li.item
-								a.link(:class="{active : customerMenuShow}" @click="menuToggle('customerMenuShow')")
+								a.link(@click="menuToggle('customerMenuShow')")
 									i(:class="['fa', 'fa-user', 'center', {'active' : customerMenuShow}]")
 
 					.content
@@ -308,20 +308,21 @@ export default class Customers extends Vue {
 
 .photo
 	width: 100%
-	height: 100px
+	height: 50px
 
 	.letter
-		width: 100px
-		height: 100px
+		width: 50px
+		height: 50px
 		border-radius: 50%
 		background-color: var(--background)
-		font-size: 50px
+		font-size: 25px
 
 .menu
 	width: 100%
 	height: 35px
-	// background-color: var(--background)
-	border: 1px solid var(--background)
+	background-color: var(--background)
+	border-radius: 20px
+	// border: 1px solid var(--background)
 	margin: 10px 0px
 
 	.list
@@ -348,7 +349,7 @@ export default class Customers extends Vue {
 
 .content
 	width: 100%
-	height: calc(100% - 155px)
+	height: calc(100% - 92px)
 
 	.tickets
 		width: 100%
