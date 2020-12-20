@@ -1,5 +1,6 @@
 <template lang="pug">
-	.tickets.center-start-column
+.w100per-h100per-column
+	.tickets.center-start-column(v-if="!commentToggle")
 		.btn-group
 			a(class="ticket-filter p-7 start-center" @click="toggle(3)")
 				i(class="fa fa-filter mr-7")
@@ -44,7 +45,6 @@
 						i(class="fa fa-lock")
 			input(class="btn btn-create" type="submit" value="Enviar")
 
-
 		ul.list-column.p-7(ref="listFilter" v-if="!form")
 			li.item.p-7(v-for="item in tickets")
 				.options.end-center
@@ -69,9 +69,9 @@
 							i(class="fa fa-thumbs-up")
 							span {{ '100' }}
 					.control
-						a(class="link evenly-center")
+						a(class="link evenly-center" @click="comment(item.id)")
 							i(class="fa fa-comment")
-							span {{ '100' }}
+							span {{ item.Ncomments }}
 					.control
 						a(class="link evenly-center" @click="toggle(2, item.id)" title="Editar")
 							i(class="fa fa-edit")
@@ -79,17 +79,21 @@
 						a(class="link evenly-center" @click="deleteTicket(item.id)" title="Borrar")
 							i(class="fa fa-trash")
 
+	.comments(v-if="commentToggle")
+		Comment(v-bind:ticketId="ticketId")
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { TICKET_UPSERT, TICKET_DELETE } from '@/graphql/mutations/ticket'
 import { USER_TICKETS } from '@/graphql/queries/user'
+import Comment from '@/components/partials/Comment.vue';
 import { $ } from '@/modules/Selector'
 import '@/modules/Array'
 
 @Component({
 	name: 'Ticket',
+	components: { Comment }
 })
 export default class Ticket extends Vue {
 	form: boolean = false
@@ -98,8 +102,10 @@ export default class Ticket extends Vue {
 	store: boolean = false
 	params: any = {}
 	order: boolean = false
+	ticketId: number = 0
+	commentToggle: boolean = false
 	ticket = {
-		id: '',
+		id: 0,
 		title: '',
 		message: '',
 		pinned: false,
@@ -115,17 +121,23 @@ export default class Ticket extends Vue {
 	@Watch('cid', {immediate: true}) 
 	onCustomerChanged()
 	{
-		this.$apollo.query({query: USER_TICKETS, variables: { id: this.cid, page: 1 }})
+		this.$apollo.query({query: USER_TICKETS, variables: { id: this.cid, page: 1, commentPage: 1 }})
 		.then(res => {
 			this.tickets = res.data.user.tickets.data
 		})
 		.catch(err => console.log(err))
 	}
 
+	comment(id: number)
+	{
+		this.commentToggle = true
+		this.ticketId = this.tickets.search(id).id
+	}
+
 	priority(id: number, $event: any)
 	{
 		this.store = false
-		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket = this.tickets.search(id)
 		this.ticket.priority = !this.ticket.priority
 		this.upsert()
 		$event.target.classList.toggle('priority')
@@ -134,7 +146,7 @@ export default class Ticket extends Vue {
 	pinned(id: number, $event: any)
 	{
 		this.store = false
-		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket = this.tickets.search(id)
 		this.ticket.pinned = !this.ticket.pinned
 		this.upsert()
 		$event.target.classList.toggle('pinned')
@@ -143,7 +155,7 @@ export default class Ticket extends Vue {
 	status(id: number, $event: any)
 	{
 		this.store = false
-		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket = this.tickets.search(id)
 		this.ticket.status = !this.ticket.status
 		this.upsert()
 		$event.target.classList.toggle('status')
@@ -152,7 +164,7 @@ export default class Ticket extends Vue {
 	public(id: number, $event: any)
 	{
 		this.store = false
-		this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+		this.ticket = this.tickets.search(id)
 		this.ticket.public = !this.ticket.public
 		this.upsert()
 		$event.target.classList.toggle('public')
@@ -191,7 +203,7 @@ export default class Ticket extends Vue {
 			this.store = false
 			this.list = false
 			this.form = true
-			this.ticket = this.tickets[this.tickets.findIndex((t: any) => t.id == id)]
+			this.ticket = this.tickets.search(id)
 			this.filter = false
 		}
 		else if (key == 3)
@@ -250,7 +262,6 @@ export default class Ticket extends Vue {
 				}})
 				.then(res => {
 					this.tickets.update(this.ticket.id, res.data.ticketUpsert)
-					// this.$set(this.tickets, this.tickets[this.tickets.findIndex((t: any) => t.id == this.ticket.id)], res.data.ticketUpsert)
 					this.form = false
 					this.list = true
 					this.store = false
@@ -271,11 +282,12 @@ export default class Ticket extends Vue {
 <style lang="sass" scoped>
 .tickets
 	width: 100%
-	min-height: 100%
+	height: 99%
+	overflow: hidden
 
-.list-column
-	width: 100%
-	height: 100%
+	.list-column
+		width: 100%
+		height: 99%
 
 .btn-group
 	width: 100%
@@ -342,6 +354,7 @@ export default class Ticket extends Vue {
 	width: 100%
 	border: 1px solid var(--background)
 	padding-bottom: 0px
+	margin-bottom: 7px
 
 .options
 	.fa
@@ -365,7 +378,6 @@ export default class Ticket extends Vue {
 	border-top: 1px solid var(--background)
 	display: grid
 	grid-template-columns: repeat(4, 25%)
-	// background-color: blue 
 
 	.control
 
@@ -373,4 +385,7 @@ export default class Ticket extends Vue {
 			width: 100%
 			height: 100%
 
+.comments
+	width: 100%
+	min-height: 100%
 </style>

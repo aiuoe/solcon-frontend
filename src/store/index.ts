@@ -8,7 +8,8 @@ export default new Vuex.Store({
   	admin: null,
     me: null,
     company: null,
-    customer: null
+    customer: null,
+    comments: false,
   },
   mutations: {
   	adminSet(state, value)
@@ -26,6 +27,10 @@ export default new Vuex.Store({
     customerSet(state, value)
     {
       state.customer = value
+    },
+    commentSet(state, value)
+    {
+      state.comments = value
     }
   },
   actions: {
@@ -44,6 +49,10 @@ export default new Vuex.Store({
     async customerSet({commit}, value)
     {
       commit('customerSet', value)
+    },
+    async commentSet({commit}, value)
+    {
+      commit('commentSet', value)
     }
   },
   modules: {

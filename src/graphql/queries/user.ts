@@ -20,6 +20,7 @@ params($id: ID!, $page: Int!)
 				due_date
 				created_at
 				updated_at
+				Ncomments
 			}
 		  paginatorInfo
 		  {

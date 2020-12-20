@@ -49,14 +49,10 @@
 							p Nombre: {{ customer.name }}
 							p Apellido: {{ customer.lastname }}
 							p Correo: {{ customer.email }}
-
 						//- TICKETS
 						.tickets(v-if="ticketsMenuShow")
 							Ticket(v-bind:cid.sync="customer.id" v-bind:tickets.sync="customer.tickets")
-						
 						.companies(v-if="companiesMenuShow")
-
-
 						.purchases(v-if="purchasesMenuShow")
 </template>
 
@@ -322,7 +318,6 @@ export default class Customers extends Vue {
 	height: 35px
 	background-color: var(--background)
 	border-radius: 20px
-	// border: 1px solid var(--background)
 	margin: 10px 0px
 
 	.list
@@ -342,10 +337,6 @@ export default class Customers extends Vue {
 				.fa
 					width: 100%
 					height: 100%
-
-				// .active
-					// background-color: transparent !important
-					// border-radius: 25px
 
 .content
 	width: 100%
