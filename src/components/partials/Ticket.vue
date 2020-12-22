@@ -80,7 +80,7 @@
 							i(class="fa fa-trash")
 
 	.comments(v-if="commentToggle")
-		Comment(v-bind:ticketId="ticketId")
+		Comment(v-bind:ticketId="ticketId" v-bind:commentToggle.sync="commentToggle")
 </template>
 
 <script lang="ts">
@@ -121,6 +121,7 @@ export default class Ticket extends Vue {
 	@Watch('cid', {immediate: true}) 
 	onCustomerChanged()
 	{
+		this.commentToggle = false
 		this.$apollo.query({query: USER_TICKETS, variables: { id: this.cid, page: 1, commentPage: 1 }})
 		.then(res => {
 			this.tickets = res.data.user.tickets.data

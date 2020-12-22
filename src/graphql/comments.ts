@@ -3,29 +3,29 @@ import gql from 'graphql-tag';
 export const TICKET_COMMENTS = gql(`query
 params($id: ID!)
 {
-  ticket(id: $id)
+ticket(id: $id)
+{
+  id
+  comments
   {
     id
-    comments
+    message
+    created_at
+    user_id
     {
       id
+      name
+      role
+      lastname
+    }
+    ticket_id
+    {
+      id
+      title
       message
-      created_at
-      user_id
-      {
-        id
-        name
-        role
-        lastname
-      }
-      ticket_id
-      {
-        id
-        title
-        message
-      }
     }
   }
+}
 }`)
 
 export const COMMENT_UPSERT = gql(`

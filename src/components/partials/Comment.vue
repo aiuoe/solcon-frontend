@@ -1,7 +1,7 @@
 <template lang="pug">
 .messages.w100per-h100per-column
 	.section
-		a(class="link start-center")
+		a(class="link start-center" @click="$emit('update:commentToggle', false)")
 			i(class="fa fa-chevron-left")
 	ul(class="list-column list-comment p-7" id="list")
 		li(class="item p-7" v-for="c in comments")
@@ -54,7 +54,7 @@ export default class Comment extends Vue {
 		})
 	}
 
-	async mounted()
+	async updated()
 	{
 		$('.list-comment').scrollTop = $('.list-comment').scrollHeight
 	}
@@ -74,7 +74,6 @@ export default class Comment extends Vue {
 				this.comments.push(res.data.commentUpsert)
 			this.comment.id = 0
 			this.comment.message = ''
-			$('.list-comment').scrollTop = $('.list-comment').scrollHeight
 		})
 	}
 
