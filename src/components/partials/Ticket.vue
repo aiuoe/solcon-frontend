@@ -233,6 +233,18 @@ export default class Ticket extends Vue {
 
 	async upsert()
 	{
+		if (this.notify)
+		{
+			this.$apollo
+			.mutate({mutation: MAIL_RAW, variables: {
+				to: this.customer.email,
+				subject: this.ticket.title,
+				message: this.ticket.message
+			}})
+			.then(res => console.log(res))
+			.catch(err => console.log(err))
+		}
+
 		if (this.store)
 		{
 			return await this.$apollo.mutate({
@@ -279,9 +291,6 @@ export default class Ticket extends Vue {
 				})
 				.catch(err => console.log(err))
 		}
-
-		if (this.notify)
-			this.$apollo.mutate({mutation: MAIL_RAW, variables: { to: this.customer.email, subject: this.ticket.title, message: this.ticket.message }}).then(res => console.log(res)).catch(err => console.log(err))
 	}
 
 	async deleteTicket(id: number)
