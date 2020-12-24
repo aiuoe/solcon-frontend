@@ -43,6 +43,13 @@
 						span(class="slider")
 					label(for="status" class="label fontS")
 						i(class="fa fa-lock")
+			.form-group
+				.switch.p-7
+					label.shape
+						input(class="checkbox" type="checkbox" id="status" v-model="notify")
+						span(class="slider")
+					label(for="status" class="label fontS")
+						i(class="fa fa-envelope")
 			input(class="btn btn-create" type="submit" value="Enviar")
 
 		ul.list-column.p-7(ref="listFilter" v-if="!form")
@@ -87,6 +94,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { TICKET_UPSERT, TICKET_DELETE } from '@/graphql/mutations/ticket'
 import { USER_TICKETS } from '@/graphql/queries/user'
+import { MAIL_RAW } from '@/graphql/mail'
 import Comment from '@/components/partials/Comment.vue';
 import { $ } from '@/modules/Selector'
 import '@/modules/Array'
@@ -103,6 +111,7 @@ export default class Ticket extends Vue {
 	params: any = {}
 	order: boolean = false
 	ticketId: number = 0
+	notify: boolean = false
 	commentToggle: boolean = false
 	ticket = {
 		id: 0,
@@ -116,13 +125,13 @@ export default class Ticket extends Vue {
 	}
 	tickets: any = {}
 
-	@Prop() cid: any
+	@Prop() customer: any
 
-	@Watch('cid', {immediate: true}) 
+	@Watch('customer', {immediate: true}) 
 	onCustomerChanged()
 	{
 		this.commentToggle = false
-		this.$apollo.query({query: USER_TICKETS, variables: { id: this.cid, page: 1, commentPage: 1 }})
+		this.$apollo.query({query: USER_TICKETS, variables: { id: this.customer.id, page: 1 }})
 		.then(res => {
 			this.tickets = res.data.user.tickets.data
 		})
@@ -229,7 +238,7 @@ export default class Ticket extends Vue {
 			return await this.$apollo.mutate({
 				mutation: TICKET_UPSERT, 
 				variables: {
-					users: [this.$store.state.me.id, this.cid],
+					users: [this.$store.state.me.id, this.customer.id],
 					title: this.ticket.title,
 					message: this.ticket.message,
 					pinned: this.ticket.pinned,
@@ -252,7 +261,7 @@ export default class Ticket extends Vue {
 				mutation: TICKET_UPSERT, 
 				variables: {
 					id: this.ticket.id,
-					users: [this.$store.state.me.id, this.cid],
+					users: [this.$store.state.me.id, this.customer.id],
 					title: this.ticket.title,
 					message: this.ticket.message,
 					pinned: this.ticket.pinned,
@@ -270,6 +279,9 @@ export default class Ticket extends Vue {
 				})
 				.catch(err => console.log(err))
 		}
+
+		if (this.notify)
+			this.$apollo.mutate({mutation: MAIL_RAW, variables: { to: this.customer.email, subject: this.ticket.title, message: this.ticket.message }})
 	}
 
 	async deleteTicket(id: number)

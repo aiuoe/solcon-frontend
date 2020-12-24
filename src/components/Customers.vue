@@ -51,7 +51,7 @@
 							p Correo: {{ customer.email }}
 						//- TICKETS
 						.tickets(v-if="ticketsMenuShow")
-							Ticket(v-bind:cid.sync="customer.id" v-bind:tickets.sync="customer.tickets")
+							Ticket(v-bind:customer.sync="customer" v-bind:tickets.sync="customer.tickets")
 						.companies(v-if="companiesMenuShow")
 						.purchases(v-if="purchasesMenuShow")
 </template>
