@@ -65,6 +65,7 @@ import { GET_ALL_CUSTOMERS } from '@/graphql/Queries';
 import Loader from '@/components/partials/Loader.vue';
 import { capitalize, upperCase } from '@/modules/Filter';
 import { mapState, mapActions } from 'vuex'
+import gql from 'graphql-tag';
 // import Calendar from '@/components/partials/Calendar.vue';
 import '@/modules/Array'
 
@@ -97,7 +98,7 @@ export default class Customers extends Vue {
 	async created()
 	{
 		this.loading = true
-		return await this.$apollo.query({ query: GET_ALL_CUSTOMERS, variables: { page: 1 }})
+		await this.$apollo.query({ query: GET_ALL_CUSTOMERS, variables: { page: 1 }})
 		.then((res: any) => 
 			{ 
 				this.customers = res.data.users.data
@@ -108,6 +109,26 @@ export default class Customers extends Vue {
 				this.loading = false
 			})
 		.catch((res: any) => console.log(res))
+
+		const obs = this.$apollo.subscribe({
+			query: gql(`subscription
+				UserUpdated
+				{
+					userUpdated
+					{
+						id
+						name
+						lastname
+						email
+					}
+				}`)})
+		obs.subscribe({
+			next: (data: any) => { 
+				this.customers.upsert(data.data.userUpdated)
+				this.customer = this.customers[0]
+			},
+			error: (error: any) => console.log(error)
+		})
 	}
 
 	async customersGet()

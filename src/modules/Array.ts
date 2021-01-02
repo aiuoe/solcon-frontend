@@ -5,6 +5,7 @@ interface Array<T>
 	delete(id: number): void
 	orderBy(params: any): void
 	first(): any
+	upsert(item: any): void
 }
 
 interface String
@@ -20,6 +21,13 @@ interface Date
 Date.prototype.valid = function (): boolean
 {
 	return !isNaN(this.getTime())
+}
+
+Array.prototype.upsert = function (item: any) {
+	if (this[this.indexOf(this.find((i: any) => i.id == item.id))])
+		this[this.indexOf(this.find((i: any) => i.id == item.id))] = item
+	else
+		this.push(item) 
 }
 
 Array.prototype.first = function (): any
