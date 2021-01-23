@@ -1,17 +1,19 @@
 <template lang="pug">
 .w100per-h100per-column
 	.tickets.center-start-column(v-if="!commentToggle")
-		.btn-group
-			a(class="ticket-filter p-7 start-center" @click="toggle(3)")
-				i(class="fa fa-filter mr-7")
-				span Filtrar
-			a(class="btn btn-info center" @click="toggle(1)") Nuevo
+		.ticket-menu.evenly-center
+			a(class="ticket-filter")
+				i(class="fa fa-sort-amount-up-alt fa-h")
+			input(class="ticket-search" v-if="!form" type="text" placeholder="Buscar")
+			a(class="ticket-new")
+				i(class="fa fa-plus fa-h")
+			a(class="ticket-new")
+				i(class="fa fa-ellipsis-h fa-h")
 
 		//- filter
 		div.filter(v-if="filter")
 			a(@click="orderBy('pinned')") Anclado
 
-		input(class="input input-search" v-if="!form" type="text" placeholder="Buscar")
 
 		//- form
 		form(@submit.prevent="upsert" class="form-column p-7" v-if="form")
@@ -53,38 +55,31 @@
 			input(class="btn btn-create" type="submit" value="Enviar")
 
 		ul.list-column.p-7(ref="listFilter" v-if="!form")
-			li.item.p-7(v-for="item in tickets")
-				.options.end-center
-					a(@click="pinned(item.id, $event)" title="Anclar")
-						i(:class="['mr-7', 'fa', 'fa-star', {'pinned': item.pinned}]")
-					a(@click="priority(item.id, $event)" title="Normal / Urgente")
-						i(:class="['mr-7', 'fa', 'fa-bell', {'priority': item.priority}]")
-					a(@click="public(item.id, $event)" title="Publico / Privado")
-						i(:class="['mr-7', 'fa', 'fa-user-lock', {'public': item.public}]")
-					a(@click="status(item.id, $event)" title="Abierto / Cerrado")
-						i(:class="['mr-7', 'fa', 'fa-lock', {'status': item.status}]")
-
-				.start-center-column.p-7
-					span {{ item.title }}
-					span {{ item.message }}
-					.date
-						i(class="fa fa-calendar-alt mr-7")
-						span {{ item.created_at }}
-				.controls
-					.control
-						a(class="link evenly-center")
-							i(class="fa fa-thumbs-up")
-							span {{ '100' }}
-					.control
-						a(class="link evenly-center" @click="comment(item.id)")
-							i(class="fa fa-comment")
-							span {{ item.Ncomments }}
-					.control
-						a(class="link evenly-center" @click="toggle(2, item.id)" title="Editar")
-							i(class="fa fa-edit")
-					.control
-						a(class="link evenly-center" @click="deleteTicket(item.id)" title="Borrar")
-							i(class="fa fa-trash")
+			li.item(class="ticket" v-for="item in tickets" :id="'ticket-' + item.id")
+				div.ticket-head.between-center.p-7
+					span.ticket-date {{ item.created_at | date }}
+					a
+						i(class="far fa-heart")
+					a
+						i(class="far fa-star")
+				.center-column.p-7
+					span.ticket-title {{ item.title | extract(30) }}
+					span.ticket-message.p-7 {{ item.message | extract(100) }}
+				//- .controls
+				//- 	.control
+				//- 		a(class="link evenly-center")
+				//- 			i(class="fa fa-thumbs-up")
+				//- 			span {{ '100' }}
+				//- 	.control
+				//- 		a(class="link evenly-center" @click="comment(item.id)")
+				//- 			i(class="fa fa-comment")
+				//- 			span {{ item.Ncomments }}
+				//- 	.control
+				//- 		a(class="link evenly-center" @click="toggle(2, item.id)" title="Editar")
+				//- 			i(class="fa fa-edit")
+				//- 	.control
+				//- 		a(class="link evenly-center" @click="deleteTicket(item.id)" title="Borrar")
+				//- 			i(class="fa fa-trash")
 
 	.comments(v-if="commentToggle")
 		Comment(v-bind:ticketId="ticketId" v-bind:commentToggle.sync="commentToggle")
@@ -96,23 +91,29 @@ import { TICKET_UPSERT, TICKET_DELETE } from '@/graphql/mutations/ticket'
 import { USER_TICKETS } from '@/graphql/queries/user'
 import { MAIL_RAW } from '@/graphql/mail'
 import Comment from '@/components/partials/Comment.vue';
+import { capitalize, upperCase, extract, date } from '@/modules/Filter'
 import { $ } from '@/modules/Selector'
 import '@/modules/Array'
 
 @Component({
 	name: 'Ticket',
-	components: { Comment }
+	components: { Comment },
+	filters: {capitalize: capitalize, upperCase: upperCase, extract: extract, date: date },
 })
 export default class Ticket extends Vue {
 	form: boolean = false
 	filter: boolean = false
 	list: boolean = true
-	store: boolean = false
 	params: any = {}
 	order: boolean = false
 	ticketId: number = 0
 	notify: boolean = false
 	commentToggle: boolean = false
+	orderQuery: any = {
+		created_at: 'desc', 
+		pinned: 'asc', 
+		status: 'asc'
+	}
 	ticket = {
 		id: 0,
 		title: '',
@@ -133,7 +134,8 @@ export default class Ticket extends Vue {
 		this.commentToggle = false
 		this.$apollo.query({query: USER_TICKETS, variables: { id: this.customer.id, page: 1 }})
 		.then(res => {
-			this.tickets = res.data.user.tickets.data
+			this.tickets = res.data.user.tickets
+			this.tickets.orderBy(this.orderQuery)
 		})
 		.catch(err => console.log(err))
 	}
@@ -141,13 +143,12 @@ export default class Ticket extends Vue {
 	comment(id: number)
 	{
 		this.commentToggle = true
-		this.ticketId = this.tickets.search(id).id
+		this.ticketId = this.tickets.get(id).id
 	}
 
 	priority(id: number, $event: any)
 	{
-		this.store = false
-		this.ticket = this.tickets.search(id)
+		this.ticket = this.tickets.get(id)
 		this.ticket.priority = !this.ticket.priority
 		this.upsert()
 		$event.target.classList.toggle('priority')
@@ -155,17 +156,15 @@ export default class Ticket extends Vue {
 
 	pinned(id: number, $event: any)
 	{
-		this.store = false
-		this.ticket = this.tickets.search(id)
+		$(`#ticket-${id}`).classList.toggle('pinned')
+		this.ticket = this.tickets.get(id)
 		this.ticket.pinned = !this.ticket.pinned
 		this.upsert()
-		$event.target.classList.toggle('pinned')
 	}
 
 	status(id: number, $event: any)
 	{
-		this.store = false
-		this.ticket = this.tickets.search(id)
+		this.ticket = this.tickets.get(id)
 		this.ticket.status = !this.ticket.status
 		this.upsert()
 		$event.target.classList.toggle('status')
@@ -173,8 +172,7 @@ export default class Ticket extends Vue {
 
 	public(id: number, $event: any)
 	{
-		this.store = false
-		this.ticket = this.tickets.search(id)
+		this.ticket = this.tickets.get(id)
 		this.ticket.public = !this.ticket.public
 		this.upsert()
 		$event.target.classList.toggle('public')
@@ -182,6 +180,7 @@ export default class Ticket extends Vue {
 
 	clear()
 	{
+		this.ticket.id = 0
 		this.ticket.title = ''
 		this.ticket.message = ''
 		this.ticket.pinned = false
@@ -196,13 +195,11 @@ export default class Ticket extends Vue {
 		{
 			if (this.form)
 			{
-				this.store = false
 				this.list = true
 				this.form = false
 			}
 			else
 			{
-				this.store = true
 				this.list = false
 				this.form = true
 				this.filter = false
@@ -210,10 +207,9 @@ export default class Ticket extends Vue {
 		}
 		else if (key == 2)
 		{
-			this.store = false
 			this.list = false
 			this.form = true
-			this.ticket = this.tickets.search(id)
+			this.ticket = this.tickets.get(id)
 			this.filter = false
 		}
 		else if (key == 3)
@@ -245,52 +241,28 @@ export default class Ticket extends Vue {
 			.catch(err => console.log(err))
 		}
 
-		if (this.store)
-		{
-			return await this.$apollo.mutate({
-				mutation: TICKET_UPSERT, 
-				variables: {
-					users: [this.$store.state.me.id, this.customer.id],
-					title: this.ticket.title,
-					message: this.ticket.message,
-					pinned: this.ticket.pinned,
-					public: this.ticket.public,
-					priority: this.ticket.priority,
-					status: this.ticket.status,
-					due_date: "2020-12-16"
-				}})
-				.then(res => {
-					this.tickets.push(res.data.ticketUpsert)
-					this.form = false
-					this.list = true
-					this.clear()
-				})
-				.catch(err => console.log(err))
-		}
-		else
-		{
-			return await this.$apollo.mutate({
-				mutation: TICKET_UPSERT, 
-				variables: {
-					id: this.ticket.id,
-					users: [this.$store.state.me.id, this.customer.id],
-					title: this.ticket.title,
-					message: this.ticket.message,
-					pinned: this.ticket.pinned,
-					public: this.ticket.public,
-					priority: this.ticket.priority,
-					status: this.ticket.status,
-					due_date: "2020-12-16"
-				}})
-				.then(res => {
-					this.tickets.update(this.ticket.id, res.data.ticketUpsert)
-					this.form = false
-					this.list = true
-					this.store = false
-					this.clear()
-				})
-				.catch(err => console.log(err))
-		}
+		return await this.$apollo.mutate({
+			mutation: TICKET_UPSERT, 
+			variables: {
+				id: this.ticket.id,
+				users: [this.$store.state.me.id, this.customer.id],
+				title: this.ticket.title,
+				message: this.ticket.message,
+				pinned: this.ticket.pinned,
+				public: this.ticket.public,
+				priority: this.ticket.priority,
+				status: this.ticket.status,
+				due_date: "2020-12-16"
+			}})
+			.then(res => {
+				console.log(res.data.ticketUpsert)
+				this.tickets.upsert(res.data.ticketUpsert)
+				this.tickets.orderBy(this.orderQuery)
+				this.form = false
+				this.list = true
+				this.clear()
+			})
+			.catch(err => console.log(err))
 	}
 
 	async deleteTicket(id: number)
@@ -318,27 +290,13 @@ export default class Ticket extends Vue {
 	justify-content: space-between
 	align-items: center
 
-	.ticket-filter
-		width: 50%
-		cursor: pointer
 
 	.btn-info
 		width: 25%
 		color: white
 		font-weight: bold
 
-.input-search
-	width: 100%
-	border-radius: 25px
-	height: 35px
-	font-size: 15px
-	margin-bottom: 10px
 
-.filter
-	width: 100%
-	height: calc(30% - 7px)
-	border: 1px solid var(--background)
-	margin-bottom: 7px
 
 .form-column
 	height: 350px
@@ -368,46 +326,42 @@ export default class Ticket extends Vue {
 .label
 	color: var(--font)
 
-.btn-create
-	width: 30%
-	background-color: var(--success)
-
-.item
-	width: 100%
-	border: 1px solid var(--background)
-	padding-bottom: 0px
-	margin-bottom: 7px
-
-.options
-	.fa
-		font-size: 20px
-
-.pinned
-	color: var(--warning)
-
-.priority
-	color: var(--success)
-
-.status
-	color: var(--danger)
-
-.public
-	color: var(--info)	
-
-.controls
-	width: 100%
-	height: 30px
-	border-top: 1px solid var(--background)
-	display: grid
-	grid-template-columns: repeat(4, 25%)
-
-	.control
-
-		.link
-			width: 100%
-			height: 100%
 
 .comments
 	width: 100%
 	min-height: 100%
+
+.ticket
+	width: 100%
+	background-color: var(--contrast)
+	border: 2px solid var(--background)
+
+	&-head
+		width: 100%
+		height: 30px
+
+	&-date
+		color: slategray
+
+	&-filter
+		height: 100%
+
+	&-menu
+		width: 100%
+		height: 40px
+
+	&-search
+		height: 70%
+		border: 2px solid var(--background)
+		outline: none
+		text-indent: 14px
+		border-radius: 20px
+
+		&:focus
+			border: 2px solid var(--font)
+
+	&-title
+		padding: 7px
+		box-sizing: border-box
+		border-bottom: 1px solid var(--background)
 </style>

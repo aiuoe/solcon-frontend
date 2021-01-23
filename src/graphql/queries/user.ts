@@ -1,32 +1,24 @@
 import gql from 'graphql-tag';
 
 export const USER_TICKETS = gql(`query
-params($id: ID!, $page: Int!)
+params($id: ID!)
 {
 	user(id: $id)
 	{
-		tickets(first: 20, page: $page)
+		tickets
 		{
-			data
-			{
-				id
-				title
-				message
-				pinned
-				public
-				priority
-				status
-				channel
-				due_date
-				created_at
-				updated_at
-				Ncomments
-			}
-		  paginatorInfo
-		  {
-		    total
-		    hasMorePages
-		  }
+			id
+			title
+			message
+			pinned
+			public
+			priority
+			status
+			channel
+			due_date
+			created_at
+			updated_at
+			Ncomments
 		}
 	}
 }`)

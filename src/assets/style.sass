@@ -1,5 +1,6 @@
 @import url('fontawesome.min.css')
 @import url('solid.min.css')
+@import url('regular.min.css')
 
 *, *::before, *::after 
 	margin: 0px
@@ -46,6 +47,12 @@
 
 .fa
 	color: var(--font)
+	cursor: pointer
+	font-size: 20px
+	display: flex
+	justify-content: center
+	align-items: center
+
 
 	&-color-info
 		color: var(--info)
@@ -67,6 +74,14 @@
 
 	&-trash
 		color: var(--danger)
+
+	&-h
+		padding: 10px
+		box-sizing: border-box
+	
+		&:hover
+			border-radius: 50%
+			background-color: var(--background)
 
 body
 	position: relative

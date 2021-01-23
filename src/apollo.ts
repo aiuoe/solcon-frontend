@@ -9,10 +9,11 @@ import EchoLink from '@/echo'
 const httpLink = setContext(() => ({headers: {authorization: `Bearer ${window.localStorage.getItem('token')}`}})).concat(createHttpLink({uri: `${process.env.VUE_APP_API_URL}/graphql`}))
 
 const cache = new InMemoryCache()
-const echoLink = new EchoLink();
+// const echoLink = new EchoLink();
 
 export const apolloClient = new ApolloClient({
-  link: ApolloLink.from([echoLink, httpLink]),
+  // link: ApolloLink.from([echoLink, httpLink]),
+  link: httpLink,
   cache,
   defaultOptions: {
     watchQuery: { errorPolicy: 'all' },

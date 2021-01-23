@@ -30,6 +30,7 @@ import { COMPANIES } from '@/graphql/queries/company'
 import { mapState, mapActions } from 'vuex'
 import axios from 'axios'
 import { DB } from '@/modules/DB'
+import gql from 'graphql-tag'
 
 @Component({
 	name: 'Login',
@@ -59,6 +60,25 @@ export default class Login extends Vue {
 		{
 			this.radius = Math.floor(Math.random() * (250 - 350)) + 250
 		}, 1000)
+
+
+		const obs = this.$apollo.subscribe({
+			query: gql(`subscription
+				UserUpdated
+				{
+					userUpdated
+					{
+						id
+						name
+						email
+					}
+				}`)})
+		obs.subscribe({
+			next: (data: any) => { 
+				console.log(data)
+			},
+			error: (error: any) => console.log(error)
+		})
 	}
 
 	async login()

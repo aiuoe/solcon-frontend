@@ -16,32 +16,30 @@
 							i(class="fa fa-filter") 
 					.customer-filter(v-if="!loading")
 						a(style="cursor: pointer;" @click="filter('name')") nombre
-					ul.list-column.p-7(id="customers" v-if="!loading" @scroll="customersGet")
-						li(class="item p-7 start-center" v-for="customer, key in customers" @click="customerShow(key)")
-							a(class="link font") {{ customer.name | capitalize }} - {{ customer.lastname | capitalize }}
+					ul.list-column.p-7(v-if="!loading" @scroll="customersGet")
+						li(class="customer p-7 start-center" v-for="customer, key in customers" @click="customerShow(key)")
+							a(class="link font") {{ customer.name | capitalize }} {{ customer.lastname | capitalize }}
 			.aside.box
 				.loader(v-if="loading")
 					Loader
-				.wrapper.start-column(v-if="!loading")
-					.back.start-center
-						a(class="link" @click="back")
-							i(class="fa fa-angle-left")
-					.photo.start-center
-						span(class="letter center font" v-if="customer.name") {{ customer.name[0] | toUpperCase }}
-					.menu
-						ul.list
-							li.item
-								a.link(@click="menuToggle('ticketsMenuShow')")
-									i(:class="['fa', 'fa-ticket-alt', 'center', {'active' : ticketsMenuShow}]")
-							li.item
-								a.link(@click="menuToggle('purchasesMenuShow')")
-									i(:class="['fa', 'fa-shopping-cart', 'center', {'active' : purchasesMenuShow}]")
-							li.item
-								a.link(@click="menuToggle('companiesMenuShow')")
-									i(:class="['fa', 'fa-building', 'center', {'active' : companiesMenuShow}]")
-							li.item
-								a.link(@click="menuToggle('customerMenuShow')")
-									i(:class="['fa', 'fa-user', 'center', {'active' : customerMenuShow}]")
+				.wrapper(v-if="!loading")
+					.head.evenly-center
+						.photo
+							span(class="letter center font" v-if="customer.name") {{ customer.name[0] | toUpperCase }}
+						.menu
+							ul.list
+								li.item
+									a.link(@click="menuToggle('ticketsMenuShow')")
+										i(:class="['fa', 'fa-ticket-alt', 'center', {'active' : ticketsMenuShow}]")
+								li.item
+									a.link(@click="menuToggle('purchasesMenuShow')")
+										i(:class="['fa', 'fa-shopping-cart', 'center', {'active' : purchasesMenuShow}]")
+								li.item
+									a.link(@click="menuToggle('companiesMenuShow')")
+										i(:class="['fa', 'fa-building', 'center', {'active' : companiesMenuShow}]")
+								li.item
+									a.link(@click="menuToggle('customerMenuShow')")
+										i(:class="['fa', 'fa-user', 'center', {'active' : customerMenuShow}]")
 
 					.content
 
@@ -110,25 +108,26 @@ export default class Customers extends Vue {
 			})
 		.catch((res: any) => console.log(res))
 
-		const obs = this.$apollo.subscribe({
-			query: gql(`subscription
-				UserUpdated
-				{
-					userUpdated
-					{
-						id
-						name
-						lastname
-						email
-					}
-				}`)})
-		obs.subscribe({
-			next: (data: any) => { 
-				this.customers.upsert(data.data.userUpdated)
-				this.customer = this.customers[0]
-			},
-			error: (error: any) => console.log(error)
-		})
+		// const obs = this.$apollo.subscribe({
+		// 	query: gql(`subscription
+		// 		UserUpdated
+		// 		{
+		// 			userUpdated
+		// 			{
+		// 				id
+		// 				name
+		// 				lastname
+		// 				email
+		// 			}
+		// 		}`)})
+		// obs.subscribe({
+		// 	next: (data: any) => { 
+		// 		console.log(data)
+		// 		this.customers.upsert(data.data.userUpdated)
+		// 		this.customer = this.customers[0]
+		// 	},
+		// 	error: (error: any) => console.log(error)
+		// })
 	}
 
 	async customersGet()
@@ -223,14 +222,6 @@ export default class Customers extends Vue {
 		}
 	}
 
-	back()
-	{
-		let aside: any = document.querySelector('.aside')
-		aside.style.display = 'none'
-	}
-
-
-
 	// getDate(date)
 	// {
 	// 	if (this.key != 'all')
@@ -275,10 +266,9 @@ export default class Customers extends Vue {
 	width: 100%
 	height: 80%
 	position: relative
-	padding: 35px 7px 7px 7px
+	padding: 30px 7px 7px 7px
 	box-sizing: border-box
 	overflow: hidden
-	box-shadow: var(--shadow)
 	background-color: var(--contrast)
 
 	.customer-filter
@@ -292,12 +282,12 @@ export default class Customers extends Vue {
 		width: 100%
 		height: 100%
 
-		.item
-			width: 100%
-			height: 30px
-			margin-bottom: 7px
-			border: 1px solid var(--background)
-			border-radius: 3px
+.customer
+	width: 100%
+	height: 70px
+	margin-bottom: 7px
+	border: 1px solid var(--background)
+	border-radius: 3px
 
 
 // ASIDE
@@ -324,7 +314,7 @@ export default class Customers extends Vue {
 		font-size: 40px
 
 .photo
-	width: 100%
+	width: 20%
 	height: 50px
 
 	.letter
@@ -335,7 +325,7 @@ export default class Customers extends Vue {
 		font-size: 25px
 
 .menu
-	width: 100%
+	width: 80%
 	height: 35px
 	background-color: var(--background)
 	border-radius: 20px

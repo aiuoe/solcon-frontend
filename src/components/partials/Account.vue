@@ -66,14 +66,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Loader from '@/components/partials/Loader.vue';
 import { ACCOUNT_CREATE, ACCOUNT_UPDATE, ACCOUNT_DELETE } from '@/graphql/Mutations'
 import { ACCOUNTS, CURRENCIES } from '@/graphql/Queries'
-import { capitalize, upperCase } from '@/modules/Filter'
+import { capitalize, upperCase, extract } from '@/modules/Filter'
 import { TYPE_ACCOUNT } from '@/types/type'
 import '@/modules/Array'
 
 @Component({
 	name: 'Account',
 	components: { Loader },
-	filters: {capitalize: capitalize, upperCase: upperCase},
+	filters: {capitalize: capitalize, upperCase: upperCase, extract: extract},
 })
 export default class Account extends Vue {
 	accounts: any = {}
